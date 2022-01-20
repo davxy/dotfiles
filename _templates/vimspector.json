@@ -1,0 +1,28 @@
+{
+    "configurations": {
+        "configuration #1": {
+            "adapter": "CodeLLDB",
+            "configuration": {
+                "type": "lldb",
+                "request": "launch", /* or it could be "attach" */
+                "program": "${workspaceFolder}/target/debug/foo",
+                "args": ["--tmp", "--dev"]
+            },
+            "breakpoints": {
+                "exception": {
+                    "caught": "",
+                    "uncaught": "Y"
+                }
+            }
+        }
+        "configuration #2": {
+            "adapter": "CodeLLDB",
+            "configuration": {
+                "type": "lldb",
+                "request": "launch",
+                "program": "${workspaceFolder}/target/debug/bar",
+                "args": ["--tmp"]
+            }
+        }
+    }
+}
