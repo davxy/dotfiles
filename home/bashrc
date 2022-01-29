@@ -144,3 +144,7 @@ eval "$(/home/davxy/bin/starship init bash)"
 # Start gpg-agent as ssh-agent
 export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
 gpgconf --launch gpg-agent
+
+# Wireguard VPN
+alias vpn-start='sudo nmcli connection import type wireguard file /etc/wireguard/wg0.conf'
+alias vpn-stop='sudo nmcli connection delete wg0'
