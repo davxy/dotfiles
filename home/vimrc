@@ -26,17 +26,17 @@ Plug 'majutsushi/tagbar'
 " Automatic closing
 Plug 'jiangmiao/auto-pairs'
 " Syntax
-Plug 'vim-syntastic/syntastic'
+"Plug 'vim-syntastic/syntastic'
 " Rust
 Plug 'rust-lang/rust.vim'
+" Code comments
+Plug 'tpope/vim-commentary'
 " Clippy plugin
-Plug 'd3m3vilurr/clippy.vim'
+"Plug 'd3m3vilurr/clippy.vim'
 " Rainbow (different shade of color to paretheses)
 Plug 'frazrepo/vim-rainbow'
 " Vimspector debugger support
 Plug 'puremourning/vimspector'
-" Vim LLDB
-Plug 'gilligan/vim-lldb'
 
 "--- Look and Feel
 " Development icons
@@ -393,14 +393,14 @@ set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
+let g:syntastic_check_on_wq = 1
 " C Language
 let g:syntastic_c_check_header = 0
 let g:syntastic_c_auto_refresh_includes = 1
 "let g:syntastic_c_include_dirs = [ 'include', 'src' ]
 let g:syntastic_c_config_file = '.syntastic'
 " Rust Language
-let g:syntastic_rust_checkers = ['cargo', 'check']
+let g:syntastic_rust_checkers = ['check']
 
 " Vim-Rainbow plugin configuration
 "
