@@ -89,8 +89,8 @@ fi
 
 # some more ls aliases
 alias ll='ls -l'
-alias la='ls -a'
-alias l='ls'
+#alias la='ls -A'
+#alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -120,6 +120,7 @@ fi
 # Some useful aliases
 alias term=gnome-terminal
 alias bat=batcat
+alias cat=bat
 alias grep=rg
 alias ls=exa
 
@@ -144,7 +145,3 @@ eval "$(/home/davxy/bin/starship init bash)"
 # Start gpg-agent as ssh-agent
 export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
 gpgconf --launch gpg-agent
-
-# Wireguard VPN
-alias vpn-start='sudo nmcli connection import type wireguard file /etc/wireguard/wg0.conf'
-alias vpn-stop='sudo nmcli connection delete wg0'
