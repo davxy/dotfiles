@@ -130,11 +130,8 @@ parse_git_branch() {
 }
 export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
 
-# Start tmux session.
-code_running=$(pstree -s $$ | grep code)
-if [ -z $code_running ]; then
-    [[ $TERM != "screen" && $TERM != "screen-256color" ]] && exec tmux
-fi
+# Start tmux session (prevent nesting)
+[[ $TERM != "screen" && $TERM != "screen-256color" ]] && exec tmux
 
 # Why???
 stty -ixon
