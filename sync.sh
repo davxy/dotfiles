@@ -1,9 +1,21 @@
 #!/bin/bash
 
-cp $HOME/.bashrc home/bashrc
-cp $HOME/.gitconfig home/gitconfig
-cp $HOME/.tmux.conf home/tmux.conf
-cp $HOME/.vimrc home/vimrc
-cp $HOME/.Xdefaults home/Xdefaults
+# bash
+cp $HOME/.bashrc bash/bashrc
 
-cp /etc/samba/smb.conf etc/smb.conf
+# git
+cp $HOME/.gitconfig git/gitconfig
+
+# tmux
+cp $HOME/.tmux.conf tmux/tmux.conf
+
+# neovim
+cp $HOME/.config/nvim/init.vim nvim/init.vim
+cp $HOME/.config/nvim/init-plugins.vim nvim/init-plugins.vim
+cp -r $HOME/.config/nvim/pluggedconf nvim/pluggedconf
+
+# samba
+cp /etc/samba/smb.conf samba/smb.conf
+
+# X defaults
+cp $HOME/.Xdefaults misc/Xdefaults

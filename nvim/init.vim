@@ -174,6 +174,6 @@ com! DiffSaved call s:DiffWithSaved()
 " Load every plugin additional configs
 "-------------------------------------------------------------------------------
 
-for file in split(glob('$VIMCONFIG/pluggedconf/*.nvimrc'), '\n')
+for file in split(glob('$VIMCONFIG/pluggedconf/*.vim'), '\n')
     execute 'source' file
 endfor
