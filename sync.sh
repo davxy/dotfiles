@@ -2,6 +2,7 @@
 
 # bash
 cp $HOME/.bashrc bash/bashrc
+cp $HOME/.inputrc bash/inputrc
 
 # git
 cp $HOME/.gitconfig git/gitconfig
