@@ -145,3 +145,6 @@ eval "$(/home/davxy/bin/starship init bash)"
 # Start gpg-agent as ssh-agent
 export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
 gpgconf --launch gpg-agent
+
+# Enable Vi mode
+set -o vi
