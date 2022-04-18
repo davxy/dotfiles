@@ -9,7 +9,7 @@ call plug#begin("$VIMCONFIG/plugged")
 "---------
 
 "" Git plugin
-"Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 "" Git plugin to view diff
 "Plug 'gitgutter/Vim'
 "" NerdTree
@@ -18,6 +18,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 " Fuzzy finder
 Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 "--- Development
 
