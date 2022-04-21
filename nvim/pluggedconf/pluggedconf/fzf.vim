@@ -1,15 +1,25 @@
-"
 " FZF configuration
 "
+" References:
+" - https://dev.to/iggredible/how-to-search-faster-in-vim-with-fzf-vim-36ko
 
 augroup fzf
   autocmd!
 augroup END
 
-" Fuzzy finder
-nnoremap <C-f> :Files<CR>
-nnoremap <C-g> :Rg<CR>
+" Fuzzy finder using ripgrep, case insensitive
+nnoremap <C-f> :Rg<CR>
+" Fuzzy finder within files using ripgrep
+nnoremap <C-i> :Rgi<CR>
 
+" This is the default option:
+"   - Preview window on the right with 50% width
+"   - CTRL-/ will toggle preview window.
+" - Note that this array is passed as arguments to fzf#vim#with_preview function.
+" - To learn more about preview window options, see `--preview-window` section of `man fzf`.
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+
+" ripgrep options:
 " --column: Show column number
 " --line-number: Show line number
 " --no-heading: Do not show file headings in results
@@ -21,16 +31,20 @@ nnoremap <C-g> :Rg<CR>
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
 " --color: Search color options
 
-" ripgrep command to search in multiple files
-" autocmd fzf VimEnter * command! -nargs=* Rg call fzf#vim#grep(
-"   \   'rg --column --line-number --no-heading --fixed-strings --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1,
-"   \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"   \   <bang>0)
+" Case sensitive ripgrep.
+" RG option by default also searches for file name in addition to the phrase.
+" This is to only search within the file content.
+command! -bang -nargs=* Rg
+    \ call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --color=always --case-sensitive --glob "!.git" '.shellescape(<q-args>),
+    \ 1,
+    \ {'options': '+i -e --delimiter : --nth 4..'},
+    \ <bang>0)
 
-" " ripgrep command to search in multiple files (ignore case)
-" autocmd fzf VimEnter * command! -nargs=* Rgi call fzf#vim#grep(
-"   \   'rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1,
-"   \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"   \   <bang>0)
+" Case insensitive ripgrep.
+" RG option by default also searches for file name in addition to the phrase.
+" This is to only search within the file content.
+command! -bang -nargs=* Rgi
+    \ call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --color=always --ignore-case --glob "!.git" '.shellescape(<q-args>),
+    \ 1,
+    \ {'options': '-i -e --delimiter : --nth 4..'},
+    \ <bang>0)

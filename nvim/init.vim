@@ -41,9 +41,6 @@ set scrolloff=20
 " Enable mouse support
 set mouse=a
 
-" GDB built-in plugin
-"packadd! termdebug
-
 "------------------------------------------------------------------------------
 " Main options
 "------------------------------------------------------------------------------
@@ -134,6 +131,8 @@ nmap <C-k> :bn<CR>
 
 " Close current buffer and open the previous
 nmap <leader>q :bp<cr>:bd #<cr>
+" Close current buffer and open the previous (drop unsaved changes)
+nmap <leader>k :bp<cr>:bd! #<cr>
 
 "-------------------------------------------------------------------------------
 " Custom functions
@@ -150,21 +149,6 @@ function! s:DiffWithSaved()
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSaved call s:DiffWithSaved()
-
-"------------------------------------------------------------------------------
-" Termdebug configuration
-" UNUSED BECAUSE OF VIMSPECTOR
-"------------------------------------------------------------------------------
-
-" Better window split
-"let g:termdebug_popup = 1
-"let g:termdebug_wide = 163
-"let g:termdebug_useFloatingHover = 1
-"nnoremap <F5> :Termdebug<cr>
-"nnoremap <RightMouse> :Evaluate<cr>
-"
-"" Adjust colors
-"highlight debugPC ctermbg=0 cterm=bold
 
 "-------------------------------------------------------------------------------
 " Load every plugin additional configs
