@@ -157,3 +157,5 @@ com! DiffSaved call s:DiffWithSaved()
 for file in split(glob('$VIMCONFIG/pluggedconf/*.vim'), '\n')
     execute 'source' file
 endfor
+
+let g:neovide_transparency=0.8

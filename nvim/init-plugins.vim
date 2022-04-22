@@ -84,7 +84,7 @@ Plug 'tpope/vim-commentary'
 Plug 'frazrepo/vim-rainbow'
 
 " Vimspector debugger support
-Plug 'puremourning/vimspector'
+"Plug 'puremourning/vimspector'
 
 " Debugger console support for lldb and gdb
 Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh' }
