@@ -1,13 +1,13 @@
+" (Neo)Vim Config
 "
-" References:
+" Good References:
 " - https://github.com/Phantas0s/.dotfiles/tree/master/nvim
 " - https://sharksforarms.dev/posts/neovim-rust
-"
 
-let $VIMCONFIG = '/home/davxy/.config/nvim'
-"
+let $VIMCONFIG='/home/davxy/.config/nvim'
+
 " Source plugin definition file
-source $VIMCONFIG/init-plugins.vim
+source $VIMCONFIG/plugins.vim
 
 "------------------------------------------------------------------------------
 " Features
@@ -154,8 +154,12 @@ com! DiffSaved call s:DiffWithSaved()
 " Load every plugin additional configs
 "-------------------------------------------------------------------------------
 
-for file in split(glob('$VIMCONFIG/pluggedconf/*.vim'), '\n')
+for file in split(glob('$VIMCONFIG/init.d/*.vim'), '\n')
     execute 'source' file
 endfor
+
+"-------------------------------------------------------------------------------
+" Temporary stuff under test
+"-------------------------------------------------------------------------------
 
 let g:neovide_transparency=0.8
