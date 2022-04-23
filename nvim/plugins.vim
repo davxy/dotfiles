@@ -41,6 +41,9 @@ Plug 'kyazdani42/nvim-web-devicons'
 " Solarized theme
 Plug 'altercation/vim-colors-solarized'
 
+" Center text on screen
+Plug 'junegunn/goyo.vim'
+
 "-------------------------------------------------------------------------------
 " Development
 "-------------------------------------------------------------------------------

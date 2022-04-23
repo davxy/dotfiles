@@ -21,7 +21,7 @@ set background=dark
 colorscheme solarized
 
 " Transparent background
-hi Normal guibg=NONE ctermbg=NONE
+"hi Normal guibg=NONE ctermbg=NONE
 
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -162,4 +162,4 @@ endfor
 " Temporary stuff under test
 "-------------------------------------------------------------------------------
 
-let g:neovide_transparency=0.8
+let g:neovide_transparency=0.9
