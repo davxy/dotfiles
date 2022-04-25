@@ -75,7 +75,7 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'preservim/tagbar'
 
 " Automatic braces closing
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
 
 " Syntax notificaitons
 Plug 'folke/trouble.nvim'
@@ -97,5 +97,7 @@ Plug 'rust-lang/rust.vim'
 
 " To enable more of the features of rust-analyzer, such as inlay hints and more
 Plug 'simrat39/rust-tools.nvim'
+
+Plug 'junegunn/limelight.vim'
 
 call plug#end()
