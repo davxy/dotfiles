@@ -1,24 +1,29 @@
 #!/bin/bash
 
-SYNC="rsync -a --quiet --progress --delete --append-verify"
+#CP="rsync -a --quiet --progress --delete --append-verify"
+CP="cp -r"
 
 # bash
-$SYNC $HOME/.bashrc bash/bashrc
-$SYNC $HOME/.inputrc bash/inputrc
+$CP $HOME/.bashrc bash/bashrc
+$CP $HOME/.inputrc bash/inputrc
 
 # git
-$SYNC $HOME/.gitconfig git/gitconfig
+$CP $HOME/.gitconfig git/gitconfig
 
 # tmux
-$SYNC $HOME/.tmux.conf tmux/tmux.conf
+$CP $HOME/.tmux.conf tmux/tmux.conf
 
 # neovim
-$SYNC $HOME/.config/nvim/init.vim nvim/init.vim
-$SYNC $HOME/.config/nvim/plugins.vim nvim/plugins.vim
-$SYNC $HOME/.config/nvim/init.d nvim/
+$CP $HOME/.config/nvim/init.vim nvim/init.vim
+$CP $HOME/.config/nvim/plugins.vim nvim/plugins.vim
+$CP $HOME/.config/nvim/init.d nvim/
 
 # samba
-$SYNC /etc/samba/smb.conf samba/smb.conf
+$CP /etc/samba/smb.conf samba/smb.conf
 
 # X defaults
-$SYNC $HOME/.Xdefaults misc/Xdefaults
+$CP $HOME/.Xdefaults misc/Xdefaults
+
+# lldb
+$CP $HOME/.lldbinit lldb/lldbinit
+$CP $HOME/.lldb/scripts lldb/
