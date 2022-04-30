@@ -1,8 +1,14 @@
 " (Neo)Vim Config
+
 "
 " Good References:
 " - https://github.com/Phantas0s/.dotfiles/tree/master/nvim
 " - https://sharksforarms.dev/posts/neovim-rust
+" - https://wikimho.com/us/q/vi/13965/what-is-command-bang-nargs-in-a-vimrc-file
+"
+" Output al hightlight groups:
+" :so $VIMRUNTIME/syntax/hitest.vim
+
 
 let $VIMCONFIG='/home/davxy/.config/nvim'
 
@@ -15,18 +21,6 @@ source $VIMCONFIG/plugins.vim
 
 " Enable syntax highlighting (by name)
 syntax enable
-
-" Friendly color scheme
-set background=dark
-colorscheme solarized
-
-" Cursor settings
-set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
-    \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
-    \,sm:block-blinkwait175-blinkoff150-blinkon175
-
-" Transparent background
-"hi Normal guibg=NONE ctermbg=NONE
 
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -41,10 +35,29 @@ set nocompatible
 set encoding=UTF-8
 
 " Keep the cursor in the middle
-set scrolloff=20
+"set scrolloff=40
 
 " Enable mouse support
 set mouse=a
+
+"------------------------------------------------------------------------------
+" Look options
+"------------------------------------------------------------------------------
+
+" Friendly color scheme
+set background=dark
+colorscheme solarized
+
+" Cursor settings
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+    \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
+    \,sm:block-blinkwait175-blinkoff150-blinkon175
+
+" Transparent background
+"hi Normal guibg=NONE ctermbg=NONE
+
+" Gutter colors
+highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
 
 "------------------------------------------------------------------------------
 " Main options
@@ -131,13 +144,15 @@ autocmd InsertEnter,InsertLeave * set cul!
 "------------------------------------------------------------------------------
 
 " Buffers switching
-nmap <C-j> :bp<CR>
-nmap <C-k> :bn<CR>
-
-" Close current buffer and open the previous
-nmap <leader>q :bp<cr>:bd #<cr>
+nmap <C-j> :bp<cr>
+nmap <C-k> :bn<cr>
 " Close current buffer and open the previous (drop unsaved changes)
-nmap <leader>k :bp<cr>:bd! #<cr>
+nmap <leader>k :bd! %<cr>
+" Close current buffer and open the previous
+nmap <leader>q :Bdelete this<cr>
+
+" Shortcut for exiting terminal mode
+tnoremap <esc> <c-\><c-n>
 
 "-------------------------------------------------------------------------------
 " Custom functions
@@ -169,18 +184,4 @@ endfor
 
 let g:neovide_transparency=0.9
 
-nmap <Leader>l <Plug>(Limelight)
-xmap <Leader>l <Plug>(Limelight)
-
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-
-" Color name (:help cterm-colors) or ANSI code
-let g:limelight_conceal_ctermfg = 'gray'
-let g:limelight_conceal_ctermfg = 240
-
-" Color name (:help gui-colors) or RGB color
-let g:limelight_conceal_guifg = 'DarkGray'
-let g:limelight_conceal_guifg = '#777777'
-
-"---
+let g:scrolloff_fraction = 0.35

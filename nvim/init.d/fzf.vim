@@ -2,7 +2,6 @@
 "
 " References:
 " - https://dev.to/iggredible/how-to-search-faster-in-vim-with-fzf-vim-36ko
-" - https://wikimho.com/us/q/vi/13965/what-is-command-bang-nargs-in-a-vimrc-file
 
 augroup fzf
   autocmd!
@@ -11,14 +10,14 @@ augroup END
 " Fuzzy finder using ripgrep, case insensitive
 nnoremap <C-f> :Rgf<CR>
 " Fuzzy finder within files using ripgrep
-nnoremap <C-i> :Rgi<CR>
+nnoremap <C-g> :Rgi<CR>
 
 " This is the default option:
 "   - Preview window on the right with 50% width
 "   - CTRL-/ will toggle preview window.
 " - Note that this array is passed as arguments to fzf#vim#with_preview function.
 " - To learn more about preview window options, see `--preview-window` section of `man fzf`.
-let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+let g:fzf_preview_window = ['up:50%', 'ctrl-/']
 
 " ripgrep options:
 " --column: Show column number
@@ -45,7 +44,8 @@ command! -bang -nargs=* Rgf
 " RG option by default also searches for file name in addition to the phrase.
 " This is to only search within the file content.
 command! -bang -nargs=* Rgi
-    \ call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --color=always --ignore-case --glob "!.git" '.shellescape(<q-args>),
+    \ call fzf#vim#grep(
+    \ 'rg --column --line-number --no-heading --fixed-strings --color=always --ignore-case --glob "!.git" '.shellescape(<q-args>),
     \ 1,
     \ fzf#vim#with_preview({'options': '-i -e --delimiter : --nth 4..'}),
     \ <bang>0)
