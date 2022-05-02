@@ -33,7 +33,7 @@ local opts = {
                 -- enable clippy on save
                 checkOnSave = {
                     command = "check",
-                    extraArgs = { "--target-dir", "target-ra" },
+                    extraArgs = { "--target-dir", "target/rust-analyzer" },
                 },
             }
         }
