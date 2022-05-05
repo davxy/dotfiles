@@ -1,5 +1,4 @@
-" (Neo)Vim Config
-
+" (Neo)Vim Config - v0.1.0
 "
 " Good References:
 " - https://github.com/Phantas0s/.dotfiles/tree/master/nvim
@@ -8,7 +7,6 @@
 "
 " Output al hightlight groups:
 " :so $VIMRUNTIME/syntax/hitest.vim
-
 
 let $VIMCONFIG='/home/davxy/.config/nvim'
 
@@ -35,6 +33,7 @@ set nocompatible
 set encoding=UTF-8
 
 " Keep the cursor in the middle
+" (currently dynamically managed by the 'vim-scrolloff-fraction' plugin)
 "set scrolloff=40
 
 " Enable mouse support
@@ -57,7 +56,7 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 "hi Normal guibg=NONE ctermbg=NONE
 
 " Gutter colors
-highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
+highlight SignColumn ctermbg=grey ctermfg=grey guibg=black guifg=grey
 
 "------------------------------------------------------------------------------
 " Main options
@@ -98,10 +97,8 @@ set number
 set rnu
 
 " Control the initial size of vim
-"set columns=80
-set wrapmargin=8
-
 set textwidth=80
+"set wrapmargin=8
 set colorcolumn=+1
 
 " Leader key command timeout (leader-key is set by default as '\')
@@ -179,9 +176,24 @@ for file in split(glob('$VIMCONFIG/init.d/*.vim'), '\n')
 endfor
 
 "-------------------------------------------------------------------------------
-" Temporary stuff under test
+" Stuff under test
 "-------------------------------------------------------------------------------
 
+" Transparecy for neovide
 let g:neovide_transparency=0.9
 
+" Automatically scroll with fractional offset
 let g:scrolloff_fraction = 0.35
+
+" Open terminal in a new split
+command! -nargs=* TT terminal <args>
+command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
+command! -nargs=* VT split | terminal <args>
+autocmd TermOpen * startinsert
+
+" Special comment color overwrite (e.g. used by Rust documentation)
+hi SpecialComment ctermfg=243
+
+" Split mappings similar to tmux
+noremap <C-w>- <esc>:new<cr>
+noremap <C-w>\ <esc>:vnew<cr>
