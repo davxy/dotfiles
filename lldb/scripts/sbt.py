@@ -23,7 +23,7 @@ def short_backtrace(debugger, command, result, internal_dict):
     frame = thread.GetFrameAtIndex(0)
     level = 0
     while frame is not None:
-        if level >= max_level:
+        if level >= max_level or frame.name is None:
             break
 
         if frame == selected_frame:
