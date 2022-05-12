@@ -185,7 +185,7 @@ let g:neovide_transparency=0.9
 " Automatically scroll with fractional offset
 let g:scrolloff_fraction = 0.35
 
-" Open terminal in a new split
+" Open terminal in a new split in insert mode
 command! -nargs=* TT terminal <args>
 command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
 command! -nargs=* VT split | terminal <args>

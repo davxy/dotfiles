@@ -1,6 +1,9 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
+#
+# Version 0.1.0
+
 
 # If not running interactively, don't do anything
 case $- in
@@ -123,6 +126,8 @@ alias bat=batcat
 alias cat=bat
 alias grep=rg
 alias ls=exa
+alias vi=nvim
+alias vim=nvim
 
 # Parse git branch
 parse_git_branch() {
