@@ -14,11 +14,8 @@ Plug 'tpope/vim-fugitive'
 " Git diff in gutter
 Plug 'airblade/vim-gitgutter'
 
-" NerdTree
-Plug 'scrooloose/nerdtree'
-
-" NerdTree git plugin
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" File explorer with git and icons support
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Fuzzy finder
 Plug 'junegunn/fzf'
@@ -38,7 +35,7 @@ Plug 'Asheq/close-buffers.vim'
 Plug 'ryanoasis/vim-devicons'
 
 " Syntax highlight in NerdTree
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Status and tabline
 Plug 'nvim-lualine/lualine.nvim'

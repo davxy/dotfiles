@@ -189,7 +189,14 @@ let g:scrolloff_fraction = 0.35
 command! -nargs=* TT terminal <args>
 command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
 command! -nargs=* VT split | terminal <args>
-autocmd TermOpen * startinsert
+
+"Terminal Buffer settings
+function! TerminalSettings()
+    setlocal nonumber
+    setlocal nobuflisted
+    startinsert
+endfunction
+autocmd TermOpen * call TerminalSettings()
 
 " Special comment color overwrite (e.g. used by Rust documentation)
 hi SpecialComment ctermfg=243
