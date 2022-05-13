@@ -16,8 +16,9 @@ def short_backtrace(debugger, command, result, internal_dict):
     cwdlen = len(cwd)
 
     if len(command) == 0:
-        return
-    max_level = int(command)
+        max_level = 1
+    else:
+        max_level = int(command)
 
     selected_frame = thread.GetSelectedFrame()
     frame = thread.GetFrameAtIndex(0)
