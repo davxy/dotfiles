@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #CP="rsync -a --quiet --progress --delete --append-verify"
+RM="rm -r"
 CP="cp -r"
 
 # bash
@@ -14,6 +15,7 @@ $CP $HOME/.gitconfig git/gitconfig
 $CP $HOME/.tmux.conf tmux/tmux.conf
 
 # neovim
+$RM nvim/*
 $CP $HOME/.config/nvim/init.vim nvim/init.vim
 $CP $HOME/.config/nvim/plugins.vim nvim/plugins.vim
 $CP $HOME/.config/nvim/init.d nvim/

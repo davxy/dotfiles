@@ -5,9 +5,9 @@
     email = davxy@datawok.net
     signingkey = 0x7954B83AAD67BC2092B2DF294FC3C19CF3EF0716
 [core]
-    editor = vim
+    editor = nvim
 [gui]
-    editor = gvim
+    editor = nvim
 [credential]
     helper = cache --timeout=3600
 [commit]
