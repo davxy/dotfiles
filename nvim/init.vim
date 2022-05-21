@@ -56,7 +56,7 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 "hi Normal guibg=NONE ctermbg=NONE
 
 " Gutter colors
-highlight SignColumn ctermbg=grey ctermfg=grey guibg=black guifg=grey
+highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
 
 "------------------------------------------------------------------------------
 " Main options
