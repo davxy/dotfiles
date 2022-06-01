@@ -19,6 +19,9 @@ nnoremap <C-g> :Rgi<CR>
 " - To learn more about preview window options, see `--preview-window` section of `man fzf`.
 let g:fzf_preview_window = ['up:50%', 'ctrl-/']
 
+" 'Commit' command format
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold green)<%an>%C(reset) %C(blue)(%cr)"'
+
 " ripgrep options:
 " --column: Show column number
 " --line-number: Show line number
@@ -37,7 +40,7 @@ let g:fzf_preview_window = ['up:50%', 'ctrl-/']
 command! -bang -nargs=* Rgf
     \ call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --color=always --case-sensitive --glob "!.git" '.shellescape(<q-args>),
     \ 1,
-    \ fzf#vim#with_preview({'options': '+i -e --delimiter : --nth 4..'}),
+    \ fzf#vim#with_preview({'options': '+i +s --tac -e --delimiter : --nth 4..'}),
     \ <bang>0)
 
 " Case insensitive ripgrep.
@@ -47,5 +50,5 @@ command! -bang -nargs=* Rgi
     \ call fzf#vim#grep(
     \ 'rg --column --line-number --no-heading --fixed-strings --color=always --ignore-case --glob "!.git" '.shellescape(<q-args>),
     \ 1,
-    \ fzf#vim#with_preview({'options': '-i -e --delimiter : --nth 4..'}),
+    \ fzf#vim#with_preview({'options': '-i +s --tac -e --delimiter : --nth 4..'}),
     \ <bang>0)

@@ -40,7 +40,7 @@ set encoding=UTF-8
 set mouse=a
 
 "------------------------------------------------------------------------------
-" Look options
+" Appearence
 "------------------------------------------------------------------------------
 
 " Friendly color scheme
@@ -52,11 +52,14 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
     \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
     \,sm:block-blinkwait175-blinkoff150-blinkon175
 
+" Gutter color
+highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
+
+" Highlight line under cursor
+set cursorline
+
 " Transparent background
 "hi Normal guibg=NONE ctermbg=NONE
-
-" Gutter colors
-highlight SignColumn ctermbg=grey ctermfg=grey guibg=black guifg=grey
 
 "------------------------------------------------------------------------------
 " Main options
@@ -96,13 +99,24 @@ set ruler
 set number
 set rnu
 
-" Control the initial size of vim
-set textwidth=80
-"set wrapmargin=8
+" Color column corresponding to textwidth value
 set colorcolumn=+1
 
-" Leader key command timeout (leader-key is set by default as '\')
-set timeoutlen=300
+" Do not automatically add end of line
+set nofixendofline
+
+" Highlight cursor line
+autocmd InsertEnter,InsertLeave * set cul!
+"
+" Control the text width limit
+" Rust textwidth is currently controlled by rust plugin
+autocmd BufReadPost,BufNewFile *.c,*.cpp,*.h,*.hpp,*.py setlocal textwidth=100
+
+" Remove all trailing spaces in a file before saving
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Remove all blank lines at the end of the file
+autocmd BufWritePre * :%s/\($\n\s*\)\+\%$//e
 
 "------------------------------------------------------------------------------
 " Indentation options
@@ -125,19 +139,7 @@ set softtabstop=4
 set shiftwidth=4
 
 "------------------------------------------------------------------------------
-" Useful auto commands
-"------------------------------------------------------------------------------
-
-" Remove all trailing spaces in a file before saving
-autocmd BufWritePre * :%s/\s\+$//e
-" Remove all blank lines at the end of the file
-autocmd BufWritePre * :%s/\($\n\s*\)\+\%$//e
-
-" Highlight cursor line
-autocmd InsertEnter,InsertLeave * set cul!
-
-"------------------------------------------------------------------------------
-" Mappings configuration
+" Useful mappings
 "------------------------------------------------------------------------------
 
 " Buffers switching
@@ -148,24 +150,82 @@ nmap <leader>k :bd! %<cr>
 " Close current buffer and open the previous
 nmap <leader>q :Bdelete this<cr>
 
-" Shortcut for exiting terminal mode
-tnoremap <esc> <c-\><c-n>
-
 "-------------------------------------------------------------------------------
 " Custom functions
 "-------------------------------------------------------------------------------
 
-" Custom Functions
-"
 " Diff with the saved file version
-function! s:DiffWithSaved()
-  let filetype=&ft
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+function! DiffWithSaved()
+    let filetype=&ft
+    diffthis
+    vnew | r # | normal! 1Gdd
+    diffthis
+    execute "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
-com! DiffSaved call s:DiffWithSaved()
+command! DiffWithSaved call DiffWithSaved()
+
+" " Enable hex mode
+" function! HexEditOn()
+"     let g:hexmode = 1
+"     execute "%!xxd -g1"
+" endfunction
+" 
+" " Disable hex mode
+" function! HexEditOff()
+"     let g:hexmode = 0
+"     execute "%!xxd -r"
+" endfunction
+" 
+" function! HexEditToggle()
+"     if !exists("g:hexmode")
+"         let g:hexmode = 1
+"     endif
+"     if g:hexmode == 1
+"         call HexEditOff()
+"     else
+"         call HexEditOn()
+"     endif
+" endfunction
+" 
+" command HexEditOn call HexEditOn()
+" command HexEditOff call HexEditOff()
+" command HexEditToggle call HexEditToggle()
+
+"-------------------------------------------------------------------------------
+" Terminal tweaks
+"-------------------------------------------------------------------------------
+
+" Open terminal in a new split in insert mode
+command! -nargs=* TT terminal <args>
+command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
+command! -nargs=* VT split | terminal <args>
+
+" Terminal settings initialization
+function! TerminalInit()
+    setlocal nonumber
+    setlocal norelativenumber
+    setlocal nobuflisted
+    startinsert
+endfunction
+autocmd TermOpen * call TerminalInit()
+
+" Prevents opening other buffers in window used by terminal and
+" set insert mode as soon as we are switching to terminal
+function! TerminalEnter()
+    let curr_name=bufname("%")[0:3]
+    let prev_name=bufname("#")[0:3]
+    if curr_name == "term"
+        startinsert
+    elseif prev_name == "term"
+        buffer #
+    endif
+endfunction
+autocmd BufEnter * call TerminalEnter()
+
+" Shortcut to enter normal mode
+"tnoremap <esc> <C-\><C-n>
+" Shortcut to switch window
+tnoremap <C-w> <C-\><C-n><C-w>
 
 "-------------------------------------------------------------------------------
 " Load every plugin additional configs
@@ -185,22 +245,11 @@ let g:neovide_transparency=0.9
 " Automatically scroll with fractional offset
 let g:scrolloff_fraction = 0.35
 
-" Open terminal in a new split in insert mode
-command! -nargs=* TT terminal <args>
-command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
-command! -nargs=* VT split | terminal <args>
-
-"Terminal Buffer settings
-function! TerminalSettings()
-    setlocal nonumber
-    setlocal nobuflisted
-    startinsert
-endfunction
-autocmd TermOpen * call TerminalSettings()
-
 " Special comment color overwrite (e.g. used by Rust documentation)
 hi SpecialComment ctermfg=243
 
 " Split mappings similar to tmux
 noremap <C-w>- <esc>:new<cr>
 noremap <C-w>\ <esc>:vnew<cr>
+
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1

@@ -34,9 +34,6 @@ Plug 'Asheq/close-buffers.vim'
 " Development icons
 Plug 'ryanoasis/vim-devicons'
 
-" Syntax highlight in NerdTree
-"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
 " Status and tabline
 Plug 'nvim-lualine/lualine.nvim'
 

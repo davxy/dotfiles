@@ -1,7 +1,7 @@
 " Configuration related to 'tagbar' plugin.
 
 " Toggle tagbar and move focus to it when opening
-nmap <F3> :TagbarToggle f<CR>
+nnoremap <F5> :TagbarToggle f<CR>
 
 let g:rust_use_custom_ctags_defs = 1
 let g:tagbar_type_rust = {

@@ -129,19 +129,25 @@ alias ls=exa
 alias vi=nvim
 alias vim=nvim
 
-# Parse git branch
-parse_git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-}
-export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
+# Parse git branch (obsolete, now we are relying on 'starship' prompt)
+#parse_git_branch() {
+#    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+#}
+#export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
 
 # Start tmux session.
-# Prevent nesting and running within neovim or code terminals.
+# Prevent tmux nesting and running within neovim or code terminals.
 editor_running=$(pstree -s $$ | grep -e '(nvim|code)')
-if [ -z "$editor_running" ]; then
-    [[ $TERM != "screen" && $TERM != "screen-256color" ]] && exec tmux
+if [[ -z "$editor_running" ]]; then
+    if [[ "$TERM" != "screen" && "$TERM" != "screen-256color" ]]; then
+        exec tmux
+    else
+        alias clear='clear && tmux clear-history'
+    fi
 fi
 
+# Disable START/STOP output control.
+# Do not interpret Ctrl-s and Ctrl-q as flow signals.
 # Why???
 stty -ixon
 

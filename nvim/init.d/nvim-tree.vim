@@ -5,8 +5,13 @@
 
 lua << END
 require('nvim-tree').setup {
+    -- update_focused_file = {
+    --     enable = true,
+    -- }
 }
 END
 
+" Remap commonly used commands
 nnoremap <F2> :NvimTreeToggle<CR>
+nnoremap <F3> :NvimTreeFindFile<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
