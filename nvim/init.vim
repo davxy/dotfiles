@@ -52,14 +52,14 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
     \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
     \,sm:block-blinkwait175-blinkoff150-blinkon175
 
-" Gutter color
-highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
-
 " Highlight line under cursor
 set cursorline
 
 " Transparent background
 "hi Normal guibg=NONE ctermbg=NONE
+
+" Gutter colors
+highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
 
 "------------------------------------------------------------------------------
 " Main options
@@ -169,13 +169,13 @@ command! DiffWithSaved call DiffWithSaved()
 "     let g:hexmode = 1
 "     execute "%!xxd -g1"
 " endfunction
-" 
+"
 " " Disable hex mode
 " function! HexEditOff()
 "     let g:hexmode = 0
 "     execute "%!xxd -r"
 " endfunction
-" 
+"
 " function! HexEditToggle()
 "     if !exists("g:hexmode")
 "         let g:hexmode = 1
@@ -186,7 +186,7 @@ command! DiffWithSaved call DiffWithSaved()
 "         call HexEditOn()
 "     endif
 " endfunction
-" 
+"
 " command HexEditOn call HexEditOn()
 " command HexEditOff call HexEditOff()
 " command HexEditToggle call HexEditToggle()
