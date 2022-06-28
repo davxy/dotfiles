@@ -92,7 +92,8 @@ Plug 'tpope/vim-commentary'
 Plug 'frazrepo/vim-rainbow'
 
 " Debugger console support for lldb and gdb
-Plug 'davxy/nvim-gdb'
+Plug 'sakhnik/nvim-gdb'
+"Plug 'davxy/nvim-gdb'
 
 " Official Rust plugin
 Plug 'rust-lang/rust.vim'
