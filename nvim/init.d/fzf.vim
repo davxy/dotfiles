@@ -11,6 +11,8 @@ augroup END
 nnoremap <C-f> :Rgf<CR>
 " Fuzzy finder within files using ripgrep
 nnoremap <C-g> :Rgi<CR>
+" Fuzzy finder within current buffer lines
+nnoremap <C-b> :BLines<CR>
 
 " This is the default option:
 "   - Preview window on the right with 50% width

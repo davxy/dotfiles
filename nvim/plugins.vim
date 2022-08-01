@@ -24,8 +24,14 @@ Plug 'junegunn/fzf.vim'
 " Bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
-" Easy buffers management
+" General buffers management
+Plug 'jeetsukumaran/vim-buffergator'
+
+" Easy way to delete buffers
 Plug 'Asheq/close-buffers.vim'
+
+" Terminal management
+Plug 'akinsho/toggleterm.nvim'
 
 "-------------------------------------------------------------------------------
 " Look and Feel

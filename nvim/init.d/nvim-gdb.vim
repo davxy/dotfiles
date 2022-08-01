@@ -1,9 +1,6 @@
 " Nvim-Gdb plugin custom shortcuts
 
-" Auto load lldb initialization script (if present)
-
 lua <<EOF
-
 local function file_exists(filename)
     local f = io.open(filename)
     if f ~= nil then
@@ -14,6 +11,7 @@ local function file_exists(filename)
     end
 end
 
+-- Auto load lldb initialization script (if present)
 function lldb_start(args)
     -- Project init files
     local init_files = { ".lldb.init", "lldb.init" }
@@ -27,7 +25,6 @@ function lldb_start(args)
     cmd = cmd .. " " .. args
     vim.api.nvim_command(cmd)
 end
-
 EOF
 
 " lldb_start shortcut

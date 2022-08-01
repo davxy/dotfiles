@@ -155,14 +155,14 @@ nmap <leader>q :Bdelete this<cr>
 "-------------------------------------------------------------------------------
 
 " Diff with the saved file version
-function! DiffWithSaved()
+function! DiffOrig()
     let filetype=&ft
     diffthis
     vnew | r # | normal! 1Gdd
     diffthis
     execute "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
-command! DiffWithSaved call DiffWithSaved()
+command! DiffOrig call DiffOrig()
 
 " " Enable hex mode
 " function! HexEditOn()
@@ -192,42 +192,6 @@ command! DiffWithSaved call DiffWithSaved()
 " command HexEditToggle call HexEditToggle()
 
 "-------------------------------------------------------------------------------
-" Terminal tweaks
-"-------------------------------------------------------------------------------
-
-" Open terminal in a new split in insert mode
-command! -nargs=* TT terminal <args>
-command! -nargs=* T below split | exec 'resize' . winheight('.')/2 | terminal <args>
-command! -nargs=* VT split | terminal <args>
-
-" Terminal settings initialization
-function! TerminalInit()
-    setlocal nonumber
-    setlocal norelativenumber
-    setlocal nobuflisted
-    startinsert
-endfunction
-autocmd TermOpen * call TerminalInit()
-
-" Prevents opening other buffers in window used by terminal and
-" set insert mode as soon as we are switching to terminal
-function! TerminalEnter()
-    let curr_name=bufname("%")[0:3]
-    let prev_name=bufname("#")[0:3]
-    if curr_name == "term"
-        startinsert
-    elseif prev_name == "term"
-        buffer #
-    endif
-endfunction
-autocmd BufEnter * call TerminalEnter()
-
-" Shortcut to enter normal mode
-"tnoremap <esc> <C-\><C-n>
-" Shortcut to switch window
-tnoremap <C-w> <C-\><C-n><C-w>
-
-"-------------------------------------------------------------------------------
 " Load every plugin additional configs
 "-------------------------------------------------------------------------------
 
@@ -251,5 +215,3 @@ hi SpecialComment ctermfg=243
 " Split mappings similar to tmux
 noremap <C-w>- <esc>:new<cr>
 noremap <C-w>\ <esc>:vnew<cr>
-
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
