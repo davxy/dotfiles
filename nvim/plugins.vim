@@ -8,11 +8,9 @@ call plug#begin("$VIMCONFIG/plugged")
 " General
 "-------------------------------------------------------------------------------
 
-" Git plugin
-Plug 'tpope/vim-fugitive'
-
-" Git diff in gutter
-Plug 'airblade/vim-gitgutter'
+" Library of lua functions used by other plugins
+" (diffview.nvim)
+Plug 'nvim-lua/plenary.nvim'
 
 " File explorer with git and icons support
 Plug 'kyazdani42/nvim-tree.lua'
@@ -57,6 +55,19 @@ Plug 'junegunn/limelight.vim'
 
 " Dynamic scroll offset
 Plug 'drzel/vim-scrolloff-fraction'
+
+"-------------------------------------------------------------------------------
+" Git
+"-------------------------------------------------------------------------------
+
+" Git diff view
+Plug 'sindrets/diffview.nvim'
+
+" Git plugin
+Plug 'tpope/vim-fugitive'
+
+" Git diff in gutter
+Plug 'airblade/vim-gitgutter'
 
 "-------------------------------------------------------------------------------
 " Development

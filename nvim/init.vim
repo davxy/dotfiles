@@ -55,9 +55,6 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 " Highlight line under cursor
 set cursorline
 
-" Transparent background
-"hi Normal guibg=NONE ctermbg=NONE
-
 " Gutter colors
 highlight SignColumn ctermbg=black ctermfg=grey guibg=black guifg=grey
 
@@ -107,8 +104,8 @@ set nofixendofline
 
 " Highlight cursor line
 autocmd InsertEnter,InsertLeave * set cul!
-"
-" Control the text width limit
+
+" Control the text width limit by file extension.
 " Rust textwidth is currently controlled by rust plugin
 autocmd BufReadPost,BufNewFile *.c,*.cpp,*.h,*.hpp,*.py setlocal textwidth=100
 
@@ -149,6 +146,10 @@ nmap <C-k> :bn<cr>
 nmap <leader>k :bd! %<cr>
 " Close current buffer and open the previous
 nmap <leader>q :Bdelete this<cr>
+
+" Split mappings similar to tmux
+noremap <C-w>- <esc>:new<cr>
+noremap <C-w>\ <esc>:vnew<cr>
 
 "-------------------------------------------------------------------------------
 " Custom functions
@@ -192,26 +193,24 @@ command! DiffOrig call DiffOrig()
 " command HexEditToggle call HexEditToggle()
 
 "-------------------------------------------------------------------------------
-" Load every plugin additional configs
+" Stuff under test
+"-------------------------------------------------------------------------------
+
+" Automatically scroll with fractional offset
+let g:scrolloff_fraction = 0.35
+
+" Special comment color overwrite (e.g. used for code comments)
+hi SpecialComment ctermfg=243
+
+function! SetRelativePath()
+    execute 'cd' . getcwd()
+endfunction
+autocmd BufEnter * call SetRelativePath()
+
+"-------------------------------------------------------------------------------
+" Load every plugin additional configuration
 "-------------------------------------------------------------------------------
 
 for file in split(glob('$VIMCONFIG/init.d/*.vim'), '\n')
     execute 'source' file
 endfor
-
-"-------------------------------------------------------------------------------
-" Stuff under test
-"-------------------------------------------------------------------------------
-
-" Transparecy for neovide
-let g:neovide_transparency=0.9
-
-" Automatically scroll with fractional offset
-let g:scrolloff_fraction = 0.35
-
-" Special comment color overwrite (e.g. used by Rust documentation)
-hi SpecialComment ctermfg=243
-
-" Split mappings similar to tmux
-noremap <C-w>- <esc>:new<cr>
-noremap <C-w>\ <esc>:vnew<cr>

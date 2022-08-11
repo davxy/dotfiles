@@ -1,6 +1,7 @@
-" Buffers management
+" Configuration for 'vim-buffergator' plugin
 "
-" https://github.com/jeetsukumaran/vim-buffergator/blob/master/doc/buffergator.txt
+" - https://github.com/jeetsukumaran/vim-buffergator
+" - https://github.com/jeetsukumaran/vim-buffergator/blob/master/doc/buffergator.txt
 
 " Split horizontally
 let g:buffergator_viewport_split_policy="B"
@@ -11,7 +12,7 @@ let g:buffergator_sort_regime="mru"
 " Display mechanism
 let g:buffergator_display_regime="basename"
 
-" Relative paths (only relevent with regime 'basename'
+" Relative paths (only relevant with 'basename' regime
 let g:buffergator_show_full_directory_path=0
 
 " Do not use the default keymaps

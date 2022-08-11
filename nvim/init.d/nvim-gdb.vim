@@ -13,9 +13,9 @@ end
 
 -- Auto load lldb initialization script (if present)
 function lldb_start(args)
+    local cmd = "GdbStartLLDB rust-lldb"
     -- Project init files
     local init_files = { ".lldb.init", "lldb.init" }
-    local cmd = "GdbStartLLDB rust-lldb"
     for _, file in ipairs(init_files) do
        if file_exists(file) then
            cmd = cmd .. " --source " .. file

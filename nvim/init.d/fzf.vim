@@ -1,10 +1,11 @@
-" FZF configuration
+" Configuration for 'fzf' plugin
 "
 " References:
+" - https://github.com/junegunn/fzf.vim
 " - https://dev.to/iggredible/how-to-search-faster-in-vim-with-fzf-vim-36ko
 
 augroup fzf
-  autocmd!
+    autocmd!
 augroup END
 
 " Fuzzy finder using ripgrep, case insensitive
