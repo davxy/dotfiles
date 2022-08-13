@@ -3,6 +3,9 @@
 " - https://github.com/jeetsukumaran/vim-buffergator
 " - https://github.com/jeetsukumaran/vim-buffergator/blob/master/doc/buffergator.txt
 
+" Buffergator toggle
+nnoremap <F4> :BuffergatorToggle<CR>
+
 " Split horizontally
 let g:buffergator_viewport_split_policy="B"
 
@@ -17,6 +20,3 @@ let g:buffergator_show_full_directory_path=0
 
 " Do not use the default keymaps
 let g:buffergator_suppress_keymaps=1
-
-" Buffergator toggle
-nnoremap <tab> :BuffergatorToggle<cr>

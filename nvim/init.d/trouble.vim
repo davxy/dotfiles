@@ -2,7 +2,7 @@
 " ttps://github.com/folke/trouble.nvim#%EF%B8%8F-configuration
 
 " Toggle trouble window and move focus to it when opening
-nnoremap <F4> :TroubleToggle<CR>
+nnoremap <F5> :TroubleToggle<CR>
 
 " Key mappings
 nnoremap <leader>xx <cmd>TroubleToggle<cr>
