@@ -1,7 +1,16 @@
-" ToggleTerm setup and shortcuts
+" Configuration for 'toggleterm.nvim' plugin
+" - https://github.com/akinsho/toggleterm.nvim
 
 lua <<EOF
-require('toggleterm').setup {}
+require('toggleterm').setup {
+    size = function(term)
+        if term.direction == "horizontal" then
+            return vim.o.lines * 0.25
+        elseif term.direction == "vertical" then
+            return vim.o.columns * 0.5
+        end
+    end
+}
 EOF
 
 " Open terminal in a new split in insert mode
