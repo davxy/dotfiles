@@ -8,6 +8,7 @@ SYNC="rsync -av --progress --delete"
 files=(
     # bash
     "$HOME/.bashrc | bash/bashrc"
+    "$HOME/.profile | bash/profile"
     "$HOME/.inputrc | bash/inputrc"
     # git
     "$HOME/.gitconfig | git/gitconfig"

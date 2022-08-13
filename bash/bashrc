@@ -123,7 +123,7 @@ fi
 # Some useful aliases
 alias term=gnome-terminal
 alias bat=batcat
-alias cat=bat
+alias cat='bat -pP'
 alias grep=rg
 alias ls=exa
 alias vi=nvim
