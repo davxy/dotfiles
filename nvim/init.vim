@@ -152,47 +152,6 @@ noremap <C-w>- <esc>:new<cr>
 noremap <C-w>\ <esc>:vnew<cr>
 
 "-------------------------------------------------------------------------------
-" Custom functions
-"-------------------------------------------------------------------------------
-
-" Diff with the saved file version
-function! DiffOrig()
-    let filetype=&ft
-    diffthis
-    vnew | r # | normal! 1Gdd
-    diffthis
-    execute "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
-endfunction
-command! DiffOrig call DiffOrig()
-
-" " Enable hex mode
-" function! HexEditOn()
-"     let g:hexmode = 1
-"     execute "%!xxd -g1"
-" endfunction
-"
-" " Disable hex mode
-" function! HexEditOff()
-"     let g:hexmode = 0
-"     execute "%!xxd -r"
-" endfunction
-"
-" function! HexEditToggle()
-"     if !exists("g:hexmode")
-"         let g:hexmode = 1
-"     endif
-"     if g:hexmode == 1
-"         call HexEditOff()
-"     else
-"         call HexEditOn()
-"     endif
-" endfunction
-"
-" command HexEditOn call HexEditOn()
-" command HexEditOff call HexEditOff()
-" command HexEditToggle call HexEditToggle()
-
-"-------------------------------------------------------------------------------
 " Stuff under test
 "-------------------------------------------------------------------------------
 
