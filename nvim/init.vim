@@ -207,6 +207,13 @@ function! SetRelativePath()
 endfunction
 autocmd BufEnter * call SetRelativePath()
 
+" Don't show last command
+set noshowcmd
+" Don't show current mode (we rely on lualine)
+set noshowmode
+" Hide command line (requires neovim-v0.8)
+set cmdheight=0
+
 "-------------------------------------------------------------------------------
 " Load every plugin additional configuration
 "-------------------------------------------------------------------------------
