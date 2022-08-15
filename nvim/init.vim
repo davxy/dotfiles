@@ -161,6 +161,9 @@ let g:scrolloff_fraction = 0.35
 " Special comment color overwrite (e.g. used for code comments)
 hi SpecialComment ctermfg=243
 
+" Set relative path for buffers.
+" Useful for all the plugins that are displaying buffers file path such as
+" buffergator.
 function! SetRelativePath()
     execute 'cd' . getcwd()
 endfunction
