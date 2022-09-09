@@ -4,11 +4,13 @@
 "
 " See https://github.com/simrat39/rust-tools.nvim#configuration
 
+" Color for inline hints fetched via LSP
 highlight InlayHintsColor ctermfg=59 guifg=#41535b
 
 lua <<EOF
 
-local nvim_lsp = require'lspconfig'
+-- Check dependency
+--local nvim_lsp = require('lspconfig')
 
 -- All the settings to send to nvim-lspconfig.
 -- These override the defaults set by rust-tools.nvim.

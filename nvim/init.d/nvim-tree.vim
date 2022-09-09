@@ -3,7 +3,7 @@
 " https://github.com/kyazdani42/nvim-tree.lua
 " https://github.com/kyazdani42/nvim-tree.lua#key-bindings
 
-lua << END
+lua << EOF
 require('nvim-tree').setup {
     -- update_focused_file = {
     --     enable = true,
@@ -12,7 +12,7 @@ require('nvim-tree').setup {
         side = "right"
     }
 }
-END
+EOF
 
 " Remap commonly used commands
 nnoremap <F2> :NvimTreeToggle<CR>

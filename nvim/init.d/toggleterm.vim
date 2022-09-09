@@ -20,10 +20,10 @@ EOF
 " command! -nargs=* VT split | terminal <args>
 
 " Shortcuts
-command! -nargs=* TT ToggleTerm direction=tab
-command! -nargs=* TH ToggleTerm direction=horizontal
-command! -nargs=* TV ToggleTerm direction=vertical
-command! -nargs=* TF ToggleTerm direction=float
+command! -nargs=* Tt ToggleTerm direction=tab
+command! -nargs=* Th ToggleTerm direction=horizontal
+command! -nargs=* Tv ToggleTerm direction=vertical
+command! -nargs=* Tf ToggleTerm direction=float
 command! -nargs=* T TermExec direction=float cmd="<args>"
 
 " Shortcut to switch window

@@ -37,3 +37,6 @@ export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history"
 # Fix for lldb-14
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1016436
 export PYTHONPATH="/usr/lib/llvm-14/lib/python3.10/dist-packages"
+
+# Editor
+export EDITOR="/usr/bin/nvim"

@@ -3,6 +3,7 @@
 "-------------------------------------------------------------------------------
 
 " Diff with the saved file version
+
 function! DiffOrig()
     let filetype=&ft
     diffthis
@@ -44,6 +45,8 @@ command! DiffOrig call DiffOrig()
 
 "-------------------------------------------------------------------------------
 
+" Toggle resize mode
+
 let s:ResizeModeEnabled = 0
 
 function! ResizeModeDisable()
@@ -73,3 +76,23 @@ function! ResizeModeToggle()
 endfunction
 
 command! ResizeModeToggle call ResizeModeToggle()
+
+"-------------------------------------------------------------------------------
+
+" Customize diagnostic symbols
+
+lua << END
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    underline = false,
+    update_in_insert = false,
+    severity_sort = false,
+})
+
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+END
