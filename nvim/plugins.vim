@@ -71,31 +71,32 @@ Plug 'airblade/vim-gitgutter'
 
 " Utility to resolve git conflicts
 Plug 'akinsho/git-conflict.nvim'
+
 "-------------------------------------------------------------------------------
 " Development
 "-------------------------------------------------------------------------------
+
+" Syntax highlight and folding
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Collection of common configurations for nvim LSP client
 Plug 'neovim/nvim-lspconfig'
 
 " Completion framework
 Plug 'hrsh7th/nvim-cmp'
-
 " LSP completion source for nvim-cmp
 Plug 'hrsh7th/cmp-nvim-lsp'
-
 " Snippet completion source for nvim-cmp
 Plug 'hrsh7th/cmp-vsnip'
-
 " Other usefull completion sources
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
-
 " Snippet engine
 Plug 'hrsh7th/vim-vsnip'
 
 " Generation status line components from the built-in LSP client
 Plug 'nvim-lua/lsp-status.nvim'
+
 " Tag browser, useful if using any kind of ctags.
 " With Rust, works with universal-ctags.
 Plug 'preservim/tagbar'
