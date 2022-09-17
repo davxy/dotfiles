@@ -15,7 +15,7 @@ utils.nmap("g0", ":lua vim.lsp.buf.document_symbol()<CR>")
 utils.nmap("gW", ":lua vim.lsp.buf.document_symbol()<CR>")
 
 -- Code actions
-utils.nmap("n", "ga", ":lua vim.lsp.buf.code_action()<CR>")
+utils.nmap("ga", ":lua vim.lsp.buf.code_action()<CR>")
 
 -- Set updatetime for CursorHold
 -- 300ms of no cursor movement to trigger CursorHold
