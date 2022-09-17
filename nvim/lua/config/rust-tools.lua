@@ -1,27 +1,24 @@
-" Configure LSP through rust-tools.nvim plugin.
-"
-" rust-tools will configure and enable certain LSP features for us.
-"
-" See https://github.com/simrat39/rust-tools.nvim#configuration
+-- Configuration for 'rust-tools' plugin.
+--
+-- rust-tools will configure and enable certain LSP features for us.
+--
+-- * https://github.com/simrat39/rust-tools.nvim#configuration
+--
+-- Color for inline hints fetched via LSP lighlight InlayHintsColor ctermfg=59 guifg=#41535b
 
-" Color for inline hints fetched via LSP
-highlight InlayHintsColor ctermfg=59 guifg=#41535b
-
-lua <<EOF
-
--- Check dependency
---local nvim_lsp = require('lspconfig')
+-- Check dependency is satisfied
+local nvim_lsp = require('lspconfig')
 
 -- All the settings to send to nvim-lspconfig.
+--
 -- These override the defaults set by rust-tools.nvim.
 -- See https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-local settings = {
-    -- to enable rust-analyzer settings visit:
-    -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+local server_settings = {
     ["rust-analyzer"] = {
-        -- enable clippy on save
+        -- Enable check on save
         checkOnSave = {
             command = "check",
+            -- Output in a different directory to prevent target dir lock
             extraArgs = { "--target-dir", "target/rust-analyzer" },
         },
     }
@@ -33,7 +30,7 @@ local settings = {
 -- print(settings["rust-analyzer"].checkOnSave.command)
 
 local opts = {
-    -- overwrite default options
+    -- Overwrite default options
     tools = {
         inlay_hints = {
             parameter_hints_prefix = " ◁ ",
@@ -44,10 +41,8 @@ local opts = {
     },
 
     server = {
-        settings = settings,
+        settings = server_settings,
     },
 }
 
 require('rust-tools').setup(opts)
-
-EOF

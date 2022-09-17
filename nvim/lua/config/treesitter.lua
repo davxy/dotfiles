@@ -1,6 +1,7 @@
-" Treesitter plugin configuration
-
-lua << EOF
+-- Configuration for 'nvim-treesitter' plugin
+--
+-- * https://github.com/jeetsukumaran/vim-buffergator
+-- * https://github.com/jeetsukumaran/vim-buffergator/blob/master/doc/buffergator.txt
 
 require('nvim-treesitter.configs').setup {
     ensure_installed = {
@@ -21,5 +22,3 @@ require('nvim-treesitter.configs').setup {
 -- Let treesitter trives the fold method
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-
-EOF

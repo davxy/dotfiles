@@ -15,6 +15,9 @@ files=(
     # tmux
     "$HOME/.tmux.conf | tmux/tmux.conf"
     # neovim
+    "$HOME/.config/nvim/init.lua | nvim/init.lua"
+    "$HOME/.config/nvim/header.vim | nvim/header.vim"
+    "$HOME/.config/nvim/lua/ | nvim/lua/"
     "$HOME/.config/nvim/init.vim | nvim/init.vim"
     "$HOME/.config/nvim/plugins.vim | nvim/plugins.vim"
     "$HOME/.config/nvim/init.d/ | nvim/init.d/"

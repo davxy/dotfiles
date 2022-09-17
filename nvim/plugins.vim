@@ -31,6 +31,12 @@ Plug 'Asheq/close-buffers.vim'
 " Terminal management
 Plug 'akinsho/toggleterm.nvim'
 
+" Syntax highlight and folding
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+Plug 'kevinhwang91/nvim-ufo'
+Plug 'kevinhwang91/promise-async'
+
 "-------------------------------------------------------------------------------
 " Look and Feel
 "-------------------------------------------------------------------------------
@@ -60,14 +66,16 @@ Plug 'drzel/vim-scrolloff-fraction'
 " Git
 "-------------------------------------------------------------------------------
 
-" Git diff view
+" Git diff viewer
 Plug 'sindrets/diffview.nvim'
 
 " Git plugin
 Plug 'tpope/vim-fugitive'
 
-" Git diff in gutter
-Plug 'airblade/vim-gitgutter'
+" Git diff in gutter and some hunk utilities
+Plug 'lewis6991/gitsigns.nvim'
+
+Plug 'TimUntersberger/neogit'
 
 " Utility to resolve git conflicts
 Plug 'akinsho/git-conflict.nvim'
@@ -75,9 +83,6 @@ Plug 'akinsho/git-conflict.nvim'
 "-------------------------------------------------------------------------------
 " Development
 "-------------------------------------------------------------------------------
-
-" Syntax highlight and folding
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Collection of common configurations for nvim LSP client
 Plug 'neovim/nvim-lspconfig'
@@ -98,7 +103,7 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'nvim-lua/lsp-status.nvim'
 
 " Tag browser, useful if using any kind of ctags.
-" With Rust, works with universal-ctags.
+" With Rust, works with 'universal-ctags'.
 Plug 'preservim/tagbar'
 
 " Syntax notificaitons
@@ -108,7 +113,7 @@ Plug 'folke/trouble.nvim'
 Plug 'tpope/vim-commentary'
 
 " Rainbow (different shade of color to paretheses)
-Plug 'frazrepo/vim-rainbow'
+"Plug 'frazrepo/vim-rainbow'
 
 " Debugger console support for lldb and gdb
 Plug 'sakhnik/nvim-gdb'

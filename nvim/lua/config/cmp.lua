@@ -1,18 +1,18 @@
-" Code completion setup
-"
-" See https://github.com/hrsh7th/nvim-cmp#basic-configuration
+-- Configuration for 'nvim-cmp' plugin.
+--
+-- * https://github.com/hrsh7th/nvim-cmp
 
-" Set completeopt to have a better completion experience
-" :help completeopt
-" - menuone: popup even when there's only one match
-" - noinsert: Do not insert text until a selection is made
-" - noselect: Do not select, force user to select one from the menu
-set completeopt=menuone,noinsert,noselect
+-- Set completeopt to have a better completion experience
+-- :help completeopt
+-- * menuone: popup even when there's only one match
+-- * noinsert: Do not insert text until a selection is made
+-- * noselect: Do not select, force user to select one from the menu
+vim.api.nvim_set_option("completeopt", "menuone,noinsert,noselect")
 
-" Avoid showing extra messages when using completion
-set shortmess+=c
+--Avoid showing extra messages when using completion
+local shortmess = vim.api.nvim_get_option("shortmess") .. "c"
+vim.api.nvim_set_option("shortmess", shortmess)
 
-lua <<END
 local cmp = require('cmp')
 cmp.setup({
     -- Enable LSP snippets
@@ -43,4 +43,3 @@ cmp.setup({
         { name = 'buffer' },
     },
 })
-END
