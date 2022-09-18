@@ -18,11 +18,13 @@ files=(
     "$HOME/.config/nvim/init.vim | nvim/init.vim"
     "$HOME/.config/nvim/plugins.vim | nvim/plugins.vim"
     "$HOME/.config/nvim/init.d/ | nvim/init.d/"
-    # X defaults
-    "$HOME/.Xdefaults | misc/Xdefaults"
+    # gitui
+    "$HOME/.config/gitui/ | gitui/"
     # lldb
     "$HOME/.lldbinit | lldb/lldbinit"
     "$HOME/.lldb/scripts/ | lldb/scripts/"
+    # X defaults
+    "$HOME/.Xdefaults | misc/Xdefaults"
     # samba
     "/etc/samba/smb.conf | samba/smb.conf"
 )
@@ -50,6 +52,10 @@ for file in "${files[@]}"; do
     system_file=$(echo $file | cut -d'|' -f1)
     local_file=$(echo $file | cut -d'|' -f2)
 
+    # Quick (and dirty) way to trim front/back whitespaces
+    system_file=$(echo $system_file)
+    local_file=$(echo $local_file)
+
     if [[ $out == 1 ]]; then
         in_file=$local_file
         out_file=$system_file
@@ -68,6 +74,10 @@ for file in "${files[@]}"; do
     fi
 
     if [[ $confirmed == "y" ]]; then
-        $SYNC $in_file $out_file
+        if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
+            $SYNC $in_file $out_file
+        else
+            echo "Skipping unexistent file \"$in_file\""
+        fi
     fi
 done
