@@ -34,12 +34,16 @@ Plug 'akinsho/toggleterm.nvim'
 " Syntax highlight and folding
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+" Better folding management
 Plug 'kevinhwang91/nvim-ufo'
 Plug 'kevinhwang91/promise-async'
 
 "-------------------------------------------------------------------------------
 " Look and Feel
 "-------------------------------------------------------------------------------
+
+" Color scheme
+Plug 'ellisonleao/gruvbox.nvim'
 
 " Development icons
 Plug 'ryanoasis/vim-devicons'
@@ -49,9 +53,6 @@ Plug 'nvim-lualine/lualine.nvim'
 
 " Icons for statusline
 Plug 'kyazdani42/nvim-web-devicons'
-
-" Solarized theme
-Plug 'altercation/vim-colors-solarized'
 
 " Center text on screen
 Plug 'junegunn/goyo.vim'

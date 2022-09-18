@@ -6,6 +6,8 @@ vim.cmd('source ~/.config/nvim/header.vim')
 
 local utils = require('utils')
 
+vim.cmd("colorscheme gruvbox")
+
 -------------------------------------------------------------------------------
 -- Indentation options
 -------------------------------------------------------------------------------

@@ -45,7 +45,7 @@ set mouse=a
 
 " Friendly color scheme
 set background=dark
-colorscheme solarized
+"colorscheme solarized
 
 " Cursor settings
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
