@@ -140,8 +140,8 @@ alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; c
 # Prevent tmux nesting and running within neovim or code terminals.
 editor_running=$(pstree -s $$ | grep -e '(nvim|code)')
 if [[ -z "$editor_running" ]]; then
-    if [[ "$TERM" != "screen" && "$TERM" != "screen-256color" ]]; then
-        exec tmux
+    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
+        tmux
     else
         alias clear='clear && tmux clear-history'
     fi

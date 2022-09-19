@@ -14,6 +14,7 @@ files=(
     "$HOME/.gitconfig | git/gitconfig"
     # tmux
     "$HOME/.tmux.conf | tmux/tmux.conf"
+    "$HOME/.tmux/ | tmux/tmux/"
     # neovim
     "$HOME/.config/nvim/init.vim | nvim/init.vim"
     "$HOME/.config/nvim/plugins.vim | nvim/plugins.vim"
