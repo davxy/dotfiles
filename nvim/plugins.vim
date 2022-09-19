@@ -2,7 +2,7 @@
 " VimPlug
 "------------------------------------------------------------------------------
 
-call plug#begin("$VIMCONFIG/plugged")
+call plug#begin("~/.config/nvim/plugged")
 
 "-------------------------------------------------------------------------------
 " General
@@ -44,6 +44,8 @@ Plug 'kevinhwang91/promise-async'
 
 " Color scheme
 Plug 'ellisonleao/gruvbox.nvim'
+Plug 'sainnhe/gruvbox-material'
+Plug 'folke/tokyonight.nvim'
 
 " Development icons
 Plug 'ryanoasis/vim-devicons'

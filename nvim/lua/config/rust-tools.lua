@@ -29,7 +29,8 @@ local server_settings = {
 -- mycond.get_lsp_config()
 -- print(settings["rust-analyzer"].checkOnSave.command)
 
-vim.api.nvim_set_hl(0, "InlayHintsColor", { ctermfg = 59 })
+-- Was required with solarized
+--vim.api.nvim_set_hl(0, "InlayHintsColor", { ctermfg = 59 })
 
 local opts = {
     -- Overwrite default options
@@ -38,7 +39,7 @@ local opts = {
             parameter_hints_prefix = " ◁ ",
             other_hints_prefix = " ▶ ",
             -- The color of the hints
-            highlight = "InlayHintsColor",
+            --highlight = "InlayHintsColor",
         },
     },
 
