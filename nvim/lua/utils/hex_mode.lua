@@ -1,0 +1,26 @@
+-- " " Enable hex mode
+-- " function! HexEditOn()
+-- "     let g:hexmode = 1
+-- "     execute "%!xxd -g1"
+-- " endfunction
+-- "
+-- " " Disable hex mode
+-- " function! HexEditOff()
+-- "     let g:hexmode = 0
+-- "     execute "%!xxd -r"
+-- " endfunction
+-- "
+-- " function! HexEditToggle()
+-- "     if !exists("g:hexmode")
+-- "         let g:hexmode = 1
+-- "     endif
+-- "     if g:hexmode == 1
+-- "         call HexEditOff()
+-- "     else
+-- "         call HexEditOn()
+-- "     endif
+-- " endfunction
+-- "
+-- " command HexEditOn call HexEditOn()
+-- " command HexEditOff call HexEditOff()
+-- " command HexEditToggle call HexEditToggle()

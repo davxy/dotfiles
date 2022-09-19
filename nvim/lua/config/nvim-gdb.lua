@@ -1,15 +1,6 @@
-" Nvim-Gdb plugin custom shortcuts
+-- Configuration for 'nvim-gdb' plugin.
 
-lua <<EOF
-local function file_exists(filename)
-    local f = io.open(filename)
-    if f ~= nil then
-        io.close(f)
-        return true
-    else
-        return false
-    end
-end
+local utils = require("utils")
 
 -- Auto load lldb initialization script (if present)
 function lldb_start(args)
@@ -17,7 +8,7 @@ function lldb_start(args)
     -- Project init files
     local init_files = { ".lldb.init", "lldb.init" }
     for _, file in ipairs(init_files) do
-       if file_exists(file) then
+       if utils.file_exists(file) then
            cmd = cmd .. " --source " .. file
            break
        end
@@ -25,7 +16,6 @@ function lldb_start(args)
     cmd = cmd .. " " .. args
     vim.api.nvim_command(cmd)
 end
-EOF
 
-" lldb_start shortcut
-command! -nargs=* Debug call luaeval('lldb_start(_A)', <q-args>)
+-- lldb_start shortcut
+vim.api.nvim_create_user_command("Debug", function(info) lldb_start(info.args) end, { nargs = "*"})

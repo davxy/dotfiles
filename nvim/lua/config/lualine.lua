@@ -1,9 +1,8 @@
-" lualine configuration
-"
-" https://github.com/nvim-lualine/lualine.nvim
-" https://github.com/nvim-lualine/lualine.nvim#available-options
+-- Configuration for 'lualine' plugin
+--
+-- * https://github.com/nvim-lualine/lualine.nvim
+-- * https://github.com/nvim-lualine/lualine.nvim#available-options
 
-lua << END
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -40,4 +39,3 @@ require('lualine').setup {
   },
   extensions = {}
 }
-END
