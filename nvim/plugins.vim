@@ -115,9 +115,6 @@ Plug 'folke/trouble.nvim'
 " Code comments shortcuts
 Plug 'tpope/vim-commentary'
 
-" Rainbow (different shade of color to paretheses)
-"Plug 'frazrepo/vim-rainbow'
-
 " Debugger console support for lldb and gdb
 Plug 'sakhnik/nvim-gdb'
 
