@@ -142,6 +142,7 @@ editor_running=$(pstree -s $$ | grep -e '(nvim|code)')
 if [[ -z "$editor_running" ]]; then
     if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
         tmux
+        if [[ -f /tmp/tmux.keep ]]; then rm /tmp/tmux.keep; else exit; fi
     else
         alias clear='clear && tmux clear-history'
     fi
