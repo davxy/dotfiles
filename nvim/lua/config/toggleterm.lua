@@ -28,7 +28,7 @@ vim.api.nvim_create_user_command("Th", function(info) term_open("horizontal", in
 vim.api.nvim_create_user_command("Tv", function(info) term_open("vertical", info.args) end, { nargs = "*" })
 vim.api.nvim_create_user_command("Tf", function(info) term_open("float", info.args) end, { nargs = "*" })
 vim.api.nvim_create_user_command("Tt", function(info) term_open("tab", info.args) end, { nargs = "*" })
-vim.api.nvim_create_user_command("T", function(info) term_open("horizontal", info.args) end, { nargs = "*" })
+vim.api.nvim_create_user_command("T", function(info) term_open("float", info.args) end, { nargs = "*" })
 
 -- Shortcut to switch window
 vim.api.nvim_set_keymap("t", "<C-w>", "<C-\\><C-n><C-w>", { noremap = true, silent = true })

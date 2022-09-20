@@ -38,6 +38,9 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'kevinhwang91/nvim-ufo'
 Plug 'kevinhwang91/promise-async'
 
+" Unicode search utilities
+Plug 'chrisbra/unicode.vim'
+
 "-------------------------------------------------------------------------------
 " Look and Feel
 "-------------------------------------------------------------------------------

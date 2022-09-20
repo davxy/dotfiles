@@ -210,14 +210,15 @@ vim.api.nvim_set_var("scrolloff_fraction", 0.35)
 vim.api.nvim_create_autocmd("BufEnter", { pattern = "*", command = ":lua require('utils').set_relative_path()" })
 
 -- Don't show last command
--- (set noshowcmd)
---vim.opt.showcmd = false
+vim.opt.showcmd = false
+
 -- Don't show current mode (already shown by 'lualine' plugin)
--- (set noshowmode)
 vim.opt.showmode = false
+
 -- Hide command line (requires neovim 0.8)
--- (set cmdheight=0)
-vim.opt.cmdheight = 0
+-- TODO: Currently buggy: https://github.com/neovim/neovim/issues/20243
+--vim.opt.cmdheight = 0
+vim.opt.cmdheight = 1
 
 -- Special comment color overwrite (e.g. used for code comments)
 -- Not required when using 'treesitter' plugin.
@@ -225,7 +226,6 @@ vim.opt.cmdheight = 0
 
 -- Disable folded text highlighting
 vim.api.nvim_set_hl(0, "Folded", { italic=true })
-
 
 -- Enable resize mode by default
 utils.resize_mode.enable(false)
