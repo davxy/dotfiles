@@ -9,7 +9,7 @@ call plug#begin("~/.config/nvim/plugged")
 "-------------------------------------------------------------------------------
 
 " Library of lua functions used by other plugins
-" (diffview.nvim)
+" (diffview.nvim, ...)
 Plug 'nvim-lua/plenary.nvim'
 
 " File explorer with git and icons support

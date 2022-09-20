@@ -22,13 +22,9 @@ utils.nmap("ga", ":lua vim.lsp.buf.code_action()<CR>")
 vim.api.nvim_set_option("updatetime", 300)
 
 -- Show diagnostic popup on cursor hold
---autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 vim.api.nvim_create_autocmd(
     "CursorHold",
-    {
-        pattern = "*",
-        command = ":lua vim.diagnostic.open_float(nil, { focusable = false })",
-    }
+    { callback = function() vim.diagnostic.open_float(nil, { focusable = false }) end }
 )
 
 -- Goto previous/next diagnostic warning/error

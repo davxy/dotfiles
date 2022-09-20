@@ -11,16 +11,14 @@
 -- Output al hightlight groups:
 --  :so $VIMRUNTIME/syntax/hitest.vim
 
-local utils = require('utils')
+-- Globally export my utilities
+require('utils')
 
 --------------------------------------------------------------------------------
 -- Plugins configuration
 --------------------------------------------------------------------------------
 
 vim.cmd("source ~/.config/nvim/plugins.vim")
-vim.cmd('source ~/.config/nvim/init.d/fzf.vim')
-vim.cmd('source ~/.config/nvim/init.d/limelight.vim')
-
 require('config')
 
 --------------------------------------------------------------------------------
@@ -175,39 +173,42 @@ vim.opt.foldenable = true
 
 -- Control the text width limit by file extension.
 -- Rust textwidth is currently controlled by rust plugin
+local patterns = { "*.c" , "*.cpp", "*.h", "*.hpp", "*.py", "*.md" }
 vim.api.nvim_create_autocmd(
     { "BufReadPost", "BufNewFile" },
-    { pattern = { "*.c" , "*.cpp", "*.h", "*.hpp", "*.py" }, command = "setlocal textwidth=100" }
+    { pattern = patterns, command = "setlocal textwidth=100" }
 )
 
 -- Remove all trailing spaces in a file before saving
 vim.api.nvim_create_autocmd(
     "BufWritePre",
-    { pattern = "*", command = '%s/\\s\\+$//e' }
+    { command = '%s/\\s\\+$//e' }
 )
 
 -- Remove all blank lines at the end of the file
 vim.api.nvim_create_autocmd(
     "BufWritePre",
-    { pattern = "*", command = "%s/\\($\\n\\s*\\)\\+\\%$//e" }
+    { command = "%s/\\($\\n\\s*\\)\\+\\%$//e" }
 )
 
--- Highlight cursor line
--- vim.api.nvim_create_autocmd(
---     { "InsertEnter", "InsertLeave" },
---     { pattern = "*", command = "set cul!" }
--- )
+-- Remove cursor line highlight in insertmode
+vim.api.nvim_create_autocmd(
+    { "InsertEnter", "InsertLeave" },
+    { command = "set cursorline!" }
+)
 
 --------------------------------------------------------------------------------
 -- Stuff under test
 --------------------------------------------------------------------------------
 
 -- Automatically scroll with fractional offset
---vim.g.scrolloff_fraction = 0.35
 vim.api.nvim_set_var("scrolloff_fraction", 0.35)
 
---autocmd BufEnter * call SetRelativePath()
-vim.api.nvim_create_autocmd("BufEnter", { pattern = "*", command = ":lua require('utils').set_relative_path()" })
+-- Set buffers paths as relative
+vim.api.nvim_create_autocmd(
+    "BufEnter",
+    { callback = utils.set_relative_path }
+)
 
 -- Don't show last command
 vim.opt.showcmd = false
