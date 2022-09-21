@@ -6,9 +6,6 @@
 --
 -- Color for inline hints fetched via LSP lighlight InlayHintsColor ctermfg=59 guifg=#41535b
 
--- Check dependency is satisfied
-local nvim_lsp = require('lspconfig')
-
 -- All the settings to send to nvim-lspconfig.
 --
 -- These override the defaults set by rust-tools.nvim.
@@ -36,8 +33,8 @@ local opts = {
     -- Overwrite default options
     tools = {
         inlay_hints = {
-            parameter_hints_prefix = " ◁ ",
-            other_hints_prefix = " ▶ ",
+            parameter_hints_prefix = " ◃ ",
+            other_hints_prefix = " ▸ ",
             -- The color of the hints
             --highlight = "InlayHintsColor",
         },

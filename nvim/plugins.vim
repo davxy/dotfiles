@@ -127,4 +127,7 @@ Plug 'rust-lang/rust.vim'
 " To enable more of the features of rust-analyzer, such as inlay hints and more
 Plug 'simrat39/rust-tools.nvim'
 
+" Highlight todo, warn, xxx within comments
+Plug 'folke/todo-comments.nvim'
+
 call plug#end()

@@ -3,10 +3,13 @@
 -- * https://github.com/kyazdani42/nvim-tree.lua
 -- * https://github.com/kyazdani42/nvim-tree.lua#key-bindings
 
+vim.g.nvim_tree_auto_close = true
+
 require('nvim-tree').setup {
+    sync_root_with_cwd = true,
     -- update_focused_file = {
     --     enable = true,
-    -- }
+    -- },
     view = {
         side = "right"
     }

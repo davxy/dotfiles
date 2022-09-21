@@ -182,13 +182,13 @@ vim.api.nvim_create_autocmd(
 -- Remove all trailing spaces in a file before saving
 vim.api.nvim_create_autocmd(
     "BufWritePre",
-    { command = '%s/\\s\\+$//e' }
+    { callback = function() utils.cmd_and_jump_out('%s/\\s\\+$//e') end }
 )
 
 -- Remove all blank lines at the end of the file
 vim.api.nvim_create_autocmd(
     "BufWritePre",
-    { command = "%s/\\($\\n\\s*\\)\\+\\%$//e" }
+    { callback = function() utils.cmd_and_jump_out('%s/\\($\\n\\s*\\)\\+\\%$//e') end }
 )
 
 -- Remove cursor line highlight in insertmode
@@ -230,3 +230,6 @@ vim.api.nvim_set_hl(0, "Folded", { italic=true })
 
 -- Enable resize mode by default
 utils.resize_mode.enable(false)
+
+-- Open help in a new tab
+vim.cmd("cabbrev help tab help")
