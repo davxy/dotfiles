@@ -111,6 +111,9 @@ Plug 'hrsh7th/vim-vsnip'
 " Generation status line components from the built-in LSP client
 Plug 'nvim-lua/lsp-status.nvim'
 
+" Sources preview in float windows
+Plug 'rmagatti/goto-preview'
+
 " Tag browser, useful if using any kind of ctags.
 " With Rust, works with 'universal-ctags'.
 Plug 'preservim/tagbar'

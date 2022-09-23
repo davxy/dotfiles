@@ -3,7 +3,7 @@
 -- * https://github.com/folke/trouble.nvim#%EF%B8%8F-configuration
 
 -- Toggle trouble window
-utils.nmap("<F5>", ":TroubleToggle<CR>", opts)
+utils.nmap("<F5>", ":TroubleToggle document_diagnostics<CR>", opts)
 
 -- Other key mappings
 utils.nmap("<leader>xx", ":TroubleToggle<CR>")

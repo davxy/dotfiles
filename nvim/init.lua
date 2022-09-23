@@ -233,3 +233,43 @@ utils.resize_mode.enable(false)
 
 -- Open help in a new tab
 vim.cmd("cabbrev help tab help")
+
+-- Required for 'RustFmtRange' command
+vim.g.rustfmt_command = "rustfmt +nightly"
+
+-----------
+
+local goto_stack = {}
+
+local function goto_post_open()
+    local curr = vim.api.nvim_get_current_buf()
+    table.insert(goto_stack, curr)
+    utils.print_table(goto_stack)
+end
+
+local goto_preview = require('goto-preview')
+goto_preview.setup({
+    post_open = goto_post_open,
+})
+
+local function focus_current()
+    local filename = vim.api.nvim_buf_get_name(0)
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+
+    --goto_preview.close_all_win()
+    for _, buf in ipairs(goto_stack) do
+        vim.api.nvim_buf_delete(buf, { force = true })
+    end
+    goto_stack = {}
+
+    vim.cmd("tabnew " .. filename)
+    vim.api.nvim_win_set_cursor(0, { row, col })
+end
+
+goto_preview.focus_current = focus_current
+
+_G.goto_preview = goto_preview
+
+utils.nmap("pd", ":lua goto_preview.goto_preview_definition()<CR>")
+utils.nmap("pc", ":lua goto_preview.close_all_win()<CR>")
+utils.nmap("po", ":lua goto_preview.focus_current()<CR>")

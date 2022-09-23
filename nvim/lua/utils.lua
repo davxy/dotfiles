@@ -34,6 +34,11 @@ local function cmd_and_jump_out(cmd)
     vim.api.nvim_win_set_cursor(0, { row, col })
 end
 
+-- Print a table
+local function print_table(tab)
+    print(vim.inspect(tab))
+end
+
 --
 
 local M = {
@@ -41,6 +46,7 @@ local M = {
     file_exists = file_exists,
     set_relative_path = set_relative_path,
     cmd_and_jump_out = cmd_and_jump_out,
+    print_table = print_table,
     diff_orig = require('utils.diff_orig'),
     resize_mode = require('utils.resize_mode'),
     hex_mode = require('utils.hex_mode'),

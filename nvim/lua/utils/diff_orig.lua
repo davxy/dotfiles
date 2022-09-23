@@ -28,11 +28,14 @@ local function diff_orig_disable()
         return
     end
 
-    vim.api.nvim_buf_delete(diff_orig_buf_handle, {})
+    vim.api.nvim_buf_delete(diff_orig_buf_handle, { force = true })
     diff_orig_buf_handle = nil
 end
 
 local function diff_orig_toggle()
+    if (diff_orig_buf_handle ~= nil and not vim.api.nvim_buf_is_valid(diff_orig_buf_handle)) then
+        diff_orig_buf_handle = nil
+    end
     if (diff_orig_buf_handle == nil) then
         diff_orig_enable()
     else
