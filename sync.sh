@@ -19,7 +19,6 @@ files=(
     "$HOME/.config/nvim/init.lua | nvim/init.lua"
     "$HOME/.config/nvim/plugins.vim | nvim/plugins.vim"
     "$HOME/.config/nvim/lua/ | nvim/lua/"
-    "$HOME/.config/nvim/init.d/ | nvim/init.d/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
     # lldb
