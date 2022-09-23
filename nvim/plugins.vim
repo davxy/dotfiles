@@ -97,11 +97,14 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp'
 " LSP completion source for nvim-cmp
 Plug 'hrsh7th/cmp-nvim-lsp'
+" Completion source for buffer words
+Plug 'hrsh7th/cmp-buffer'
+" Completion source for filesystem paths
+Plug 'hrsh7th/cmp-path'
+" Completion source for command line
+Plug 'hrsh7th/cmp-cmdline'
 " Snippet completion source for nvim-cmp
 Plug 'hrsh7th/cmp-vsnip'
-" Other usefull completion sources
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-buffer'
 " Snippet engine
 Plug 'hrsh7th/vim-vsnip'
 
