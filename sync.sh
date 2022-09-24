@@ -15,10 +15,6 @@ files=(
     # tmux
     "$HOME/.tmux.conf | tmux/tmux.conf"
     "$HOME/.tmux/ | tmux/tmux/"
-    # neovim
-    "$HOME/.config/nvim/init.lua | nvim/init.lua"
-    "$HOME/.config/nvim/plugins.vim | nvim/plugins.vim"
-    "$HOME/.config/nvim/lua/ | nvim/lua/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
     # lldb
