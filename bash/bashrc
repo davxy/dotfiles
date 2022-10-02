@@ -5,18 +5,6 @@
 # Version 0.1.0
 
 
-# Start tmux session.
-# Prevent tmux nesting and running within neovim or code terminals.
-editor_running=$(pstree -s $$ | grep -e '(nvim|code)')
-if [[ -z "$editor_running" ]]; then
-    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
-        tmux
-        if [[ -f /tmp/tmux.keep ]]; then rm /tmp/tmux.keep; else exit; fi
-    else
-        alias clear='clear && tmux clear-history'
-    fi
-fi
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -132,6 +120,18 @@ fi
 # CUSTOM STUFF
 ################################################################################
 
+# Start tmux session.
+# Prevent tmux nesting and running within neovim or code terminals.
+editor_running=`pstree -s $$ | rg -e '(nvim|code)'`
+if [[ -z "$editor_running" ]]; then
+    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
+        tmux
+        if [[ -f /tmp/tmux.keep ]]; then rm /tmp/tmux.keep; else exit; fi
+    else
+        alias clear='clear && tmux clear-history'
+    fi
+fi
+
 # Some useful aliases
 alias term=gnome-terminal
 alias bat=batcat
@@ -154,7 +154,7 @@ alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; c
 stty -ixon
 
 # Start starship command prompt
-eval "$(/home/davxy/bin/starship init bash)"
+eval "$(~/.local/bin/starship init bash)"
 
 # Start gpg-agent as ssh-agent
 export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
