@@ -15,6 +15,12 @@ files=(
     # tmux
     "$HOME/.tmux.conf | tmux/tmux.conf"
     "$HOME/.tmux/ | tmux/tmux/"
+    # sway
+    "$HOME/.config/sway/ | sway/"
+    # waybar
+    "$HOME/.config/waybar/ | waybar/"
+    # alacritty
+    "$HOME/.config/alacritty/ | alacritty/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
     # lldb
