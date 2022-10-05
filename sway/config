@@ -239,15 +239,20 @@ bar {
 default_border pixel
 default_floating_border pixel
 
+# Window colors
+
 set $win_bg #323232
 set $win_fg #d4be98
 set $win_in #000000
 set $win_bo #525252
 
-
 # class                     border  backgr. text    indicator child_border
 client.focused              $win_bg $win_bg $win_fg $win_in $win_bo
 client.focused_inactive     $win_bg $win_bg $win_fg $win_in $win_bg
 client.unfocused            $win_bg $win_bg $win_fg $win_in $win_bg
+
+# Screenshot shortcuts
+bindsym $mod+Shift+p exec grimshot save area
+bindsym $mod+Ctrl+p exec grimshot save window
 
 include /etc/sway/config.d/*

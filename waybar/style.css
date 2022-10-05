@@ -32,7 +32,6 @@
     }
 }
 
-
 /* -----------------------------------------------------------------------------
  * Base styles
  * -------------------------------------------------------------------------- */
@@ -44,14 +43,14 @@
     min-height: 0;
     margin: 0;
     padding: 0;
+    font-family: FiraCode Nerd Font;
+    font-size: 11px;
 }
 
 /* The whole bar */
 #waybar {
     background: #323232;
     color: #d4be98;
-    font-family: FiraCode Nerd Font;
-    font-size: 11px;
 }
 
 /* Each module */
@@ -68,8 +67,6 @@
     padding-left: 10px;
     padding-right: 10px;
 }
-
-
 /* -----------------------------------------------------------------------------
  * Module styles
  * -------------------------------------------------------------------------- */
@@ -151,10 +148,6 @@
 
 #pulseaudio.muted {
     /* No styles */
-}
-
-#custom-spotify {
-    color: rgb(102, 220, 105);
 }
 
 #temperature {

@@ -58,16 +58,16 @@
     //    "tooltip": true
     //},
 
-    "clock#time": {
-        "interval": 60,
-        "format": "{:%H:%M}",
-        "tooltip": false
-    },
-
     "clock#date": {
-      "interval": 10,
+      "interval": 60,
       "format": "  {:%e %b %Y}", // Icon: calendar-alt
       "tooltip-format": "{:%e %B %Y}"
+    },
+
+    "clock#time": {
+        "interval": 1,
+        "format": "{:%H:%M}",
+        "tooltip": "{:%H:%M:%S}"
     },
 
     "cpu": {
@@ -90,10 +90,10 @@
 
     "network": {
         "interval": 3,
-        "format-wifi": "  {essid} ({signalStrength}%)  🠕{bandwidthUpBits}  🠗{bandwidthDownBits}", // Icon: wifi
-        "format-ethernet": "🠕{bandwidthUpBits}  🠗{bandwidthDownBits}", // Icon: ethernet
+        "format-wifi": "  {essid} ({signalStrength}%) {ifname}: {ipaddr}", // Icon: wifi
+        "format-ethernet": "{ifname}: {ipaddr}", // Icon: ethernet
         "format-disconnected": "⚠  Disconnected",
-        "tooltip-format": "{ifname}: {ipaddr}"
+        "tooltip-format": "🠕{bandwidthUpBits}  🠗{bandwidthDownBits}"
     },
 
     "sway/mode": {
@@ -154,7 +154,7 @@
     },
 
     "tray": {
-        "icon-size": 10,
+        "icon-size": 12,
         "spacing": 10
     }
 
