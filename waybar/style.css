@@ -49,9 +49,9 @@
 /* The whole bar */
 #waybar {
     background: #323232;
-    color: white;
-    font-family: Cantarell, Noto Sans, sans-serif;
-    font-size: 13px;
+    color: #d4be98;
+    font-family: FiraCode Nerd Font;
+    font-size: 11px;
 }
 
 /* Each module */
@@ -179,13 +179,13 @@
     padding-bottom: 2px;
     padding-left: 10px;
     padding-right: 10px;
-    color: #888888;
+    color: #aaaaaa;
 }
 
 #workspaces button.focused {
     border-color: #4c7899;
-    color: white;
-    background-color: #285577;
+    color: #d4be98;
+    background-color: #525252;
 }
 
 #workspaces button.urgent {

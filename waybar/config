@@ -22,12 +22,13 @@
         "sway/window"
     ],
     "modules-right": [
+        "tray",
         "network",
         "memory",
         "cpu",
         "temperature",
-        "battery",
-        "tray",
+        //"battery",
+        "pulseaudio",
         "clock#date",
         "clock#time"
     ],
@@ -37,25 +38,25 @@
     // Modules
     // -------------------------------------------------------------------------
 
-    "battery": {
-        "interval": 10,
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        // Connected to AC
-        "format": "  {icon}  {capacity}%", // Icon: bolt
-        // Not connected to AC
-        "format-discharging": "{icon}  {capacity}%",
-        "format-icons": [
-            "", // Icon: battery-full
-            "", // Icon: battery-three-quarters
-            "", // Icon: battery-half
-            "", // Icon: battery-quarter
-            ""  // Icon: battery-empty
-        ],
-        "tooltip": true
-    },
+    //"battery": {
+    //    "interval": 10,
+    //    "states": {
+    //        "warning": 30,
+    //        "critical": 15
+    //    },
+    //    // Connected to AC
+    //    "format": "  {icon}  {capacity}%", // Icon: bolt
+    //    // Not connected to AC
+    //    "format-discharging": "{icon}  {capacity}%",
+    //    "format-icons": [
+    //        "", // Icon: battery-full
+    //        "", // Icon: battery-three-quarters
+    //        "", // Icon: battery-half
+    //        "", // Icon: battery-quarter
+    //        ""  // Icon: battery-empty
+    //    ],
+    //    "tooltip": true
+    //},
 
     "clock#time": {
         "interval": 60,
@@ -88,9 +89,9 @@
     },
 
     "network": {
-        "interval": 5,
-        "format-wifi": "  {essid} ({signalStrength}%)", // Icon: wifi
-        "format-ethernet": "  {ifname}: {ipaddr}/{cidr}", // Icon: ethernet
+        "interval": 3,
+        "format-wifi": "  {essid} ({signalStrength}%)  🠕{bandwidthUpBits}  🠗{bandwidthDownBits}", // Icon: wifi
+        "format-ethernet": "🠕{bandwidthUpBits}  🠗{bandwidthDownBits}", // Icon: ethernet
         "format-disconnected": "⚠  Disconnected",
         "tooltip-format": "{ifname}: {ipaddr}"
     },
@@ -121,22 +122,22 @@
         }
     },
 
-    //"pulseaudio": {
-    //    //"scroll-step": 1,
-    //    "format": "{icon}  {volume}%",
-    //    "format-bluetooth": "{icon}  {volume}%",
-    //    "format-muted": "",
-    //    "format-icons": {
-    //        "headphones": "",
-    //        "handsfree": "",
-    //        "headset": "",
-    //        "phone": "",
-    //        "portable": "",
-    //        "car": "",
-    //        "default": ["", ""]
-    //    },
-    //    "on-click": "pavucontrol"
-    //},
+    "pulseaudio": {
+        //"scroll-step": 1,
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-muted": "",
+        "format-icons": {
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol"
+    },
 
     "temperature": {
       "critical-threshold": 80,
@@ -153,7 +154,7 @@
     },
 
     "tray": {
-        "icon-size": 21,
+        "icon-size": 10,
         "spacing": 10
     }
 

@@ -13,6 +13,9 @@ set $left h
 set $down j
 set $up k
 set $right l
+
+font FiraCode Mono 8
+
 # Your preferred terminal emulator
 #set $term kitty
 set $term alacritty
@@ -39,6 +42,8 @@ output * bg ~/Pictures/Wallpapers/relay-chain-blur.png fill
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
+# Rotate second monitor to adapt to vertical monitor
+output DP-2 transform 270
 
 ### Idle configuration
 #
@@ -233,5 +238,16 @@ bar {
 # Remove windows title
 default_border pixel
 default_floating_border pixel
+
+set $win_bg #323232
+set $win_fg #d4be98
+set $win_in #000000
+set $win_bo #525252
+
+
+# class                     border  backgr. text    indicator child_border
+client.focused              $win_bg $win_bg $win_fg $win_in $win_bo
+client.focused_inactive     $win_bg $win_bg $win_fg $win_in $win_bg
+client.unfocused            $win_bg $win_bg $win_fg $win_in $win_bg
 
 include /etc/sway/config.d/*
