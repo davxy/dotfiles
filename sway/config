@@ -73,10 +73,21 @@ output DP-2 transform 270
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-    # Set keyboard repeat delay
-    input * repeat_delay 200
-    # Set keyboard repeat rate
-    input * repeat_rate 30
+
+# Touchpad features
+input "type:touchpad" {
+  dwt enabled
+  tap enabled
+  natural_scroll enabled
+  middle_emulation enabled
+  pointer_accel 0.8
+}
+
+# Keyboard features
+input "type:keyboard" {
+    repeat_delay 200
+    repeat_rate 30
+}
 
 ### Key bindings
 #

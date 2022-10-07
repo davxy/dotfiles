@@ -27,7 +27,7 @@
         "memory",
         "cpu",
         "temperature",
-        //"battery",
+        "battery",
         "pulseaudio",
         "clock#date",
         "clock#time"
@@ -38,25 +38,25 @@
     // Modules
     // -------------------------------------------------------------------------
 
-    //"battery": {
-    //    "interval": 10,
-    //    "states": {
-    //        "warning": 30,
-    //        "critical": 15
-    //    },
-    //    // Connected to AC
-    //    "format": "  {icon}  {capacity}%", // Icon: bolt
-    //    // Not connected to AC
-    //    "format-discharging": "{icon}  {capacity}%",
-    //    "format-icons": [
-    //        "", // Icon: battery-full
-    //        "", // Icon: battery-three-quarters
-    //        "", // Icon: battery-half
-    //        "", // Icon: battery-quarter
-    //        ""  // Icon: battery-empty
-    //    ],
-    //    "tooltip": true
-    //},
+    "battery": {
+        "interval": 10,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        // Connected to AC
+        "format": "  {icon}  {capacity}%", // Icon: bolt
+        // Not connected to AC
+        "format-discharging": "{icon}  {capacity}%",
+        "format-icons": [
+            "", // Icon: battery-full
+            "", // Icon: battery-three-quarters
+            "", // Icon: battery-half
+            "", // Icon: battery-quarter
+            ""  // Icon: battery-empty
+        ],
+        "tooltip": true
+    },
 
     "clock#date": {
       "interval": 60,
