@@ -1,4 +1,5 @@
 env:
+  # Allows true colors while using tmux (see tmux.conf)
   TERM: xterm-256color
 
 # Colors (Gruvbox Material Dark Medium)
@@ -6,7 +7,6 @@ colors:
   primary:
     background: '0x282828'
     foreground: '0xd4be98'
-
   normal:
     black:   '0x665c54'
     red:     '0xea6962'
@@ -16,7 +16,6 @@ colors:
     magenta: '0xd3869b'
     cyan:    '0x89b482'
     white:   '0xdfbf8e'
-
   bright:
     black:   '0x928374'
     red:     '0xea6962'

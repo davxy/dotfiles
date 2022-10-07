@@ -10,6 +10,8 @@ files=(
     "$HOME/.bashrc | bash/bashrc"
     "$HOME/.profile | bash/profile"
     "$HOME/.inputrc | bash/inputrc"
+    # fonts configuration
+    "$HOME/.config/fontconfig/ | fontconfig/"
     # git
     "$HOME/.gitconfig | git/gitconfig"
     # tmux
