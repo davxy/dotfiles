@@ -21,6 +21,8 @@ files=(
     "$HOME/.config/sway/ | sway/"
     # waybar
     "$HOME/.config/waybar/ | waybar/"
+    # rofi
+    "$HOME/.config/rofi/ | rofi/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
     # gitui

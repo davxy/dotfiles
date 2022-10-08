@@ -9,6 +9,7 @@ Follows a list of selected essentials mostly to improve desktop usability.
 - wob: wayland overlay bar (volume/backlight/progress)
 - amixer (alsa-utils package): control audio volume over command line
 - brightnessctl: control display brightness over command line
+- rofi: window switcher, application launcher, dmenu replacement
 
 ### Polkit Agents
 

@@ -27,9 +27,9 @@ set $term alacritty
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
 # Replace dmenu with something more smart
-for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 1
-set $menu exec $term --class=launcher -e ~/.config/sway/fzf-app-menu.sh
-
+# for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 1
+# set $menu exec $term --class=launcher -e ~/.config/sway/fzf-app-menu.sh
+set $menu rofi -show drun -show-icons
 
 include /etc/sway/config-vars.d/*
 
@@ -232,25 +232,10 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-#
 # Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
 bar {
-    # Replace default bar
     swaybar_command waybar
-
     position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    #status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-
-    # colors {
-    #     statusline #ffffff
-    #     background #282828
-    #     inactive_workspace #32323200 #32323200 #5c5c5c
-    # }
 }
 
 # Remove windows title
@@ -272,6 +257,9 @@ client.unfocused            $win_bg $win_bg $win_fg $win_in $win_bg
 # Screenshot shortcuts
 bindsym $mod+Shift+p exec grimshot save area
 bindsym $mod+Ctrl+p exec grimshot save window
+
+# Windows lookup
+bindsym $mod+g exec ~/.config/sway/lookup.sh
 
 # WOB
 exec_always {
