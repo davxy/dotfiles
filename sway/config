@@ -14,9 +14,6 @@ set $down j
 set $up k
 set $right l
 
-# Font of choice
-font pango: FiraCode 10
-
 # Your preferred terminal emulator
 #set $term kitty
 set $term alacritty
@@ -27,8 +24,6 @@ set $term alacritty
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
 # Replace dmenu with something more smart
-# for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 1
-# set $menu exec $term --class=launcher -e ~/.config/sway/fzf-app-menu.sh
 set $menu rofi -show run -show-icons
 
 include /etc/sway/config-vars.d/*
@@ -37,7 +32,7 @@ include /etc/sway/config-vars.d/*
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 #output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-output * bg ~/Pictures/Wallpapers/relay-chain-blur.png fill
+output * bg ~/Pictures/Wallpapers/relay-chain.png fill
 #
 # Example configuration:
 #
@@ -217,16 +212,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 20px
+    bindsym $down resize grow height 20px
+    bindsym $up resize shrink height 20px
+    bindsym $right resize grow width 20px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Left resize shrink width 20px
+    bindsym Down resize grow height 20px
+    bindsym Up resize shrink height 20px
+    bindsym Right resize grow width 20px
 
     # Return to default mode
     bindsym Return mode "default"
@@ -252,16 +247,16 @@ set $win_in #000000
 set $win_bo #607070
 
 # class                     border  backgr. text    indicator child_border
-client.focused              $win_bg $win_bg $win_fg $win_in $win_bo
-client.focused_inactive     $win_bg $win_bg $win_fg $win_in $win_bg
-client.unfocused            $win_bg $win_bg $win_fg $win_in $win_bg
+client.focused              $win_fg $win_bg $win_fg $win_in $win_bo
+client.focused_inactive     $win_bo $win_bg $win_fg $win_in $win_bg
+client.unfocused            $win_bo $win_bg $win_fg $win_in $win_bg
 
 # Screenshot shortcuts
 bindsym $mod+Shift+p exec grimshot save area
 bindsym $mod+Ctrl+p exec grimshot save window
 
 # Windows lookup
-bindsym $mod+g exec ~/.config/sway/lookup.sh
+bindsym $mod+g exec ~/.config/sway/applist.py
 
 # WOB
 exec_always {

@@ -2,6 +2,7 @@ configuration {
     modi: "window,run,drun,ssh";
     font: "monospace 10";
     terminal: "alacritty";
-    caase-sensitive: false;
+    case-sensitive: false;
+    monitor: "primary";
 }
 @theme "gruvbox-dark-soft"

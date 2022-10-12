@@ -2,6 +2,12 @@ env:
   # Allows true colors while using tmux (see tmux.conf)
   TERM: xterm-256color
 
+cursor:
+  style:
+    shape: Block
+    blinking: Always
+  blink_interval: 500
+
 # Colors (Gruvbox Material Dark Medium)
 colors:
   primary:

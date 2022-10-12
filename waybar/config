@@ -27,7 +27,7 @@
         "memory",
         "cpu",
         "temperature",
-        "battery",
+        //"battery",
         "pulseaudio",
         "clock#date",
         "clock#time"
@@ -93,7 +93,7 @@
         "format-wifi": "  {essid} ({signalStrength}%) {ifname}: {ipaddr}", // Icon: wifi
         "format-ethernet": "{ifname}: {ipaddr}", // Icon: ethernet
         "format-disconnected": "⚠  Disconnected",
-        "tooltip-format": "🠕{bandwidthUpBits}  🠗{bandwidthDownBits}"
+        "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}"
     },
 
     "sway/mode": {
