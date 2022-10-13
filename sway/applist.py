@@ -18,15 +18,27 @@
 import json
 import subprocess
 import re
+import os
 
-
+def proc_name_by_pid(pid):
+    pid_path = "/proc/{}/comm".format(pid)
+    name = "???"
+    if os.path.exists(pid_path):
+        with open(pid_path) as f:
+            name = f.read().rstrip('\n')
+    return name
 
 # Process a single window
 def process_window(window, workspace):
-    focused = " "
+    print(window)
+    focused = "  "
     if window["focused"]:
-        focused = "*"
-    return "{}{} | ({}) {}".format(workspace, focused, window["id"], window["name"])
+        focused = " *"
+    if workspace == "__i3_scratch":
+        workspace = "S"
+    name = proc_name_by_pid(window["pid"]).ljust(20)
+    ids = "{}{} ({})".format(focused, workspace, window["id"]).ljust(10)
+    return "{} | {} | {}".format(ids, name, window["name"])
 
 # Recursively process a windows set
 def process_windows(windows, workspace):

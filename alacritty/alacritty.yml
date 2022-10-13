@@ -9,7 +9,7 @@ cursor:
   blink_interval: 500
 
 window:
-  # Looks like this is not working
+  # Looks like its is not working
   dynamic_title: true
 
 # Colors (Gruvbox Material Dark Medium)
