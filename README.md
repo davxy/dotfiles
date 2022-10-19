@@ -10,11 +10,12 @@ Follows a list of selected essentials mostly to improve desktop usability.
 - amixer (alsa-utils package): control audio volume over command line
 - brightnessctl: control display brightness over command line
 - rofi: window switcher, application launcher, dmenu replacement
+- waybar: hightly customizable wayland bar for sway
 
 ### Polkit Agents
 
 - lxpolkit: works well
-- gnome... : crash when started as stand alone app.
+- policykit-1-gnome: crash when started as stand alone app
 
 ## Configurations
 
