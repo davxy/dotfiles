@@ -91,6 +91,12 @@ input "type:touchpad" {
     pointer_accel 0.8
 }
 
+# Tablet config
+input "type:tablet_tool" {
+    # Limit to primary monitor
+    map_to_output DP-1
+}
+
 ###############################################################################
 # Key bindings
 ###############################################################################
@@ -122,13 +128,14 @@ bindsym $mod+Shift+e \
 # Moving around:
 ###############################################################################
 
-# Move your focus around
+# Focus for windows
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
 bindsym $mod+$right focus right
 
-# Move the focused window with the same, but add Shift
+# Move the focused window with the same.
+# The movlen value is used to move floating windows around
 bindsym $mod+Shift+$left move left $movlen
 bindsym $mod+Shift+$down move down $movlen
 bindsym $mod+Shift+$up move up $movlen
@@ -214,16 +221,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 20px
-    bindsym $down resize grow height 20px
-    bindsym $up resize shrink height 20px
-    bindsym $right resize grow width 20px
+    bindsym $left resize shrink width $movlen
+    bindsym $down resize grow height $movlen
+    bindsym $up resize shrink height $movlen
+    bindsym $right resize grow width $movlen
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 20px
-    bindsym Down resize grow height 20px
-    bindsym Up resize shrink height 20px
-    bindsym Right resize grow width 20px
+    bindsym Left resize shrink width $movlen
+    bindsym Down resize grow height $movlen
+    bindsym Up resize shrink height $movlen
+    bindsym Right resize grow width $movlen
 
     # Return to default mode
     bindsym Return mode "default"

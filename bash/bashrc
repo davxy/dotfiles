@@ -108,6 +108,7 @@ alias bat=batcat
 alias cat='bat -pP'
 alias grep=rg
 alias ls=exa
+alias h=hx
 alias vi=nvim
 alias vim=nvim
 alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; cd $LASTDIR'

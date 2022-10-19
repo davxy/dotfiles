@@ -25,6 +25,8 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# source cargo
 . "$HOME/.cargo/env"
 
 ################################################################################
@@ -38,8 +40,9 @@ export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history"
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1016436
 export PYTHONPATH="/usr/lib/llvm-14/lib/python3.10/dist-packages"
 
-# Editor
-export EDITOR="/usr/bin/nvim"
+# Default editor
+# TODO: Once we have a proper package replace with `/usr/bin/hx`
+export EDITOR="hx"
 
 # Enable Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1

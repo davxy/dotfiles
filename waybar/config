@@ -15,64 +15,49 @@
     "position": "top",
     "height": 20,
     "modules-left": [
-        "sway/workspaces",
-        "sway/mode"
+        "sway/workspaces"
+        //"custom/separator",
+        //"sway/window"
     ],
     "modules-center": [
-        "sway/window"
-    ],
-    "modules-right": [
-        "tray",
-        "network",
-        "memory",
-        "cpu",
-        "temperature",
-        //"battery",
-        "pulseaudio",
         "clock#date",
         "clock#time"
     ],
-
+    "modules-right": [
+        "tray",
+        "custom/separator",
+        "pulseaudio",
+        "custom/separator",
+        "network",
+        "custom/separator",
+        "memory",
+        "custom/separator",
+        //"battery",
+        //"custom/separator",
+        "cpu",
+        "custom/separator",
+        "temperature"
+    ],
 
     // -------------------------------------------------------------------------
     // Modules
     // -------------------------------------------------------------------------
 
-    "battery": {
-        "interval": 10,
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        // Connected to AC
-        "format": "  {icon}  {capacity}%", // Icon: bolt
-        // Not connected to AC
-        "format-discharging": "{icon}  {capacity}%",
-        "format-icons": [
-            "", // Icon: battery-full
-            "", // Icon: battery-three-quarters
-            "", // Icon: battery-half
-            "", // Icon: battery-quarter
-            ""  // Icon: battery-empty
-        ],
-        "tooltip": true
-    },
-
     "clock#date": {
       "interval": 60,
-      "format": "  {:%e %b %Y}", // Icon: calendar-alt
-      "tooltip-format": "{:%e %B %Y}"
+      "format": "{:%e %b %Y}",
+      "tooltip": false
     },
 
     "clock#time": {
         "interval": 1,
         "format": "{:%H:%M}",
-        "tooltip": "{:%H:%M:%S}"
+        "tooltip": false
     },
 
     "cpu": {
         "interval": 5,
-        "format": "  {usage}% ({load})", // Icon: microchip
+        "format": "  {usage}% ({load})",
         "states": {
           "warning": 70,
           "critical": 90
@@ -81,7 +66,7 @@
 
     "memory": {
         "interval": 5,
-        "format": "  {}%", // Icon: memory
+        "format": "  {}%",
         "states": {
             "warning": 70,
             "critical": 90
@@ -90,21 +75,16 @@
 
     "network": {
         "interval": 3,
-        "format-wifi": "  {essid} ({signalStrength}%) {ifname}: {ipaddr}", // Icon: wifi
-        "format-ethernet": "{ifname}: {ipaddr}", // Icon: ethernet
+        "format-wifi": " {essid} ({signalStrength}%) {ifname}: {ipaddr}",
+        "format-ethernet": "{ifname}: {ipaddr}",
         "format-disconnected": "⚠  Disconnected",
         "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
         "on-click": "nm-dmenu"
     },
 
-    "sway/mode": {
-        "format": "<span style=\"italic\">  {}</span>", // Icon: expand-arrows-alt
-        "tooltip": false
-    },
-
     "sway/window": {
-        "format": "{}",
-        "max-length": 120
+        "format": "  {}  ",
+        "max-length": 60
     },
 
     "sway/workspaces": {
@@ -124,7 +104,6 @@
     },
 
     "pulseaudio": {
-        //"scroll-step": 1,
         "format": "{icon} {volume}%",
         "format-bluetooth": "{icon} {volume}%",
         "format-muted": "",
@@ -157,6 +136,30 @@
     "tray": {
         "icon-size": 12,
         "spacing": 10
-    }
+    },
 
+    "battery": {
+        "interval": 10,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        // Connected to AC
+        "format": "  {icon}  {capacity}%", // Icon: bolt
+        // Not connected to AC
+        "format-discharging": "{icon}  {capacity}%",
+        "format-icons": [
+            "", // Icon: battery-full
+            "", // Icon: battery-three-quarters
+            "", // Icon: battery-half
+            "", // Icon: battery-quarter
+            ""  // Icon: battery-empty
+        ],
+        "tooltip": true
+    },
+
+    "custom/separator": {
+        "format": "|",
+        "tooltip": false
+    }
 }

@@ -3,7 +3,7 @@
     command_fg: White,
     selection_bg: Blue,
     cmdbar_extra_lines_bg: Blue,
-    disabled_fg: Gray,
+    disabled_fg: DarkGray,
     diff_line_add: Green,
     diff_line_delete: Red,
     diff_file_added: LightGreen,
