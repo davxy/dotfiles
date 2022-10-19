@@ -93,7 +93,8 @@
         "format-wifi": "  {essid} ({signalStrength}%) {ifname}: {ipaddr}", // Icon: wifi
         "format-ethernet": "{ifname}: {ipaddr}", // Icon: ethernet
         "format-disconnected": "⚠  Disconnected",
-        "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}"
+        "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
+        "on-click": "nm-dmenu"
     },
 
     "sway/mode": {

@@ -40,3 +40,6 @@ export PYTHONPATH="/usr/lib/llvm-14/lib/python3.10/dist-packages"
 
 # Editor
 export EDITOR="/usr/bin/nvim"
+
+# Enable Wayland for Firefox
+export MOZ_ENABLE_WAYLAND=1
