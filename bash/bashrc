@@ -105,21 +105,17 @@ fi
 # Some useful aliases
 alias term=alacritty
 alias bat=batcat
-alias cat='bat -pP'
+alias cat='batcat -pP'
 alias grep=rg
 alias ls=exa
 alias h=hx
-alias vi=nvim
-alias vim=nvim
 alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; cd $LASTDIR'
-
-# some more ls aliases
 alias ll='ls -lg'
 alias la='ls -alg'
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals.
-# Why???
+# Why??? I don't remember why I did this -_-
 stty -ixon
 
 # Start gpg-agent as ssh-agent
@@ -129,12 +125,12 @@ gpgconf --launch gpg-agent
 # Enable Vi mode
 set -o vi
 
-function set_win_title(){
-    echo -ne "\033]0; $PROMPT_COMMAND \007"
-}
-starship_precmd_user_func="set_win_title"
-
-trap 'printf "\033]0;%s\007" "${BASH_COMMAND//[^[:print:]]/}"' DEBUG
+# This is a failed attempt to properly set window title
+#function set_win_title(){
+#    echo -ne "\033]0; $PROMPT_COMMAND \007"
+#}
+#starship_precmd_user_func="set_win_title"
+#trap 'printf "\033]0;%s\007" "${BASH_COMMAND//[^[:print:]]/}"' DEBUG
 
 # Start starship command prompt
 eval "$(~/.local/bin/starship init bash)"

@@ -1,10 +1,8 @@
-// =============================================================================
-//
 // Waybar configuration
 //
-// Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
+// Version: 0.1.0
 //
-// =============================================================================
+// Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
 
 {
     // -------------------------------------------------------------------------
@@ -15,8 +13,8 @@
     "position": "top",
     "height": 20,
     "modules-left": [
-        "sway/workspaces"
-        //"custom/separator",
+        "sway/workspaces",
+        "sway/mode"
         //"sway/window"
     ],
     "modules-center": [
@@ -26,17 +24,19 @@
     "modules-right": [
         "tray",
         "custom/separator",
-        "pulseaudio",
-        "custom/separator",
         "network",
+        "network#wg-vpn",
+        "network#tun-vpn",
+        "custom/separator",
+        "pulseaudio",
         "custom/separator",
         "memory",
         "custom/separator",
-        //"battery",
-        //"custom/separator",
         "cpu",
         "custom/separator",
-        "temperature"
+        "temperature",
+        "custom/separator",
+        "battery"
     ],
 
     // -------------------------------------------------------------------------
@@ -57,7 +57,7 @@
 
     "cpu": {
         "interval": 5,
-        "format": "  {usage}% ({load})",
+        "format": " {usage}% ({load})",
         "states": {
           "warning": 70,
           "critical": 90
@@ -66,7 +66,7 @@
 
     "memory": {
         "interval": 5,
-        "format": "  {}%",
+        "format": " {}%",
         "states": {
             "warning": 70,
             "critical": 90
@@ -80,6 +80,20 @@
         "format-disconnected": "⚠  Disconnected",
         "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
         "on-click": "nm-dmenu"
+    },
+
+    "network#wg-vpn": {
+        "interface": "wg*",
+        "format": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "network#tun-vpn": {
+        "interface": "tun*",
+        "format": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
     "sway/window": {
@@ -122,15 +136,9 @@
     "temperature": {
       "critical-threshold": 80,
       "interval": 5,
-      "format": "{icon}  {temperatureC}°C",
-      "format-icons": [
-          "", // Icon: temperature-empty
-          "", // Icon: temperature-quarter
-          "", // Icon: temperature-half
-          "", // Icon: temperature-three-quarters
-          ""  // Icon: temperature-full
-      ],
-      "tooltip": true
+      "format": "{icon} {temperatureC}°C",
+      "format-icons": [ "", "", "", "", "" ],
+      "tooltip": false
     },
 
     "tray": {
@@ -145,21 +153,19 @@
             "critical": 15
         },
         // Connected to AC
-        "format": "  {icon}  {capacity}%", // Icon: bolt
+        "format": " {capacity}%", // Icon: bolt
         // Not connected to AC
-        "format-discharging": "{icon}  {capacity}%",
-        "format-icons": [
-            "", // Icon: battery-full
-            "", // Icon: battery-three-quarters
-            "", // Icon: battery-half
-            "", // Icon: battery-quarter
-            ""  // Icon: battery-empty
-        ],
+        "format-discharging": "{icon} {capacity}%",
+        "format-icons": [ "", "", "", "", "" ],
         "tooltip": true
     },
 
     "custom/separator": {
         "format": "|",
         "tooltip": false
+    },
+
+    "sway/mode": {
+        "format": " {}"
     }
 }
