@@ -2,7 +2,21 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 #
-# Version 0.1.1
+# Version 0.1.2
+
+# Start tmux session.
+# Prevent nesting and running within neovim or code terminals.
+editor_running=`pstree -s $$ | rg -e '(hx|nvim|code)'`
+if [[ -z "$editor_running" ]]; then
+    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
+        tmux
+        if [[ -f /tmp/tmux.keep ]]; then
+            rm /tmp/tmux.keep
+        else
+            exit
+        fi
+    fi
+fi
 
 # If not running interactively, don't do anything
 case $- in
@@ -89,19 +103,6 @@ if ! shopt -oq posix; then
 fi
 . "$HOME/.cargo/env"
 
-# Start tmux session.
-#
-# Prevent nesting and running within neovim or code terminals.
-editor_running=`pstree -s $$ | rg -e '(nvim|code)'`
-if [[ -z "$editor_running" ]]; then
-    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
-        tmux
-        if [[ -f /tmp/tmux.keep ]]; then rm /tmp/tmux.keep; else exit; fi
-    else
-        alias clear='clear && tmux clear-history'
-    fi
-fi
-
 # Some useful aliases
 alias term=alacritty
 alias bat=batcat
@@ -112,6 +113,7 @@ alias h=hx
 alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; cd $LASTDIR'
 alias ll='ls -lg'
 alias la='ls -alg'
+alias clear='clear && tmux clear-history'
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals.

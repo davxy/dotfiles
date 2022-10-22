@@ -34,9 +34,9 @@
         "custom/separator",
         "cpu",
         "custom/separator",
-        "temperature",
-        "custom/separator",
-        "battery"
+        "temperature"
+        // "custom/separator",
+        // "battery"
     ],
 
     // -------------------------------------------------------------------------
