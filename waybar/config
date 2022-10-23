@@ -25,8 +25,10 @@
         "tray",
         "custom/separator",
         "network",
-        "network#wg-vpn",
+        "network#parity-vpn",
+        "network#home-vpn",
         "network#tun-vpn",
+        "network#proton-vpn",
         "custom/separator",
         "pulseaudio",
         "custom/separator",
@@ -82,8 +84,22 @@
         "on-click": "nm-dmenu"
     },
 
-    "network#wg-vpn": {
-        "interface": "wg*",
+    "network#parity-vpn": {
+        "interface": "parity",
+        "format": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "network#home-vpn": {
+        "interface": "home",
+        "format": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "network#proton-vpn": {
+        "interface": "proton*",
         "format": "",
         "format-disconnected": "",
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"

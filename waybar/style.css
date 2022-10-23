@@ -142,6 +142,18 @@
     color: orange;
 }
 
+#network.proton-vpn {
+    color: orange;
+}
+
+#network.home-vpn {
+    color: #5d8c91;
+}
+
+#network.parity-vpn {
+    color: #fc79e4;
+}
+
 #pulseaudio {
     /* No styles */
 }
