@@ -63,8 +63,7 @@ if [[ $2 == "--confirm" ]]; then
 fi
 
 function sync_files() {
-    list_name=$1[@]
-    files=(${!list_name})
+    files=("$@")
 
     for file in "${files[@]}"; do
         system_file=$(echo $file | cut -d'|' -f1)
@@ -101,14 +100,14 @@ function sync_files() {
     done
 }
 
-sync_files shared_files
+sync_files "${shared_files[@]}"
 
 if [[ $(hostname) = "behemoth" ]]; then
     echo "SYNCING BEHEMOTH"
-    sync_files behemoth_files
+    sync_files "${behemoth_files[@]}"
 fi
 
 if [[ $(hostname) = "workmule" ]]; then
     echo "SYNCING WORKMULE"
-    sync_files workmule_files
+    sync_files "${workmule_files[@]}"
 fi
