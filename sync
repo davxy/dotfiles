@@ -24,6 +24,8 @@ files=(
     "$HOME/.config/rofi/ | rofi/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
+    # ranger
+    "$HOME/.config/ranger/ | ranger/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
     # lldb
