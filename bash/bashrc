@@ -2,10 +2,16 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 #
-# Version 0.1.2
+# Version 0.1.3
+
+# If not running interactively (e.g. scp), don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
 # Start tmux session.
-# Prevent nesting and running within neovim or code terminals.
+# Prevents nesting and running when started within an editor.
 editor_running=`pstree -s $$ | rg -e '(hx|nvim|code)'`
 if [[ -z "$editor_running" ]]; then
     if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
@@ -18,40 +24,34 @@ if [[ -z "$editor_running" ]]; then
     fi
 fi
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-# don't put duplicate lines or lines starting with space in the history.
+# Don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
-# append to the history file, don't overwrite it
+# Append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+# For setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
+# Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# set variable identifying the chroot you work in (used in the prompt below)
+# Set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
+# Set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color|*-256color)
         color_prompt=yes
         ;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
+# Uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
 #force_color_prompt=yes
@@ -61,7 +61,7 @@ if [ -n "$force_color_prompt" ]; then
         # We have color support; assume it's compliant with Ecma-48
         # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
         # a case would tend to support setf rather than setaf.)
-	    color_prompt=yes
+	      color_prompt=yes
     else
         color_prompt=
     fi
@@ -91,7 +91,7 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# enable programmable completion features (you don't need to enable
+# Enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
@@ -101,6 +101,8 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+# Source cargo environment
 . "$HOME/.cargo/env"
 
 # Some useful aliases
@@ -117,7 +119,7 @@ alias clear='clear && tmux clear-history'
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals.
-# Why??? I don't remember why I did this -_-
+# Why??? I don't remember why I require this -_-
 stty -ixon
 
 # Start gpg-agent as ssh-agent

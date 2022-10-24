@@ -42,7 +42,7 @@ export PYTHONPATH="/usr/lib/llvm-14/lib/python3.10/dist-packages"
 
 # Default editor
 # TODO: Once we have a proper package replace with `/usr/bin/hx`
-export EDITOR="hx"
+export EDITOR="/home/davxy/bin/hx"
 
 # Enable Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1
