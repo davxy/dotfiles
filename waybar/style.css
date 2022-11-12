@@ -53,6 +53,14 @@
     color: #d4be98;
 }
 
+button {
+    color: inherit;
+}
+
+button:disabled {
+    color: inherit;
+}
+
 /* Each module */
 #battery,
 #clock,

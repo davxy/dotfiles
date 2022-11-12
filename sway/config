@@ -45,7 +45,7 @@ include /etc/sway/config-vars.d/*
 output * bg ~/Pictures/Wallpapers/relay-chain.png fill
 
 # Rotate second monitor to adapt to vertical monitor
-output DP-2 transform 270
+#output DP-2 transform 270
 
 ###############################################################################
 # Idle configuration
