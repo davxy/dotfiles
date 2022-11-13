@@ -18,8 +18,7 @@
         //"sway/window"
     ],
     "modules-center": [
-        "clock#date",
-        "clock#time"
+        "clock"
     ],
     "modules-right": [
         "tray",
@@ -45,16 +44,10 @@
     // Modules
     // -------------------------------------------------------------------------
 
-    "clock#date": {
-      "interval": 60,
-      "format": "{:%e %b %Y}",
-      "tooltip": false
-    },
-
-    "clock#time": {
-        "interval": 1,
-        "format": "{:%H:%M}",
-        "tooltip": false
+    "clock": {
+        "interval": 1,        
+        "format": "{:%a - %e %b %Y - %H:%M}",
+        "tooltip": true
     },
 
     "cpu": {
