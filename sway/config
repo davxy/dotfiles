@@ -1,8 +1,7 @@
 #
 # Configuration for Sway
 #
-# Version: 0.1.0
-#
+# Version: 0.1.1
 
 ###############################################################################
 # Variables
@@ -19,6 +18,9 @@ set $right l
 
 # Terminal emulator
 set $term alacritty
+
+# File explorer
+set $files ranger
 
 # Application launcher
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
@@ -44,7 +46,7 @@ include /etc/sway/config-vars.d/*
 # Background picture
 output * bg ~/Pictures/Wallpapers/relay-chain.png fill
 
-# Rotate second monitor to adapt to vertical monitor
+# Rotate second monitor to adapt to vertical monitor (workstation)
 #output DP-2 transform 270
 
 ###############################################################################
@@ -101,8 +103,11 @@ input "type:tablet_tool" {
 # Key bindings
 ###############################################################################
 
-# Start a terminal
+# Start terminal
 bindsym $mod+Return exec $term
+
+# Start file explorer
+bindsym $mod+Shift+Return exec $term -e $files
 
 # Kill focused window
 bindsym $mod+Shift+q kill
