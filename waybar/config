@@ -47,7 +47,7 @@
     "clock": {
         "interval": 1,        
         "format": "{:%a - %e %b %Y - %H:%M}",
-        "tooltip": true
+        "tooltip": false
     },
 
     "cpu": {
