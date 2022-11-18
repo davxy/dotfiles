@@ -113,8 +113,9 @@ alias grep=rg
 alias ls=exa
 alias h=hx
 alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; cd $LASTDIR'
-alias ll='ls -lg'
-alias la='ls -alg'
+alias ll='exa -lg'
+alias la='exa -alg'
+alias tree='exa -T'
 alias clear='clear && tmux clear-history'
 
 # Disable START/STOP output control.
