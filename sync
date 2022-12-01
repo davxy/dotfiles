@@ -22,6 +22,8 @@ shared_files=(
     "$HOME/.config/waybar/ | waybar/"
     # rofi
     "$HOME/.config/rofi/ | rofi/"
+    # wob
+    "$HOME/.config/wob/ | wob/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
     # ranger

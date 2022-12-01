@@ -307,6 +307,10 @@ bindsym XF86AudioMute exec amixer sset Master toggle | sed -En '/\[on\]/ s/.*\[(
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $SWAYSOCK.wob
 bindsym XF86MonBrightnessUp exec brightnessctl set +5% | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $SWAYSOCK.wob
 
+# WOB Gamma Control
+#bindsym Shift+XF86MonBrightnessDown exec gamma-ctrl - > $SWAYSOCK.wob
+#bindsym Shift+XF86MonBrightnessUp exec gamma-ctrl + > $SWAYSOCK.wob
+
 # Additional configuration (if any)
 include /etc/sway/config.d/*
 
