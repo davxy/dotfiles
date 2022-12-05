@@ -314,5 +314,8 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +5% | sed -En 's/.*\(([0-9]+)
 # Additional configuration (if any)
 include /etc/sway/config.d/*
 
-# Start proton-mail bridge
+# Start Proton mail bridge
 exec --no-startup-id protonmail-bridge --no-window &
+
+# Start Nextcloud application
+exec --no-startup-id nextcloud --background &
