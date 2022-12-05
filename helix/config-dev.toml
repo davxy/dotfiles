@@ -1,0 +1,37 @@
+theme = "gruvbox_material"
+
+[editor]
+line-number = "relative"
+cursorline = true
+true-color = true
+scrolloff = 20
+bufferline = "always"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "block"
+
+[editor.statusline]
+separator = "|"
+
+[editor.lsp]
+display-messages = true
+
+[editor.search]
+smart-case = false
+
+[keys.normal]
+# Fast buffer switching
+tab = ":bn"
+S-tab = ":bp"
+C-q = ":bc"
+# Invalidate some keys
+up = "no_op"
+down = "no_op"
+right = "no_op"
+left = "no_op"
+pageup = "no_op"
+pagedown = "no_op"
+home = "no_op"
+end = "no_op"

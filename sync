@@ -14,6 +14,8 @@ shared_files=(
     "$HOME/.config/fontconfig/ | fontconfig/"
     # git
     "$HOME/.gitconfig | git/gitconfig"
+    # helix
+    "$HOME/.config/helix/ | helix/"
     # tmux
     "$HOME/.config/tmux/ | tmux/"
     # sway
