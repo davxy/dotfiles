@@ -101,7 +101,7 @@ input "type:tablet_tool" {
 }
 
 ###############################################################################
-# Key bindings
+# Misc key bindings
 ###############################################################################
 
 # Start terminal
@@ -127,8 +127,11 @@ bindsym $mod+Shift+e \
 bindsym $mod+Shift+b \
     exec ~/.config/sway/toggle-border.sh
 
+# Toggle waybar
+bindsym $mod+b exec --no-startup-id killall -SIGUSR1 waybar
+
 ###############################################################################
-# Moving around:
+# Moving around
 ###############################################################################
 
 # Focus for windows
@@ -181,7 +184,7 @@ bindsym $mod+Shift+0 move container to workspace number 10
 # You can "split" the current object of your focus with
 # $mod+b or $mod+v, for horizontal and vertical splits
 # respectively.
-bindsym $mod+b splith
+bindsym $mod+c splith
 bindsym $mod+v splitv
 
 # Switch the current container between different layout styles
@@ -257,7 +260,7 @@ for_window [window_type="dialog"] floating enable
 
 # Remove windows title
 default_border pixel
-default_floating_border normal
+default_floating_border pixel
 
 # Window colors
 set $win_bg #323232
@@ -269,6 +272,9 @@ set $win_bo #607070
 client.focused              $win_fg $win_bg $win_fg $win_in $win_bo
 client.focused_inactive     $win_bo $win_bg $win_fg $win_in $win_bg
 client.unfocused            $win_bo $win_bg $win_fg $win_in $win_bg
+
+gaps inner 3
+gaps outer 0
 
 ###############################################################################
 # Other stuff
@@ -283,9 +289,10 @@ floating_modifier $mod normal
 
 # Status Bar
 bar {
-    # We're using 'swaybar'
     swaybar_command waybar
     position top
+    #mode hide
+    #modifier Mod4
 }
 
 # Screenshot shortcuts
@@ -319,3 +326,6 @@ exec --no-startup-id protonmail-bridge --no-window &
 
 # Start Nextcloud application
 exec --no-startup-id nextcloud --background &
+
+# Inactive windows transparency
+#exec ~/.config/sway/inactive-windows-transparency.py &

@@ -9,17 +9,25 @@
     // Global configuration
     // -------------------------------------------------------------------------
 
+    "bar_id": "bar-0",
+    "ipc": true,
     "layer": "bottom",
     "position": "top",
     "height": 20,
+
+    // -------------------------------------------------------------------------
+    // Modules organization
+    // -------------------------------------------------------------------------
+
     "modules-left": [
         "sway/workspaces",
         "sway/mode"
-        //"sway/window"
     ],
+
     "modules-center": [
         "clock"
     ],
+
     "modules-right": [
         "tray",
         "custom/separator",
@@ -35,13 +43,13 @@
         "custom/separator",
         "cpu",
         "custom/separator",
-        "temperature",
-        "custom/separator",
-        "battery"
+        "temperature"
+        // "custom/separator",
+        // "battery"
     ],
 
     // -------------------------------------------------------------------------
-    // Modules
+    // Modules configuration
     // -------------------------------------------------------------------------
 
     "clock": {
