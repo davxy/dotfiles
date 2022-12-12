@@ -27,7 +27,8 @@ set $files ranger
 set $menu rofi -show run -show-icons
 
 # Movement and resize quantity
-set $movlen 20
+set $move_qty 20
+set $size_qty 3
 
 # Additional externally defined variables (if any)
 include /etc/sway/config-vars.d/*
@@ -141,11 +142,11 @@ bindsym $mod+$up focus up
 bindsym $mod+$right focus right
 
 # Move the focused window with the same.
-# The movlen value is used to move floating windows around
-bindsym $mod+Shift+$left move left $movlen
-bindsym $mod+Shift+$down move down $movlen
-bindsym $mod+Shift+$up move up $movlen
-bindsym $mod+Shift+$right move right $movlen
+# The `move_qty` value is used to move floating windows around
+bindsym $mod+Shift+$left move left $move_qty
+bindsym $mod+Shift+$down move down $move_qty
+bindsym $mod+Shift+$up move up $move_qty
+bindsym $mod+Shift+$right move right $move_qty
 
 ###############################################################################
 # Workspaces movements
@@ -227,16 +228,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width $movlen
-    bindsym $down resize grow height $movlen
-    bindsym $up resize shrink height $movlen
-    bindsym $right resize grow width $movlen
+    bindsym $left resize shrink width $size_qty
+    bindsym $down resize grow height $size_qty
+    bindsym $up resize shrink height $size_qty
+    bindsym $right resize grow width $size_qty
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width $movlen
-    bindsym Down resize grow height $movlen
-    bindsym Up resize shrink height $movlen
-    bindsym Right resize grow width $movlen
+    bindsym Left resize shrink width $size_qty
+    bindsym Down resize grow height $size_qty
+    bindsym Up resize shrink height $size_qty
+    bindsym Right resize grow width $size_qty
 
     # Return to default mode
     bindsym Return mode "default"
@@ -273,9 +274,6 @@ client.focused              $win_fg $win_bg $win_fg $win_in $win_bo
 client.focused_inactive     $win_bo $win_bg $win_fg $win_in $win_bg
 client.unfocused            $win_bo $win_bg $win_fg $win_in $win_bg
 
-gaps inner 3
-gaps outer 0
-
 ###############################################################################
 # Other stuff
 ###############################################################################
@@ -292,7 +290,6 @@ bar {
     swaybar_command waybar
     position top
     #mode hide
-    #modifier Mod4
 }
 
 # Screenshot shortcuts
