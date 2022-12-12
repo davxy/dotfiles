@@ -319,10 +319,7 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +5% | sed -En 's/.*\(([0-9]+)
 include /etc/sway/config.d/*
 
 # Start Proton mail bridge
-exec --no-startup-id protonmail-bridge --no-window &
+exec --no-startup-id sleep 1 && protonmail-bridge --no-window &
 
 # Start Nextcloud application
-exec --no-startup-id nextcloud --background &
-
-# Inactive windows transparency
-#exec ~/.config/sway/inactive-windows-transparency.py &
+exec --no-startup-id sleep 1 && nextcloud --background &
