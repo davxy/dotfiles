@@ -260,14 +260,14 @@ for_window [window_type="dialog"] floating enable
 ###############################################################################
 
 # Remove windows title
-default_border pixel
-default_floating_border pixel
+default_border pixel 1
+default_floating_border pixel 1
 
 # Window colors
 set $win_bg #323232
 set $win_fg #d4be98
 set $win_in #000000
-set $win_bo #607070
+set $win_bo #d4be98
 
 # class                     border  backgr. text    indicator child_border
 client.focused              $win_fg $win_bg $win_fg $win_in $win_bo

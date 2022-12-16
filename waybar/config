@@ -64,7 +64,8 @@
         "states": {
           "warning": 70,
           "critical": 90
-        }
+        },
+        "on-click": "alacritty -e btm"
     },
 
     "memory": {
@@ -73,7 +74,8 @@
         "states": {
             "warning": 70,
             "critical": 90
-        }
+        },
+        "on-click": "alacritty -e btm"
     },
 
     "network": {
@@ -151,11 +153,12 @@
     },
 
     "temperature": {
-      "critical-threshold": 80,
-      "interval": 5,
-      "format": "{icon} {temperatureC}°C",
-      "format-icons": [ "", "", "", "", "" ],
-      "tooltip": false
+        "critical-threshold": 80,
+        "interval": 5,
+        "format": "{icon} {temperatureC}°C",
+        "format-icons": [ "", "", "", "", "" ],
+        "tooltip": false,
+        "on-click": "alacritty -e btm"
     },
 
     "tray": {
@@ -174,7 +177,8 @@
         // Not connected to AC
         "format-discharging": "{icon} {capacity}%",
         "format-icons": [ "", "", "", "", "" ],
-        "tooltip": true
+        "tooltip": true,
+        "on-click": "alacritty -e btm"
     },
 
     "custom/separator": {
