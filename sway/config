@@ -249,7 +249,7 @@ bindsym $mod+r mode "resize"
 # Window rules
 ################################################################################
 
-assign [app_id="Firefox"] workspace 9
+#assign [app_id="Firefox"] workspace 9
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="bubble"] floating enable
 for_window [window_role="dialog"] floating enable
