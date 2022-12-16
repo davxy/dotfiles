@@ -37,6 +37,8 @@ shared_files=(
     "$HOME/.lldb/scripts/ | lldb/scripts/"
     # X defaults
     "$HOME/.Xdefaults | misc/Xdefaults"
+    # mako
+    "$HOME/.config/mako/ | mako/"
 )
 
 behemoth_files=(
