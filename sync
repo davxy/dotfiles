@@ -42,6 +42,8 @@ shared_files=(
 )
 
 behemoth_files=(
+    # wayvnc
+    "$HOME/.config/wayvnc/ | wayvnc/"
     # samba
     "/etc/samba/smb.conf | samba/smb.conf"
 )
