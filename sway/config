@@ -262,6 +262,7 @@ for_window [window_type="dialog"] floating enable
 # Remove windows title
 default_border pixel 1
 default_floating_border pixel 1
+smart_borders on
 
 # Window colors
 set $win_bg #323232
