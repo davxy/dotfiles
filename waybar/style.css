@@ -192,11 +192,9 @@ button:disabled {
     padding-bottom: 2px;
     padding-left: 10px;
     padding-right: 10px;
-    color: #aaaaaa;
 }
 
 #workspaces button.focused {
-    border-color: #4c7899;
     color: #d4be98;
     background-color: #525252;
 }

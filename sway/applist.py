@@ -56,7 +56,7 @@ def process_windows(windows, workspace):
 def lookup_windows():
     windows = []
     command="swaymsg -t get_tree"
-    process = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     data = json.loads(process.communicate()[0])
     outputs=data["nodes"]
     for output in outputs:
