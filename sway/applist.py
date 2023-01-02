@@ -70,7 +70,7 @@ def lookup_windows():
 # Show a selection menu using rofi and return the selected window id
 def show_menu(windows):
     # Returns a newline seperated UFT-8 encoded string of all windows for wofi
-    command="rofi -dmenu -i"
+    command="rofi -dmenu -i -p 'Running applications'"
     enter="\n"
     input=enter.join(windows).encode("UTF-8")
     process = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)

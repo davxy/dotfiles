@@ -28,7 +28,7 @@ set $menu rofi -show run -show-icons
 
 # Movement and resize quantity
 set $move_qty 20
-set $size_qty 3
+set $size_qty 10
 
 # Additional externally defined variables (if any)
 include /etc/sway/config-vars.d/*
@@ -120,9 +120,16 @@ bindsym $mod+d exec $menu
 # Reload the configuration file
 bindsym $mod+Shift+c reload
 
-# Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e \
-    exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+# Exit sway
+set $exiting "Do you really want to exit? Yes (return), No (escape)"
+mode $exiting {
+    # Return to default mode
+    bindsym Return exit
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+e mode $exiting
+#bindsym $mod+Shift+e \
+#    exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 # Toggle current window border
 bindsym $mod+Shift+b \

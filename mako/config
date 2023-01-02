@@ -1,20 +1,21 @@
 background-color=#282828
 border-color=#d4be98
-text-color=#d4be98
 border-size=1
+text-color=#d4be98
 text-alignment=center
 format=<b>%s</b>\n%b
-ignore-timeout=1
 default-timeout=5000
+ignore-timeout=1
 
 [urgency=low]
 default-timeout=3000
 
-[urgency=normal]
-anchor=center
+#[urgency=normal]
+#anchor=center
 
 [urgency=high]
 border-color=#bf616a
+border-size=2
 default-timeout=0
 anchor=center
-format=<b>%a: %s</b>\n%b
+format=<b>%a - %s</b>\n%b
