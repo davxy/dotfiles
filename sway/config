@@ -270,10 +270,10 @@ smart_borders on
 set $win_bg #323232
 set $win_fg #d4be98
 set $win_in #000000
-set $win_bo #d4be98
+set $win_bo #404040
 
 # class                     border  backgr. text    indicator child_border
-client.focused              $win_fg $win_bg $win_fg $win_in $win_bo
+client.focused              $win_fg $win_bg $win_fg $win_in $win_fg
 client.focused_inactive     $win_bo $win_bg $win_fg $win_in $win_bg
 client.unfocused            $win_bo $win_bg $win_fg $win_in $win_bg
 
