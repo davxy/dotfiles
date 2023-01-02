@@ -32,6 +32,8 @@ shared_files=(
     "$HOME/.config/ranger/ | ranger/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
+    # zathura
+    "$HOME/.config/zathura/ | zathura/"
     # lldb
     "$HOME/.lldbinit | lldb/lldbinit"
     "$HOME/.lldb/scripts/ | lldb/scripts/"
