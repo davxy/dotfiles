@@ -298,6 +298,9 @@ client.unfocused            $win_bo $win_bg $win_fg $win_in $win_bg
 # mouse button for dragging.
 floating_modifier $mod normal
 
+# Hide mouse cursor after a period of inactivity
+seat * hide_cursor 3000
+
 # Status Bar
 bar {
     swaybar_command waybar
