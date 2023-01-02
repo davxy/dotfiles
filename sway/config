@@ -131,6 +131,9 @@ bindsym $mod+Shift+b \
 # Toggle waybar
 bindsym $mod+b exec --no-startup-id killall -SIGUSR1 waybar
 
+# Rofimoji
+bindsym $mod+m exec rofimoji
+
 ###############################################################################
 # Moving around
 ###############################################################################
