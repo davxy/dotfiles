@@ -24,6 +24,8 @@ shared_files=(
     "$HOME/.config/waybar/ | waybar/"
     # rofi
     "$HOME/.config/rofi/ | rofi/"
+    # rofimoji
+    "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
     # wob
     "$HOME/.config/wob/ | wob/"
     # alacritty
