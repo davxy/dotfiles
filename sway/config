@@ -141,6 +141,9 @@ bindsym $mod+b exec --no-startup-id killall -SIGUSR1 waybar
 # Rofimoji
 bindsym $mod+m exec rofimoji
 
+# Windows lookup
+bindsym $mod+o exec ~/.config/sway/applist.py
+
 ###############################################################################
 # Moving around
 ###############################################################################
@@ -326,9 +329,6 @@ bar {
 # Screenshot shortcuts
 bindsym $mod+Shift+p exec grimshot save area
 bindsym $mod+Ctrl+p exec grimshot save window
-
-# Windows lookup
-bindsym $mod+g exec ~/.config/sway/applist.py
 
 # WOB server for volume and brightness control
 exec_always ~/.config/sway/wob.sh &
