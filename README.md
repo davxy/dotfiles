@@ -12,11 +12,6 @@ Follows a list of selected essentials mostly to improve desktop usability.
 - rofi: window switcher, application launcher, dmenu replacement
 - waybar: hightly customizable wayland bar for sway
 
-### Polkit Agents
-
-- lxpolkit: works well
-- policykit-1-gnome: crash when started as stand alone app
-
 ## Configurations
 
 Most involved configurations are provided via configuration files maintained within this repo.
