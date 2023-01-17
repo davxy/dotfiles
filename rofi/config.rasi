@@ -3,6 +3,5 @@ configuration {
     font: "monospace 10";
     terminal: "alacritty";
     case-sensitive: false;
-    monitor: "primary";
 }
 @theme "gruvbox-dark-soft"

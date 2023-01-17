@@ -137,5 +137,14 @@ set -o vi
 #starship_precmd_user_func="set_win_title"
 #trap 'printf "\033]0;%s\007" "${BASH_COMMAND//[^[:print:]]/}"' DEBUG
 
+# Prevent nested `ranger` instances
+function ranger() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        /usr/bin/ranger "$@"
+    else
+        exit
+    fi
+}
+
 # Start starship command prompt
 eval "$(~/.local/bin/starship init bash)"
