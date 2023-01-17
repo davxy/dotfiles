@@ -26,6 +26,9 @@ set $files ranger
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu rofi -show run -show-icons
 
+# Windows list
+set $wins ~/.config/sway/applist.py
+
 # Movement and resize quantity
 set $move_qty 20
 set $size_qty 10
@@ -115,7 +118,10 @@ bindsym $mod+Shift+Return exec $term -e $files
 bindsym $mod+Shift+q kill
 
 # Start your launcher
-bindsym $mod+d exec $menu
+bindsym $mod+o exec $menu
+
+# Windows lookup
+bindsym $mod+p exec $wins
 
 # Reload the configuration file
 bindsym $mod+Shift+c reload
@@ -128,8 +134,6 @@ mode $exiting {
     bindsym Escape mode "default"
 }
 bindsym $mod+Shift+e mode $exiting
-#bindsym $mod+Shift+e \
-#    exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 # Toggle current window border
 bindsym $mod+Shift+b \
@@ -140,9 +144,6 @@ bindsym $mod+b exec --no-startup-id killall -SIGUSR1 waybar
 
 # Rofimoji
 bindsym $mod+m exec rofimoji
-
-# Windows lookup
-bindsym $mod+o exec ~/.config/sway/applist.py
 
 ###############################################################################
 # Moving around
