@@ -126,15 +126,6 @@ bindsym $mod+p exec $wins
 # Reload the configuration file
 bindsym $mod+Shift+c reload
 
-# Exit sway
-set $exiting "Do you really want to exit? Yes (return), No (escape)"
-mode $exiting {
-    # Return to default mode
-    bindsym Return exit
-    bindsym Escape mode "default"
-}
-bindsym $mod+Shift+e mode $exiting
-
 # Toggle current window border
 bindsym $mod+Shift+b \
     exec ~/.config/sway/toggle-border.sh
@@ -236,30 +227,40 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 ###############################################################################
-# Resize containers
+# Modes
 ###############################################################################
 
-mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width $size_qty
-    bindsym $down resize grow height $size_qty
-    bindsym $up resize shrink height $size_qty
-    bindsym $right resize grow width $size_qty
-
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width $size_qty
-    bindsym Down resize grow height $size_qty
-    bindsym Up resize shrink height $size_qty
-    bindsym Right resize grow width $size_qty
-
+# Exiting: request for confirmation before exit sway
+set $exiting "Do you really want to exit? Yes (return), No (escape)"
+mode $exiting {
+    # Exit sway using return
+    bindsym Return exit
     # Return to default mode
-    bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+bindsym $mod+Shift+e mode $exiting
+
+# Resize: allows to resize panes size
+mode "resize" {
+    # left will shrink the containers width
+    bindsym $left resize shrink width $size_qty
+    # right will grow the containers width
+    bindsym $right resize grow width $size_qty
+    # down will grow the containers height
+    bindsym $down resize grow height $size_qty
+    # up will shrink the containers height
+    bindsym $up resize shrink height $size_qty
+    # Return to default mode
+    bindsym $mod+r mode "default"
+}
 bindsym $mod+r mode "resize"
+
+# Unbind: disable all keybindings
+mode "unbind" {
+    # Return to default mode
+    bindsym $mod+u mode "default"
+}
+bindsym $mod+u mode "unbind"
 
 ################################################################################
 # Workspace rules
