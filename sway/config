@@ -354,5 +354,5 @@ include /etc/sway/config.d/*
 # Start Proton mail bridge
 exec --no-startup-id sleep 1 && protonmail-bridge --no-window &
 
-# Start Nextcloud application
-exec --no-startup-id sleep 1 && nextcloud --background &
+# Start Dropbox application
+exec --no-startup-id sleep 1 && dropbox start &
