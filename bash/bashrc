@@ -10,6 +10,15 @@ case $- in
       *) return;;
 esac
 
+# Prevent nested `ranger` instances
+function ranger() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        /usr/bin/ranger "$@"
+    else
+        exit
+    fi
+}
+
 # Start tmux session.
 # Prevents nesting and running when started within an editor.
 editor_running=`pstree -s $$ | rg -e '(hx|nvim|code)'`
@@ -137,14 +146,8 @@ set -o vi
 #starship_precmd_user_func="set_win_title"
 #trap 'printf "\033]0;%s\007" "${BASH_COMMAND//[^[:print:]]/}"' DEBUG
 
-# Prevent nested `ranger` instances
-function ranger() {
-    if [ -z "$RANGER_LEVEL" ]; then
-        /usr/bin/ranger "$@"
-    else
-        exit
-    fi
-}
-
 # Start starship command prompt
 eval "$(~/.local/bin/starship init bash)"
+
+# Start zellij
+#eval "$(zellij setup --generate-auto-start bash)"
