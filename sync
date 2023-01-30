@@ -16,6 +16,8 @@ shared_files=(
     "$HOME/.gitconfig | git/gitconfig"
     # helix
     "$HOME/.config/helix/ | helix/"
+    # zellij
+    "$HOME/.config/zellij/ | zellij/"
     # tmux
     "$HOME/.config/tmux/ | tmux/"
     # sway
