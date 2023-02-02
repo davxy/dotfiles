@@ -30,6 +30,8 @@ application/x-extension-xht=firefox.desktop
 application/pdf=org.pwmt.zathura.desktop
 inode/directory=ranger.desktop
 
+# Additional associations of applicationns with mimetypes as if the
+# .desktop file was listing this mimetype in the first place
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-E8SZH1.desktop;
 x-scheme-handler/mid=userapp-Thunderbird-E8SZH1.desktop;
@@ -61,3 +63,7 @@ application/x-extension-shtml=firefox.desktop;
 application/xhtml+xml=firefox.desktop;
 application/x-extension-xhtml=firefox.desktop;
 application/x-extension-xht=firefox.desktop;
+
+# Removes associations of applications with mimetypes, as if the .desktop file
+# was NOT listing this mimetype in the first place.
+[Removed Associations]
