@@ -2,22 +2,29 @@
 name = "rust"
 formatter = { command = "rustfmt", args = [ "+nightly" ] }
 
-[language.debugger]
-command = "lldb"
-name = "lldb"
-transport = "stdio"
-
 # Language Server configuration
 [[language.config]]
 extraEnv = { CHALK_OVERFLOW_DEPTH = 3000, CHALK_SOLVER_MAX_SIZE = 1500 }
 
+# [language.debugger]
+# command = "codelldb"
+# name = "codelldb"
+# port-arg = "--port {}"
+# transport = "tcp"
+
+[language.debugger]
+command = "lldb-vscode-14"
+name = "lldb-vscode-14"
+transport = "stdio"
+
 [[language.debugger.templates]]
 name = "binary"
 request = "launch"
-[[language.debugger.templates.completion]]
-completion = "filename"
-name = "binary"
+completion = [ { name = "binary", completion = "filename" }]
+args = { program = "{0}" }
 
-[language.debugger.templates.args]
-program = "{0}"
-runInTerminal = true
+[[language.debugger.templates]]
+name = "binary (terminal)"
+request = "launch"
+completion = [ { name = "binary", completion = "filename" }]
+args = { program = "{0}", runInTerminal = true }
