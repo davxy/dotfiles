@@ -45,6 +45,8 @@ shared_files=(
     "$HOME/.lldb/scripts/ | lldb/scripts/"
     # X defaults
     "$HOME/.Xdefaults | misc/Xdefaults"
+    # nm-dmenu
+    "$HOME/.config/networkmanager-dmenu/ | nm-dmenu/"
     # Mime associations
     "$HOME/.config/mimeapps.list | misc/mimeapps.list"
 )
