@@ -27,8 +27,8 @@ wrap-indicator = "↪ "
 
 [keys.normal]
 # Fast buffer switching
-tab = ":bn"
-S-tab = ":bp"
+C-n = ":bn"
+C-p = ":bp"
 C-q = ":bc"
 # Vertical movement relative to hard lines
 j = "move_line_down"
