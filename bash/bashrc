@@ -10,28 +10,46 @@ case $- in
       *) return;;
 esac
 
-# Prevent nested `ranger` instances
+# Prevent nested `ranger` sessions
 function ranger() {
     if [ -z "$RANGER_LEVEL" ]; then
-        /usr/bin/ranger "$@"
+        $(which ranger) --choosedir=/tmp/rangerdir "$@"
+        cd "$(cat /tmp/rangerdir)"; rm /tmp/rangerdir
     else
         exit
     fi
 }
 
-# Start tmux session.
-# Prevents nesting and running when started within an editor.
-editor_running=`pstree -s $$ | rg -e '(hx|nvim|code)'`
-if [[ -z "$editor_running" ]]; then
-    if [[ "$TERM" != "tmux-256color" && "$TERM" != "screen-256color" ]]; then
-        tmux
-        if [[ -f /tmp/tmux.keep ]]; then
-            rm /tmp/tmux.keep
-        else
-            exit
-        fi
+# Prevent nested `zellij` sessions
+function zellij() {
+    $(which zellij) "$@"
+    # if [[ -z "$ZELLIJ" ]]; then
+    #     $(which zellij) "$@"
+    # else
+    #     echo "can't create nested instances"
+    # fi
+}
+
+# Special exit function that can leave a breadcrumb behind
+# to prevent closing the terminal on zellij exit.
+function exit() {
+    if [[ $1 == "z" || $1 == "zellij" ]]; then
+        touch /tmp/zexit
     fi
-fi
+    builtin exit
+}
+
+# Start zellij session
+# Do this asap to prevent double execution of this script.
+# eval "$(zellij setup --generate-auto-start bash)"
+if [[ -z "$ZELLIJ" ]]; then
+    zellij
+    if [[ -f /tmp/zexit ]]; then
+        rm /tmp/zexit
+    else
+        exit
+    fi
+fi    
 
 # Don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -97,7 +115,7 @@ esac
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+    source ~/.bash_aliases
 fi
 
 # Enable programmable completion features (you don't need to enable
@@ -111,21 +129,20 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# Source cargo environment
-. "$HOME/.cargo/env"
-
-# Some useful aliases
+# alacritty
 alias term=alacritty
+# bat
 alias bat=batcat
 alias cat='batcat -pP'
+# ripgrep
 alias grep=rg
+# exa
 alias ls=exa
-alias h=hx
-alias ranger='ranger --choosedir=/tmp/rangerdir; LASTDIR=`cat /tmp/rangerdir`; cd $LASTDIR'
 alias ll='exa -lg'
 alias la='exa -alg'
 alias tree='exa -T'
-alias clear='clear && tmux clear-history'
+# zoxide
+alias cd=z
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals.
@@ -136,18 +153,25 @@ stty -ixon
 export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
 gpgconf --launch gpg-agent
 
-# Enable Vi mode
+# Enable vi mode
 set -o vi
 
-# This is a failed attempt to properly set window title
-#function set_win_title(){
-#    echo -ne "\033]0; $PROMPT_COMMAND \007"
-#}
-#starship_precmd_user_func="set_win_title"
-#trap 'printf "\033]0;%s\007" "${BASH_COMMAND//[^[:print:]]/}"' DEBUG
+# Manually source fzf completions
+# (otherwise we require to trigger it once using fzf+<tab>)
+source /usr/share/bash-completion/completions/fzf
+source ~/.config/fzf/key-bindings.bash
 
-# Start starship command prompt
+# Start zoxide
+eval "$(zoxide init bash)"
+# v0.4.0 doesn't use 'builtin cd' and thus triggers recusion if using cd alias
+# Remove as soon as new version is released:
+# https://tracker.debian.org/pkg/rust-zoxide
+_z_cd() {
+    builtin cd "$@" || return "$?"
+    if [ "$_ZO_ECHO" = "1" ]; then
+        echo "$PWD"
+    fi
+}
+
+# Start starship
 eval "$(~/.local/bin/starship init bash)"
-
-# Start zellij
-#eval "$(zellij setup --generate-auto-start bash)"

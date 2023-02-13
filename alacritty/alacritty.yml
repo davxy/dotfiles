@@ -1,6 +1,6 @@
-env:
-  # Allows true colors while using tmux (see tmux.conf)
-  TERM: xterm-256color
+# env:
+#   # Allows true colors while using tmux (see tmux.conf)
+#   TERM: xterm-256color
 
 cursor:
   style:

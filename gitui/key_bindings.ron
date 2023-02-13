@@ -12,6 +12,7 @@
 // Note:
 // find `KeysList` type in src/keys/key_list.rs for all possible keys.
 // every key not overwritten via the config file will use the default specified there
+
 (
     focus_right: Some(( code: Char('l'), modifiers: ( bits: 0,),)),
     focus_left: Some(( code: Char('h'), modifiers: ( bits: 0,),)),
@@ -32,8 +33,6 @@
     end: Some(( code: Char('G'), modifiers: ( bits: 1,),)),
     shift_up: Some(( code: Char('K'), modifiers: ( bits: 1,),)),
     shift_down: Some(( code: Char('J'), modifiers: ( bits: 1,),)),
-
-    edit_file: Some(( code: Char('I'), modifiers: ( bits: 1,),)),
 
     status_reset_item: Some(( code: Char('U'), modifiers: ( bits: 1,),)),
 
