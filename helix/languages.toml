@@ -1,13 +1,13 @@
 [[language]]
-name = "rust"
-formatter = { command = "rustfmt", args = ["+nightly"] }
-
-[[language]]
 name = "markdown"
 language-server = { command = "ltex-ls" }
 file-types = ["md", "txt", "adoc"]
 scope = "source.markdown"
 roots = []
+
+[[language]]
+name = "rust"
+formatter = { command = "rustfmt", args = ["+nightly"] }
 
 # Language Server configuration
 [[language.config]]
