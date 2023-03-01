@@ -1,18 +1,21 @@
-[cola]
-    spellcheck = false
 [user]
-    name = Davide Galassi
-    email = davxy@datawok.net
-    signingkey = 0x7954B83AAD67BC2092B2DF294FC3C19CF3EF0716
+name = Davide Galassi
+email = davxy@datawok.net
+signingkey = 0x7954B83AAD67BC2092B2DF294FC3C19CF3EF0716
+
 [core]
-    editor = hx
-    pager = delta
+editor = hx
+pager = delta
+
 [gui]
-    editor = hx
+editor = hx
+
 [credential]
-    helper = cache --timeout=3600
+helper = cache --timeout=3600
+
 [commit]
-    gpgsign = true
+gpgsign = true
+
 [alias]
 graph = log --graph --all --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
 
