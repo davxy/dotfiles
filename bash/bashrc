@@ -53,7 +53,7 @@ function exit() {
 
 # Start zellij session
 # Do this asap to prevent double execution of this script.
-# eval "$(zellij setup --generate-auto-start bash)"
+# Inspired by: eval "$(zellij setup --generate-auto-start bash)"
 if [[ -z "$ZELLIJ" ]]; then
     zellij
     if [[ -f /tmp/zexit ]]; then
