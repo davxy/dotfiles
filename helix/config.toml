@@ -17,6 +17,7 @@ separator = "|"
 
 [editor.lsp]
 display-messages = true
+auto-signature-help = false
 
 [editor.search]
 smart-case = false
@@ -43,6 +44,8 @@ pageup = "no_op"
 pagedown = "no_op"
 home = "no_op"
 end = "no_op"
+# Show signature help
+C-space = "signature_help"
 
 [keys.insert]
 C-space = "completion"
