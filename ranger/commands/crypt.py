@@ -4,11 +4,11 @@ from gnupg import GPG
 from ranger.api.commands import Command
 from subprocess import run
 import subprocess
-# from getpass import getpass
 
 
-def get_passphrase(cmd):
-    command = 'python -c "from getpass import getpass; print(getpass())"'
+def get_passphrase(cmd, prompt):
+    program = "from getpass import getpass; print(getpass('{}: '));".format(prompt)
+    command = 'python -c "{}"'.format(program)
     psw = cmd.fm.execute_command(command, stdout=subprocess.PIPE)
     stdout, _ = psw.communicate()
     if psw.returncode != 0:
@@ -43,9 +43,13 @@ class encrypt(Command):
     def execute(self):
         gpg = GPG()
         recipient = None
-        pwd = get_passphrase(self)
-        if pwd is None:
+        pwd = get_passphrase(self, "password")
+        con = get_passphrase(self, "confirm")
+        if pwd is None or con is None:
             self.fm.notify('Unable to read passphrase', bad=True)
+            return
+        if pwd != con:
+            self.fm.notify("Confirmation doesn't match", bad=True)
             return
 
         paths = [os.path.basename(f.path)
@@ -76,7 +80,7 @@ class decrypt(Command):
 
     def execute(self):
         gpg = GPG()
-        passphrase = get_passphrase(self)
+        passphrase = get_passphrase(self, "password")
         if passphrase is None:
             self.fm.notify('Unable to read passphrase', bad=True)
             return
