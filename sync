@@ -13,7 +13,7 @@ shared_files=(
     # fonts configuration
     "$HOME/.config/fontconfig/ | fontconfig/"
     # git
-    "$HOME/.gitconfig | git/gitconfig"
+    "$HOME/.config/git/ | git/"
     # helix
     "$HOME/.config/helix/ | helix/"
     # zellij

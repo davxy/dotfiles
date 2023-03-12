@@ -1,0 +1,28 @@
+[user]
+name = Davide Galassi
+email = davxy@datawok.net
+signingkey = 0x9484AE9C0DE026ADF6A15A538F550699515C84CB
+
+[core]
+editor = hx
+pager = delta
+
+[gui]
+editor = hx
+
+[credential]
+helper = cache --timeout=3600
+
+[commit]
+gpgsign = true
+
+[alias]
+graph = log --graph --all --abbrev-commit --decorate=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+
+[delta]
+line-numbers = true
+syntax-theme = gruvbox-dark
+light = false
+navigate = true
+#plus-style = syntax
+#minus-style = syntax

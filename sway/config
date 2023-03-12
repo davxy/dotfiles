@@ -20,7 +20,7 @@ set $right l
 set $term alacritty
 
 # File explorer
-set $files ranger
+set $explorer $term -e ranger
 
 # Application launcher
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
@@ -112,7 +112,7 @@ input "type:tablet_tool" {
 bindsym $mod+Return exec $term
 
 # Start file explorer
-bindsym $mod+Shift+Return exec $term -e $files
+bindsym $mod+Shift+Return exec $explorer
 
 # Kill focused window
 bindsym $mod+Shift+q kill
