@@ -325,7 +325,7 @@ seat * hide_cursor 3000
 bar {
     swaybar_command waybar
     position top
-    #mode hide
+    mode hide
 }
 
 # Screenshot shortcuts
