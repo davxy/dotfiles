@@ -34,21 +34,16 @@ function ranger() {
 
 # Prevent nested `zellij` sessions
 function zellij() {
+    if [[ $1 == "exit" ]]; then
+        touch /tmp/zexit
+        exit
+    fi
     $zellij_bin "$@"
     # if [[ -z "$ZELLIJ" ]]; then
     #     $(which zellij) "$@"
     # else
     #     echo "can't create nested instances"
     # fi
-}
-
-# Special exit function that can leave a breadcrumb behind
-# to prevent closing the terminal on zellij exit.
-function exit() {
-    if [[ $1 == "z" || $1 == "zellij" ]]; then
-        touch /tmp/zexit
-    fi
-    builtin exit
 }
 
 # Start zellij session
@@ -157,13 +152,19 @@ alias tree='exa -T'
 alias cd=z
 
 # Disable START/STOP output control.
-# Do not interpret Ctrl-s and Ctrl-q as flow signals.
-# Why??? I don't remember why I require this -_-
+# Do not interpret Ctrl-s and Ctrl-q as flow signals for terminal output.
+# Zellij disables it anyway (but we may exit zellij)
 stty -ixon
 
 # Start gpg-agent as ssh-agent
-export SSH_AUTH_SOCK="/run/user/$(id -u)/gnupg/S.gpg-agent.ssh"
+# The gpg-agent need to be run once because ssh can't start it automatically.
+# (see gpg-agent man page for details under `--enable-ssh-support`)
+unset SSH_AGENT_PID
+export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 gpgconf --launch gpg-agent
+
+# Set GPG_TTY as stated in `man gpg-agent`
+export GPG_TTY=$(tty)
 
 # Enable vi mode
 set -o vi
