@@ -28,7 +28,9 @@ wrap-indicator = "↪ "
 
 [keys.normal]
 # Fast buffer switching
-C-q = ":bc"
+C-q = ":buffer-close"
+# Reflow
+C-r = ":reflow"
 # Vertical movement relative to hard lines
 j = "move_line_down"
 k = "move_line_up"
