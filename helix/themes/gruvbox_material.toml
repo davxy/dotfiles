@@ -1,5 +1,5 @@
-# Author : Jakub Bartodziej <kubabartodziej@gmail.com>
-# The theme uses the gruvbox dark palette with standard contrast: github.com/morhetz/gruvbox
+# Author : Davide Galassi <davxy@datawok.net>
+# Tweaks to the upstream "gruvbox.toml" theme
 
 "attribute" = "aqua1"
 "keyword" = { fg = "red1" }
@@ -33,10 +33,10 @@
 "diff.delta" = "orange1"
 "diff.minus" = "red1"
 
-"warning" = { fg = "orange1", bg = "bg1" }
-"error" = { fg = "red1", bg = "bg1" }
-"info" = { fg = "aqua1", bg = "bg1" }
-"hint" = { fg = "blue1", bg = "bg1" }
+"warning" = "orange1"
+"error" = "red1"
+"info" = "aqua1"
+"hint" = "blue1"
 
 "ui.background" = { bg = "bg0" }
 "ui.linenr" = { fg = "bg4" }
@@ -60,12 +60,14 @@
 "ui.menu.selected" = { fg = "bg2", bg = "blue1", modifiers = ["bold"] }
 "ui.virtual.whitespace" = "bg2"
 "ui.virtual.ruler" = { bg = "bg1" }
+"ui.virtual.inlay-hint" = { fg = "gray1", modifiers = ["italic"]  }
 
 "diagnostic" = { modifiers = ["underlined"] }
 
 "markup.heading" = "aqua1"
 "markup.bold" = { modifiers = ["bold"] }
 "markup.italic" = { modifiers = ["italic"] }
+"markup.strikethrough" = { modifiers = ["crossed_out"] }
 "markup.link.url" = { fg = "green1", modifiers = ["underlined"] }
 "markup.link.text" = "red1"
 "markup.raw" = "red1"
@@ -78,7 +80,6 @@ bg3 = "#665c54"
 bg4 = "#7c6f64"
 
 fg0 = "#fbf1c7"
-#fg1 = "#ebdbb2" # main foreground
 fg1 = "#d4be98" # main foreground
 fg2 = "#d5c4a1"
 fg3 = "#bdae93"
@@ -95,7 +96,6 @@ yellow0 = "#e78a4e"
 yellow1 = "#e3a84e"
 blue0 = "#7daea3"
 blue1 = "#7daea3"
-
 purple0 = "#b16286"
 purple1 = "#d3869b"
 aqua0 = "#689d6a"

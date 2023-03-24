@@ -1,17 +1,27 @@
+# ltex-ls config: https://valentjn.github.io/ltex/settings.html
 [[language]]
 name = "markdown"
 language-server = { command = "ltex-ls" }
 file-types = ["md", "txt", "adoc"]
 scope = "source.markdown"
 roots = []
+config = { ltex.disabledRules = { "en-US" = [
+  "PROFANITY",
+], "en-GB" = [
+  "PROFANITY",
+] }, ltex.dictionary = { "en-US" = [
+  "Subproblem",
+], "en-GB" = [
+  "Subproblem",
+] }, ltex.completionEnabled = true }
 
 [[language]]
 name = "rust"
 formatter = { command = "rustfmt", args = ["+nightly"] }
 
 # Language Server configuration
-[[language.config]]
-extraEnv = { CHALK_OVERFLOW_DEPTH = 3000, CHALK_SOLVER_MAX_SIZE = 1500 }
+# [[language.config]]
+# extraEnv = { CHALK_OVERFLOW_DEPTH = 3000, CHALK_SOLVER_MAX_SIZE = 1500 }
 
 # [language.debugger]
 # command = "codelldb"

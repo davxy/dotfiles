@@ -18,6 +18,7 @@ separator = "|"
 [editor.lsp]
 display-messages = true
 auto-signature-help = false
+display-inlay-hints = true
 
 [editor.search]
 smart-case = false
@@ -27,9 +28,8 @@ enable = true
 wrap-indicator = "↪ "
 
 [keys.normal]
-# Fast buffer switching
 C-q = ":buffer-close"
-# Reflow
+C-h = ":toggle lsp.display-inlay-hints"
 C-r = ":reflow"
 # Vertical movement relative to hard lines
 j = "move_line_down"
