@@ -156,6 +156,9 @@ alias cd=z
 # Zellij disables it anyway (but we may exit zellij)
 stty -ixon
 
+# Disable shell exit when reading EOF 
+set -o ignoreeof
+
 # Start gpg-agent as ssh-agent
 # The gpg-agent need to be run once because ssh can't start it automatically.
 # (see gpg-agent man page for details under `--enable-ssh-support`)
