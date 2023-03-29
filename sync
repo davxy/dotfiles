@@ -49,6 +49,8 @@ shared_files=(
     "$HOME/.config/networkmanager-dmenu/ | nm-dmenu/"
     # Mime associations
     "$HOME/.config/mimeapps.list | misc/mimeapps.list"
+    # OTP tool
+    "$HOME/.config/otp/ | otp/"
 )
 
 behemoth_files=(
