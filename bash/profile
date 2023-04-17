@@ -9,7 +9,7 @@
 #umask 022
 
 # Remember fzf search history
-export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history"
+export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 
 # Fix for lldb-14
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1016436
@@ -22,6 +22,11 @@ export EDITOR="/home/davxy/bin/hx"
 
 # Enable Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1
+
+# Exclude the specified folders from the zoxide database
+# export _ZO_EXCLUDE_DIRS="/mnt/data/*"
+# Resolve symlinks
+export _ZO_RESOLVE_SYMLINKS=1
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
