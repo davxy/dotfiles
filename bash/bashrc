@@ -150,11 +150,16 @@ alias la='exa -alg'
 alias tree='exa -T'
 # zoxide
 alias cd=z
+# cd aliases
+alias ze="fzf --bind 'enter:execute(rifle {})'"
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals for terminal output.
 # Zellij disables it anyway (but we may exit zellij)
 stty -ixon
+
+# Disable shell exit when reading EOF 
+set -o ignoreeof
 
 # Start gpg-agent as ssh-agent
 # The gpg-agent need to be run once because ssh can't start it automatically.
