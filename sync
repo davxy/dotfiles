@@ -18,10 +18,12 @@ shared_files=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
-    # sway
-    "$HOME/.config/sway/ | sway/"
+    # hyprland
+    "$HOME/.config/hypr/ | hypr/"
     # waybar
     "$HOME/.config/waybar/ | waybar/"
+    # swaylock
+    "$HOME/.config/swaylock/ | swaylock/"
     # wofi
     "$HOME/.config/wofi/ | wofi/"
     # wob
@@ -41,8 +43,6 @@ shared_files=(
     "$HOME/.lldb/scripts/ | lldb/scripts/"
     # X defaults
     "$HOME/.Xdefaults | misc/Xdefaults"
-    # nm-dmenu
-    "$HOME/.config/networkmanager-dmenu/ | nm-dmenu/"
     # Mime associations
     "$HOME/.config/mimeapps.list | misc/mimeapps.list"
     # OTP tool

@@ -29,6 +29,9 @@ export MOZ_ENABLE_WAYLAND=1
 # Resolve symlinks before adding directories to the database
 export _ZO_RESOLVE_SYMLINKS=1
 
+# WOB socket
+export WOB_SOCK="/run/user/$(id -u)/wob.sock"
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"

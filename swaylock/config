@@ -1,0 +1,31 @@
+# Take a screenshot before lock
+screenshots
+
+# Show clock
+clock
+
+# Blur effect applied to the screenshot
+effect-blur=7x5
+
+# To make the lock screen fade in
+fade-in=0.5
+
+# Do not ask for password for the first n seconds
+grace=5
+
+# Always show the indicator
+indicator
+
+# Indicator radius
+indicator-radius=100
+
+# Indicator thickness
+indicator-thickness=7
+
+# Indicator colors
+ring-color=d4be98
+key-hl-color=fe8019
+ring-ver-color=a9b665
+inside-ver-color=a9b665
+ring-wrong-color=ea6969
+inside-wrong-color=ea6969
