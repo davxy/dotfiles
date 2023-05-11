@@ -18,16 +18,12 @@ shared_files=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
-    # tmux
-    "$HOME/.config/tmux/ | tmux/"
     # sway
     "$HOME/.config/sway/ | sway/"
     # waybar
     "$HOME/.config/waybar/ | waybar/"
-    # rofi
-    "$HOME/.config/rofi/ | rofi/"
-    # rofimoji
-    "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
+    # wofi
+    "$HOME/.config/wofi/ | wofi/"
     # wob
     "$HOME/.config/wob/ | wob/"
     # alacritty

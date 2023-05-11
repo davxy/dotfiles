@@ -19,9 +19,6 @@ case $- in
       *) return;;
 esac
 
-zellij_bin="/home/davxy/.cargo/bin/zellij"
-starship_bin="/home/davxy/.local/bin/starship"
-
 # Prevent nested `ranger` sessions
 function ranger() {
     if [ -z "$RANGER_LEVEL" ]; then
@@ -33,30 +30,30 @@ function ranger() {
 }
 
 # Prevent nested `zellij` sessions
-function zellij() {
-    if [[ $1 == "exit" ]]; then
-        touch /tmp/zexit
-        exit
-    fi
-    $zellij_bin "$@"
-    # if [[ -z "$ZELLIJ" ]]; then
-    #     $(which zellij) "$@"
-    # else
-    #     echo "can't create nested instances"
-    # fi
-}
+#function zellij() {
+#    if [[ $1 == "exit" ]]; then
+#        touch /tmp/zexit
+#        exit
+#    fi
+#    $zellij_bin "$@"
+#    # if [[ -z "$ZELLIJ" ]]; then
+#    #     $(which zellij) "$@"
+#    # else
+#    #     echo "can't create nested instances"
+#    # fi
+#}
 
 # Start zellij session
 # Do this asap to prevent double execution of this script.
 # Inspired by: eval "$(zellij setup --generate-auto-start bash)"
-if [[ -z "$ZELLIJ" ]]; then
-    zellij
-    if [[ -f /tmp/zexit ]]; then
-        rm /tmp/zexit
-    else
-        exit
-    fi
-fi    
+#if [[ -z "$ZELLIJ" ]]; then
+#    zellij
+#    if [[ -f /tmp/zexit ]]; then
+#        rm /tmp/zexit
+#    else
+#        exit
+#    fi
+#fi    
 
 # Don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -136,6 +133,8 @@ if ! shopt -oq posix; then
     fi
 fi
 
+# helix
+alias hx=helix
 # alacritty
 alias term=alacritty
 # bat
@@ -192,4 +191,4 @@ _z_cd() {
 }
 
 # Start starship
-eval "$($starship_bin init bash)"
+eval "$(starship init bash)"
