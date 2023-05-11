@@ -10,8 +10,8 @@
     // -------------------------------------------------------------------------
 
     "bar_id": "bar-0",
-    "ipc": true,
-    "layer": "bottom",
+    "ipc": false,
+    "layer": "top",
     "position": "top",
     "height": 20,
 
@@ -20,8 +20,7 @@
     // -------------------------------------------------------------------------
 
     "modules-left": [
-        "sway/workspaces",
-        "sway/mode"
+        "wlr/workspaces"
     ],
 
     "modules-center": [
@@ -43,9 +42,9 @@
         "custom/separator",
         "cpu",
         "custom/separator",
-        "temperature"
-        // "custom/separator",
-        // "battery"
+        "temperature",
+        "custom/separator",
+        "battery"
     ],
 
     // -------------------------------------------------------------------------
@@ -81,8 +80,8 @@
     "network": {
         "interval": 3,
         "format-wifi": " {essid} ({signalStrength}%) {ifname}: {ipaddr}",
-        "format-ethernet": "{ifname}: {ipaddr}",
-        "format-disconnected": "⚠  Disconnected",
+        "format-ethernet": "  {ifname}: {ipaddr}",
+        "format-disconnected": "  disconnected",
         "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
         "on-click": "nm-dmenu"
     },
@@ -134,6 +133,11 @@
             "focused": "",
             "default": ""
         }
+    },
+
+    "wlr/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate"
     },
 
     "pulseaudio": {

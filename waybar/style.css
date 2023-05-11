@@ -49,7 +49,8 @@
 
 /* The whole bar */
 #waybar {
-    background: #323232;
+    background: rgba(0,0,0,0);
+    /*background: #323232;*/
     color: #d4be98;
 }
 
@@ -194,6 +195,13 @@ button:disabled {
     padding-right: 10px;
 }
 
+/* hyprland */
+#workspaces button.active {
+    color: #d4be98;
+    background-color: #525252;
+}
+
+/* sway */
 #workspaces button.focused {
     color: #d4be98;
     background-color: #525252;

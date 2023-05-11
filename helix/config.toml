@@ -28,7 +28,7 @@ smart-case = false
 
 [editor.soft-wrap]
 enable = true
-wrap-indicator = "↪ "
+wrap-indicator =" ⤷ "
 
 [keys.normal]
 C-q = ":buffer-close"

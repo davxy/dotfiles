@@ -1,0 +1,17 @@
+window {
+  margin: 0px;
+  background-color: #282828;
+}
+
+#input {
+  color: #282828;
+  background-color: #d4be98;
+}
+
+#text {
+  color: #d4be98;
+}
+
+#entry:selected {
+  background-color: #303030;
+}
