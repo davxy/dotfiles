@@ -1,6 +1,8 @@
 window {
-  margin: 1px;
+  opacity: 0.95;
+  border: 1px solid #d4be98;
   background-color: #282828;
+  border-radius: 10;
 }
 
 #input {
@@ -14,4 +16,5 @@ window {
 
 #entry:selected {
   background-color: #303030;
+  border: 1px solid #d4be98;
 }
