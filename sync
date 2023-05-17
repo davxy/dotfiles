@@ -38,6 +38,8 @@ shared_files=(
     "$HOME/.config/zathura/ | zathura/"
     # mako
     "$HOME/.config/mako/ | mako/"
+    # tridactyl
+    "$HOME/.config/tridactyl/ | tridactyl/"
     # lldb
     "$HOME/.lldbinit | lldb/lldbinit"
     "$HOME/.lldb/scripts/ | lldb/scripts/"
