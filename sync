@@ -29,8 +29,8 @@ shared_files=(
     "$HOME/.config/waybar/ | waybar/"
     # swaylock
     "$HOME/.config/swaylock/ | swaylock/"
-    # wofi
-    "$HOME/.config/wofi/ | wofi/"
+    # fuzzel
+    "$HOME/.config/fuzzel/ | fuzzel/"
     # rofimoji
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
     # wob
