@@ -13,8 +13,12 @@
 # - catbat
 # - alacritty
 
+echo "$(date) - bashrc START" >> ~/bash.log
+
 # If not running interactively (e.g. scp), don't do anything
-[[ $- != *i* ]] && return
+if [[ $- != *i* ]]; then
+    return
+fi
 
 PS1='[\u@\h \W]\$ '
 
@@ -144,3 +148,4 @@ _z_cd() {
 # Start starship
 eval "$(starship init bash)"
 
+echo "$(date) - bashrc END" >> ~/bash.log

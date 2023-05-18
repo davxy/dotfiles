@@ -8,6 +8,7 @@ SYNC="rsync -av --progress --delete"
 shared_files=(
     # bash
     "$HOME/.bashrc | bash/bashrc"
+    "$HOME/.bash_profile | bash/bash_profile"
     "$HOME/.profile | bash/profile"
     "$HOME/.inputrc | bash/inputrc"
     # fonts configuration
@@ -47,6 +48,8 @@ shared_files=(
     "$HOME/.Xdefaults | misc/Xdefaults"
     # Mime associations
     "$HOME/.config/mimeapps.list | misc/mimeapps.list"
+    # ssh
+    "$HOME/.ssh/config | ssh/config"
     # OTP tool
     "$HOME/.config/otp/ | otp/"
 )
