@@ -10,7 +10,7 @@
 # - starship
 # - exa
 # - zoxide
-# - catbat
+# - bat
 # - alacritty
 
 # If not running interactively (e.g. scp), don't do anything
@@ -143,4 +143,3 @@ _z_cd() {
 
 # Start starship
 eval "$(starship init bash)"
-
