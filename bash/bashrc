@@ -67,7 +67,14 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+# PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Save the current directory to a file
+PROMPT_COMMAND='echo "$PWD" > /tmp/last_visited'
+# Restore the last visited folder when a new terminal is opened
+if [[ -f /tmp/last_visited ]]; then
+    cd $(cat /tmp/last_visited)
+fi
 
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -144,6 +151,7 @@ _z_cd() {
         echo "$PWD"
     fi
 }
+
 
 # Start starship
 eval "$(starship init bash)"
