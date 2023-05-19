@@ -23,7 +23,7 @@ class rf(Command):
 
         rg_cmd = "rg . --line-number --column --no-heading --glob '!.git'"
 
-        preview_cmd = "batcat --style=full --color=always --highlight-line {2} {1}"
+        preview_cmd = "bat --style=full --color=always --highlight-line {2} {1}"
         preview_win = "up,~4,+{2}+4/2"
 
         fzf_cmd = "fzf --no-multi --no-sort --tac --exact --delimiter : --nth 4.. --preview '{}' --preview-window '{}'".format(preview_cmd, preview_win)
