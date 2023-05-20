@@ -70,10 +70,10 @@ HISTFILESIZE=2000
 # PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # Save the current directory to a file
-PROMPT_COMMAND='echo "$PWD" > /tmp/last_visited'
+PROMPT_COMMAND='echo "$PWD" > /tmp/last_dir'
 # Restore the last visited folder when a new terminal is opened
-if [[ -f /tmp/last_visited ]]; then
-    cd $(cat /tmp/last_visited)
+if [[ -f /tmp/last_dir ]]; then
+    cd $(cat /tmp/last_dir)
 fi
 
 # Check the window size after each command and, if necessary,

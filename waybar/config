@@ -20,7 +20,8 @@
     // -------------------------------------------------------------------------
 
     "modules-left": [
-        "wlr/workspaces"
+        "wlr/workspaces",
+        "custom/last-dir"
     ],
 
     "modules-center": [
@@ -192,5 +193,10 @@
 
     "sway/mode": {
         "format": " {}"
+    },
+
+    "custom/last-dir": {
+        "exec": "cat /tmp/last_dir",
+        "interval": 1
     }
 }
