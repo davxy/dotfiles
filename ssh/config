@@ -4,11 +4,6 @@ Host github.com
 	IdentitiesOnly yes
 
 Host behemoth
-	Port 22
-	User davxy
-	# IdentityFile ~/.ssh/id-ed25519
-
-Host behemoth
 	User davxy
 	# IdentityFile ~/.ssh/id-ed25519
 	RemoteForward /run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent
