@@ -84,7 +84,7 @@
         "format-ethernet": "  {ifname}: {ipaddr}",
         "format-disconnected": "  disconnected",
         "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
-        "on-click": "nm-dmenu"
+        "on-click": "alacritty -e ip addr"
     },
 
     "network#parity-vpn": {
