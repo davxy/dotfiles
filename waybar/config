@@ -55,7 +55,8 @@
     "clock": {
         "interval": 1,        
         "format": "{:%a - %e %b %Y - %H:%M}",
-        "tooltip": false
+        "tooltip": false,
+        "on-click": "thunderbird -calendar"
     },
 
     "cpu": {
@@ -65,7 +66,7 @@
           "warning": 70,
           "critical": 90
         },
-        "on-click": "alacritty -e btm"
+        "on-click": "alacritty --class floating -e btm"
     },
 
     "memory": {
@@ -75,7 +76,7 @@
             "warning": 70,
             "critical": 90
         },
-        "on-click": "alacritty -e btm"
+        "on-click": "alacritty --class floating -e btm"
     },
 
     "network": {
@@ -84,7 +85,7 @@
         "format-ethernet": "  {ifname}: {ipaddr}",
         "format-disconnected": "  disconnected",
         "tooltip-format": "↑{bandwidthUpBits} ↓{bandwidthDownBits}",
-        "on-click": "alacritty -e ip addr"
+        "on-click": "alacritty --class floating --hold -e sh -c 'sleep 0.1; ip --color addr'"
     },
 
     "network#parity-vpn": {
@@ -163,7 +164,7 @@
         "format": "{icon} {temperatureC}°C",
         "format-icons": [ "", "", "", "", "" ],
         "tooltip": false,
-        "on-click": "alacritty -e btm"
+        "on-click": "alacritty --class floating -e btm"
     },
 
     "tray": {

@@ -34,3 +34,11 @@ colors:
     blue:    '0x7daea3'
     magenta: '0xd3869b'
     cyan:    '0x89b482'
+
+font:
+  normal:
+    family: monospace
+    style: Regular
+  bold:
+    family: monospace
+    style: Bold
