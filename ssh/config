@@ -5,6 +5,15 @@ Host github.com
 
 Host behemoth
 	User davxy
-	# IdentityFile ~/.ssh/id-ed25519
+	IdentitiesOnly yes
 	RemoteForward /run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent
 	RemoteForward /run/user/1000/gnupg/S.gpg-agent.ssh /run/user/1000/gnupg/S.gpg-agent.ssh
+
+Host rabbithole
+	User pi
+	IdentitiesOnly yes
+
+Host datawok
+	User pi
+	Port 2809
+	IdentitiesOnly yes

@@ -23,7 +23,7 @@ fi
 if [[ -z "$ZELLIJ" ]]; then
     # short sleep to prevent ending up with strange artifacts
     # when using Hyprland animations
-    sleep 0.02
+    sleep 0.03
     zellij
     if [[ -f /tmp/zexit ]]; then
         rm /tmp/zexit

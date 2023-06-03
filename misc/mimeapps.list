@@ -1,17 +1,17 @@
 [Default Applications]
-x-scheme-handler/mailto=userapp-Thunderbird-2LLE51.desktop
-message/rfc822=userapp-Thunderbird-2LLE51.desktop
-x-scheme-handler/mid=userapp-Thunderbird-2LLE51.desktop
-x-scheme-handler/news=userapp-Thunderbird-6LMF51.desktop
-x-scheme-handler/snews=userapp-Thunderbird-6LMF51.desktop
-x-scheme-handler/nntp=userapp-Thunderbird-6LMF51.desktop
-x-scheme-handler/feed=userapp-Thunderbird-8I6F51.desktop
-application/rss+xml=userapp-Thunderbird-8I6F51.desktop
-application/x-extension-rss=userapp-Thunderbird-8I6F51.desktop
-x-scheme-handler/webcal=userapp-Thunderbird-8CEB51.desktop
-text/calendar=userapp-Thunderbird-8CEB51.desktop
-application/x-extension-ics=userapp-Thunderbird-8CEB51.desktop
-x-scheme-handler/webcals=userapp-Thunderbird-8CEB51.desktop
+x-scheme-handler/mailto=userapp-Thunderbird-4E7V51.desktop
+message/rfc822=userapp-Thunderbird-4E7V51.desktop
+x-scheme-handler/mid=userapp-Thunderbird-4E7V51.desktop
+x-scheme-handler/news=userapp-Thunderbird-23K351.desktop
+x-scheme-handler/snews=userapp-Thunderbird-23K351.desktop
+x-scheme-handler/nntp=userapp-Thunderbird-23K351.desktop
+x-scheme-handler/feed=userapp-Thunderbird-41K451.desktop
+application/rss+xml=userapp-Thunderbird-41K451.desktop
+application/x-extension-rss=userapp-Thunderbird-41K451.desktop
+x-scheme-handler/webcal=userapp-Thunderbird-5F8Z51.desktop
+text/calendar=userapp-Thunderbird-5F8Z51.desktop
+application/x-extension-ics=userapp-Thunderbird-5F8Z51.desktop
+x-scheme-handler/webcals=userapp-Thunderbird-5F8Z51.desktop
 text/x-chdr=helix.desktop
 text/x-csrc=helix.desktop
 text/markdown=helix.desktop
@@ -30,19 +30,17 @@ application/x-extension-xht=firefox.desktop
 application/pdf=org.pwmt.zathura.desktop
 inode/directory=ranger.desktop
 
-# Additional associations of applicationns with mimetypes as if the
-# .desktop file was listing this mimetype in the first place
 [Added Associations]
-x-scheme-handler/mailto=userapp-Thunderbird-E8SZH1.desktop;userapp-Thunderbird-2LLE51.desktop;
-x-scheme-handler/mid=userapp-Thunderbird-E8SZH1.desktop;userapp-Thunderbird-2LLE51.desktop;
-x-scheme-handler/news=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;
-x-scheme-handler/snews=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;
-x-scheme-handler/nntp=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;
-x-scheme-handler/feed=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;
-application/rss+xml=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;
-application/x-extension-rss=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;
-x-scheme-handler/webcal=userapp-Thunderbird-W1L0H1.desktop;userapp-Thunderbird-8CEB51.desktop;
-x-scheme-handler/webcals=userapp-Thunderbird-W1L0H1.desktop;userapp-Thunderbird-8CEB51.desktop;
+x-scheme-handler/mailto=userapp-Thunderbird-E8SZH1.desktop;userapp-Thunderbird-2LLE51.desktop;userapp-Thunderbird-4E7V51.desktop;
+x-scheme-handler/mid=userapp-Thunderbird-E8SZH1.desktop;userapp-Thunderbird-2LLE51.desktop;userapp-Thunderbird-4E7V51.desktop;
+x-scheme-handler/news=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;userapp-Thunderbird-23K351.desktop;
+x-scheme-handler/snews=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;userapp-Thunderbird-23K351.desktop;
+x-scheme-handler/nntp=userapp-Thunderbird-OT0YH1.desktop;userapp-Thunderbird-6LMF51.desktop;userapp-Thunderbird-23K351.desktop;
+x-scheme-handler/feed=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;userapp-Thunderbird-41K451.desktop;
+application/rss+xml=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;userapp-Thunderbird-41K451.desktop;
+application/x-extension-rss=userapp-Thunderbird-RED1H1.desktop;userapp-Thunderbird-8I6F51.desktop;userapp-Thunderbird-41K451.desktop;
+x-scheme-handler/webcal=userapp-Thunderbird-W1L0H1.desktop;userapp-Thunderbird-8CEB51.desktop;userapp-Thunderbird-5F8Z51.desktop;
+x-scheme-handler/webcals=userapp-Thunderbird-W1L0H1.desktop;userapp-Thunderbird-8CEB51.desktop;userapp-Thunderbird-5F8Z51.desktop;
 text/x-chdr=helix.desktop;
 text/x-csrc=helix.desktop;
 text/markdown=helix.desktop;
@@ -64,6 +62,4 @@ application/xhtml+xml=firefox.desktop;
 application/x-extension-xhtml=firefox.desktop;
 application/x-extension-xht=firefox.desktop;
 
-# Removes associations of applications with mimetypes, as if the .desktop file
-# was NOT listing this mimetype in the first place.
 [Removed Associations]
