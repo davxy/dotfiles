@@ -104,7 +104,6 @@ alias la='exa -alg'
 alias tree='exa -T'
 # zoxide
 alias cd=z
-# cd aliases
 alias ze="fzf --bind 'enter:execute(rifle {})'"
 
 # Disable START/STOP output control.
