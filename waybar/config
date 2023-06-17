@@ -21,7 +21,7 @@
 
     "modules-left": [
         "wlr/workspaces",
-        "custom/last-dir"
+        "custom/last-dir",
     ],
 
     "modules-center": [
@@ -57,6 +57,10 @@
         "format": "{:%a - %e %b %Y - %H:%M}",
         "tooltip": false,
         "on-click": "thunderbird -calendar"
+    },
+
+    "hyprland/window": {
+        "separate-outputs": true
     },
 
     "cpu": {
@@ -116,11 +120,6 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
-    "sway/window": {
-        "format": "  {}  ",
-        "max-length": 60
-    },
-
     "sway/workspaces": {
         "all-outputs": false,
         "disable-scroll": true,
@@ -139,7 +138,8 @@
 
     "wlr/workspaces": {
         "format": "{icon}",
-        "on-click": "activate"
+        "on-click": "activate",
+        "sort-by-number": true,
     },
 
     "pulseaudio": {
