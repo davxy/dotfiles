@@ -127,7 +127,6 @@ export GPG_TTY=$(tty)
 #gpg-connect-agent reloadagent /bye > /dev/null
 gpg-connect-agent updatestartuptty /bye > /dev/null
 
-
 # Enable vi mode
 set -o vi
 
@@ -141,15 +140,6 @@ source "$HOME/.cargo/env"
 
 # Start zoxide
 eval "$(zoxide init bash)"
-# v0.4.0 doesn't use 'builtin cd' and thus triggers recusion if using cd alias
-# Remove as soon as new version is released:
-# https://tracker.debian.org/pkg/rust-zoxide
-_z_cd() {
-    builtin cd "$@" || return "$?"
-    if [ "$_ZO_ECHO" = "1" ]; then
-        echo "$PWD"
-    fi
-}
 
 # Start starship
 eval "$(starship init bash)"
