@@ -3,7 +3,6 @@
 # Tool to synchronize versioned and system dot files.
 #
 # Depends on:
-# - hostname
 # - rsync
 
 SYNC="rsync -av --progress --delete"
@@ -131,12 +130,12 @@ function sync_files() {
 
 sync_files "${shared_files[@]}"
 
-if [[ $(hostname) = "behemoth" ]]; then
+if [[ $HOSTNAME = "behemoth" ]]; then
     echo "SYNCING BEHEMOTH"
     sync_files "${behemoth_files[@]}"
 fi
 
-if [[ $(hostname) = "workmule" ]]; then
+if [[ $HOSTNAME = "workmule" ]]; then
     echo "SYNCING WORKMULE"
     sync_files "${workmule_files[@]}"
 fi
