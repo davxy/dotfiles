@@ -41,7 +41,7 @@
 "ui.background" = { bg = "bg0" }
 "ui.linenr" = { fg = "bg4" }
 "ui.linenr.selected" = { fg = "yellow1" }
-"ui.cursorline" = { bg = "bg1" }
+"ui.cursorline" = { bg = "bg_line" }
 "ui.statusline" = { fg = "fg1", bg = "bg2" }
 "ui.statusline.normal" = { fg = "fg1", bg = "bg2" }
 "ui.statusline.insert" = { fg = "fg1", bg = "blue0" }
@@ -78,6 +78,7 @@ bg1 = "#3c3836"
 bg2 = "#504945"
 bg3 = "#665c54"
 bg4 = "#7c6f64"
+bg_line = "#303030" # cursor line background
 
 fg0 = "#fbf1c7"
 fg1 = "#d4be98" # main foreground

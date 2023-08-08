@@ -9,8 +9,8 @@ bufferline = "always"
 
 [editor.cursor-shape]
 insert = "bar"
-normal = "block"
-select = "block"
+normal = "underline"
+select = "underline"
 
 [editor.statusline]
 left = ["mode", "version-control", "spinner"]

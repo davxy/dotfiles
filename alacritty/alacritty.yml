@@ -7,6 +7,7 @@ cursor:
     shape: Block
     blinking: Always
   blink_interval: 500
+  blink_timeout: 10
 
 window:
   # Looks like its is not working
