@@ -30,9 +30,14 @@ formatter = { command = "rustfmt", args = ["+nightly"] }
 # transport = "tcp"
 
 [language.debugger]
-command = "lldb-vscode-14"
-name = "lldb-vscode-14"
-transport = "stdio"
+command = "lldb-vscode"
+name = "lldb-vscode"
+port-arg = "--port {}"
+transport = "tcp"
+
+# [language.debugger]
+# command = "lldb"
+# transport = "stdio"
 
 [[language.debugger.templates]]
 name = "binary"
