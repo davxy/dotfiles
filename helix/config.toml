@@ -20,8 +20,9 @@ separator = " | "
 
 [editor.lsp]
 display-messages = true
-auto-signature-help = false
-display-inlay-hints = true
+auto-signature-help = true
+display-signature-help-docs = false
+display-inlay-hints = false
 
 [editor.search]
 smart-case = false
@@ -31,9 +32,6 @@ enable = true
 wrap-indicator =" ⤷ "
 
 [keys.normal]
-C-q = ":buffer-close"
-C-h = ":toggle lsp.display-inlay-hints"
-C-r = ":reflow"
 # Vertical movement relative to hard lines
 j = "move_line_down"
 k = "move_line_up"
@@ -47,9 +45,13 @@ pageup = "no_op"
 pagedown = "no_op"
 home = "no_op"
 end = "no_op"
-# Show signature help
-C-space = "signature_help"
 "*" = ["move_prev_word_start", "move_next_word_end", "search_selection", "global_search"]
 
 [keys.insert]
 C-space = "completion"
+
+# Add some custom binding to the space menu
+[keys.normal.'space']
+c = ":buffer-close" # Close buffer
+h = ":toggle lsp.display-inlay-hints"
+r = ":reflow"
