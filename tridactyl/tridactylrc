@@ -1,3 +1,5 @@
+" Use `:viewconfig` to view all current bindings
+"
 " Reference: https://git.jonathanh.co.uk/jab2870/Dotfiles/src/branch/master/tridactyl/.config/tridactyl/tridactylrc#L65"
 
 """"""""""""""""""
@@ -19,8 +21,14 @@ set searchurls.wb https://web.archive.org/web/*/%s
 
 " Ctrl-F should use the browser's native 'find' functionality.
 " unbind <C-f>
-
 bind / fillcmdline find
 bind ? fillcmdline find -?
-bind n findnext 1
-bind N findnext -1
+bind n findnext
+bind N findnext --reverse
+
+" default value is too much
+bind j scrollline 5
+bind k scrollline -5
+
+" hint and open in new tab
+bind F hint -t

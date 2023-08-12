@@ -14,3 +14,10 @@ File: `.config/gtk-{3,4}.0/settings.ini`
 [Settings]
 gtk-application-prefer-dark-theme=1
 ```
+
+### Firefox
+
+Disable `quit` shortcut
+- open `about:config`
+- search for `quitShortcut.disabled`
+- set it to `true`
