@@ -45,13 +45,17 @@ pageup = "no_op"
 pagedown = "no_op"
 home = "no_op"
 end = "no_op"
-"*" = ["move_prev_word_start", "move_next_word_end", "search_selection", "global_search"]
 
 [keys.insert]
 C-space = "completion"
 
 # Add some custom binding to the space menu
 [keys.normal.'space']
-c = ":buffer-close" # Close buffer
+c = ":buffer-close"
 h = ":toggle lsp.display-inlay-hints"
 r = ":reflow"
+
+[keys.normal.'space'.'space']
+r = ["extend_line_below", ":reflow"]
+s = ["move_prev_word_start", "move_next_word_end", "surround_add"]
+"*" = ["move_prev_word_start", "move_next_word_end", "search_selection", "global_search"]
