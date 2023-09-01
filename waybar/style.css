@@ -50,7 +50,6 @@
 /* The whole bar */
 #waybar {
     background: rgba(0,0,0,0);
-    /*background: #323232;*/
     color: #d4be98;
 }
 
