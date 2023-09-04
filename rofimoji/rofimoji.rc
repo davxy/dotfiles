@@ -1,1 +1,7 @@
-files = [emojis, math, superscripts_and_subscripts]
+# To search for a group: https://unicodeplus.com/
+#
+# Blocks:
+# - Latin extended c: { ⱼ }
+# - Phonetic Extensions: { ᵢ }
+
+files = [emojis, math, superscripts_and_subscripts, phonetic_extensions, spacing_modifier_letters, latin_extended-c]
