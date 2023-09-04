@@ -4,9 +4,9 @@ from ranger.ext.get_executables import get_executables
 import subprocess
 import os
 
-class rf(Command):
+class ff(Command):
     """
-    :rf
+    :ff
     Search into files using fzf and rg.
     """
 
