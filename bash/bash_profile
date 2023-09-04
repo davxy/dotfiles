@@ -9,7 +9,6 @@ export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 export PYTHONPATH="/usr/lib/llvm-14/lib/python3.11/dist-packages"
 
 # Default editor
-# TODO: Once we have a proper package replace with `/usr/bin/hx`
 export EDITOR="/home/davxy/bin/hx"
 
 # Enable Wayland for Firefox

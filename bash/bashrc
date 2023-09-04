@@ -56,7 +56,7 @@ function __prompt_command_hook() {
     # Update last visited dir
     echo $PWD > /tmp/last_dir
     # Update global history
-    history -a; history -c; history -r
+    #history -a; history -c; history -r
 }
 PROMPT_COMMAND="__prompt_command_hook"
 
