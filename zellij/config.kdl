@@ -221,6 +221,13 @@ keybinds clear-defaults=true {
     session {
         bind "Ctrl c" { SwitchToMode "Normal"; }
         bind "d" { Detach; }
+        bind "w" {
+            LaunchOrFocusPlugin "zellij:session-manager" {
+                floating true
+                move_to_focused_tab true
+            };
+            SwitchToMode "Normal"
+        }
     }
     tmux {
         bind "[" { SwitchToMode "Scroll"; }
@@ -287,6 +294,7 @@ plugins {
     status-bar { path "status-bar"; }
     strider { path "strider"; }
     compact-bar { path "compact-bar"; }
+    session-manager { path "session-manager"; }
 }
 
 // Define color themes for Zellij
