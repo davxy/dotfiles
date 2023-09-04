@@ -5,15 +5,15 @@ language-server = { command = "ltex-ls" }
 file-types = ["md", "txt", "adoc"]
 scope = "source.markdown"
 roots = []
-config = { ltex.disabledRules = { "en-US" = [
-  "PROFANITY",
-], "en-GB" = [
-  "PROFANITY",
-] }, ltex.dictionary = { "en-US" = [
-  "Subproblem",
-], "en-GB" = [
-  "Subproblem",
-] }, ltex.completionEnabled = true }
+# config = { ltex.disabledRules = { "en-US" = [
+#   "PROFANITY",
+# ], "en-GB" = [
+#   "PROFANITY",
+# ] }, ltex.dictionary = { "en-US" = [
+#   "Subproblem",
+# ], "en-GB" = [
+#   "Subproblem",
+# ] }, ltex.completionEnabled = true }
 
 [[language]]
 name = "rust"

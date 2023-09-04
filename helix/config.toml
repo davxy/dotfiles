@@ -13,10 +13,10 @@ normal = "underline"
 select = "underline"
 
 [editor.statusline]
-left = ["mode", "version-control", "spinner"]
+left = ["mode", "spinner"]
 center = ["file-name"]
-right = ["diagnostics", "selections", "position-percentage", "position"]
-separator = " | "
+right = ["diagnostics", "position-percentage", "position"]
+# separator = "|"
 
 [editor.lsp]
 display-messages = true
@@ -41,6 +41,8 @@ C-k = "move_visual_line_up"
 # Invalidate some keys
 right = "no_op"
 left = "no_op"
+up = "no_op"
+down = "no_op"
 pageup = "no_op"
 pagedown = "no_op"
 home = "no_op"
@@ -54,8 +56,31 @@ C-space = "completion"
 c = ":buffer-close"
 h = ":toggle lsp.display-inlay-hints"
 r = ":reflow"
+f = "file_picker_in_current_directory"
+F = "file_picker"
 
+# Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
-r = ["extend_line_below", ":reflow"]
-s = ["move_prev_word_start", "move_next_word_end", "surround_add"]
-"*" = ["move_prev_word_start", "move_next_word_end", "search_selection", "global_search"]
+# r = ["extend_line_below", ":reflow"]
+# s = ["move_prev_word_start", "move_next_word_end", "surround_add"]
+"*" = ["move_prev_word_start", "move_next_word_end", "search_selection"]
+
+# Extensions using custom script
+# Interactive search in current working directory
+s = ":pipe-to helix-ext search --current"
+# Interactive search in current working directory (include path name in the search)
+S = ":pipe-to helix-ext search --current-inc-path"
+# Interactive search in current git directory
+w = ":pipe-to helix-ext search --workspace"
+# Interactive search in current git directory (include path name in the search)
+W = ":pipe-to helix-ext search --workspace-inc-path"
+# Interactive search in current buffer
+b = ":pipe-to helix-ext search --buffer"
+# Git status
+m = ":pipe-to helix-ext git --status"
+# Git blame
+B = ":pipe-to helix-ext git --blame"
+# Git browse github repo using default browser
+O = ":pipe-to helix-ext git --browse"
+
+t = ":pipe-to helix-ext nav"
