@@ -60,7 +60,7 @@
     },
 
     "hyprland/window": {
-        "separate-outputs": true
+        "separate-outputs": false
     },
 
     "cpu": {
@@ -120,24 +120,8 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
-    "sway/workspaces": {
-        "all-outputs": false,
-        "disable-scroll": true,
-        "format": "{icon} {name}",
-        "format-icons": {
-            "1:www": "龜", // Icon: firefox-browser
-            "2:mail": "", // Icon: mail
-            "3:editor": "", // Icon: code
-            "4:terminals": "", // Icon: terminal
-            "5:portal": "", // Icon: terminal
-            "urgent": "",
-            "focused": "",
-            "default": ""
-        }
-    },
-
     "wlr/workspaces": {
-        "format": "{icon}",
+        "format": "{name}",
         "on-click": "activate",
         "sort-by-number": true,
     },
