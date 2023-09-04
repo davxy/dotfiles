@@ -82,5 +82,5 @@ m = ":pipe-to helix-ext git --status"
 B = ":pipe-to helix-ext git --blame"
 # Git browse github repo using default browser
 O = ":pipe-to helix-ext git --browse"
-
-t = ":pipe-to helix-ext nav"
+# Diff current buffer with content on disk
+d = ":pipe-to helix-ext diff"
