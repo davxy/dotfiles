@@ -20,7 +20,7 @@
     // -------------------------------------------------------------------------
 
     "modules-left": [
-        "wlr/workspaces",
+        "hyprland/workspaces",
         "custom/last-dir",
     ],
 
@@ -120,10 +120,10 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
-    "wlr/workspaces": {
+    "hyprland/workspaces": {
         "format": "{name}",
         "on-click": "activate",
-        "sort-by-number": true,
+        "sort-by-number": true
     },
 
     "pulseaudio": {
