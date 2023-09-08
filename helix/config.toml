@@ -76,6 +76,8 @@ w = ":pipe-to helix-ext search --workspace"
 W = ":pipe-to helix-ext search --workspace-inc-path"
 # Interactive search in current buffer
 b = ":pipe-to helix-ext search --buffer"
+# Git-ui
+g = ":pipe-to helix-ext git --ui"
 # Git status
 m = ":pipe-to helix-ext git --status"
 # Git blame
@@ -84,3 +86,5 @@ B = ":pipe-to helix-ext git --blame"
 O = ":pipe-to helix-ext git --browse"
 # Diff current buffer with content on disk
 d = ":pipe-to helix-ext diff"
+# Files tree
+t = ":pipe-to helix-ext tree"
