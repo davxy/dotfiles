@@ -89,7 +89,9 @@ if ! shopt -oq posix; then
 fi
 
 # helix
-alias hx=helix
+if ! which "hx" >/dev/null 2>&1; then
+    alias hx='helix'
+fi
 # alacritty
 alias term=alacritty
 # bat
@@ -135,7 +137,7 @@ source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 
 # Manually source broot commands
-source /home/davxy/.config/broot/launcher/bash/br
+source "$HOME/.config/broot/launcher/bash/br"
 
 # Cargo
 source "$HOME/.cargo/env"
