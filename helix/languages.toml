@@ -1,7 +1,7 @@
 # ltex-ls config: https://valentjn.github.io/ltex/settings.html
 [[language]]
 name = "markdown"
-language-server = { command = "ltex-ls" }
+language-servers = [ "ltex-ls" ]
 file-types = ["md", "txt", "adoc"]
 scope = "source.markdown"
 roots = []

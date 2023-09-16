@@ -15,8 +15,7 @@ select = "underline"
 [editor.statusline]
 left = ["mode", "spinner"]
 center = ["file-name"]
-right = ["diagnostics", "position-percentage", "position"]
-# separator = "|"
+right = ["register", "diagnostics", "position-percentage", "position"]
 
 [editor.lsp]
 display-messages = true
@@ -39,14 +38,14 @@ k = "move_line_up"
 C-j = "move_visual_line_down"
 C-k = "move_visual_line_up"
 # Invalidate some keys
-right = "no_op"
-left = "no_op"
-up = "no_op"
-down = "no_op"
-pageup = "no_op"
-pagedown = "no_op"
-home = "no_op"
-end = "no_op"
+# right = "no_op"
+# left = "no_op"
+# up = "no_op"
+# down = "no_op"
+# pageup = "no_op"
+# pagedown = "no_op"
+# home = "no_op"
+# end = "no_op"
 
 [keys.insert]
 C-space = "completion"
@@ -88,3 +87,10 @@ O = ":pipe-to helix-ext git --browse"
 d = ":pipe-to helix-ext diff"
 # Files tree
 t = ":pipe-to helix-ext tree"
+# Terminal
+T = ":pipe-to helix-ext term"
+# Cleanup helix-ext data
+C = ":pipe-to helix-ext clean"
+
+z = "shrink_selection"
+Z = "expand_selection"
