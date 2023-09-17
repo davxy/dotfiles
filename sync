@@ -38,6 +38,8 @@ shared_files=(
     "$HOME/.config/wob/ | wob/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
+    # broot
+    "$HOME/.config/broot/ | broot/"
     # ranger
     "$HOME/.config/ranger/ | ranger/"
     # gitui
