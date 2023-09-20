@@ -2,16 +2,16 @@
 #
 # executed by bash(1) for non-login shells.
 #
-# Version 0.2.0
+# Version 0.2.1
 #
 # Dependencies:
+# - alacritty
 # - zellij
-# - ranger
 # - starship
+# - ranger
 # - eza
 # - zoxide
 # - bat
-# - alacritty
 
 # If not running interactively (e.g. scp), don't do anything
 if [[ $- != *i* ]]; then
@@ -132,19 +132,16 @@ gpg-connect-agent updatestartuptty /bye > /dev/null
 set -o vi
 
 # Manually source fzf completions
-# (otherwise we require to trigger it once using fzf+<tab>)
+# (otherwise we require to trigger fzf once using fzf+<tab>)
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 
 # Manually source broot commands
 source "$HOME/.config/broot/launcher/bash/br"
 
-# Cargo
-source "$HOME/.cargo/env"
-
-# Start zoxide
+# Initialize zoxide
 eval "$(zoxide init bash)"
 
-# Start starship
+# Initialize starship
 eval "$(starship init bash)"
 

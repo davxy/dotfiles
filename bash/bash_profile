@@ -1,15 +1,27 @@
 # ~/.bash_profile
+#
+# Version 0.1.0
 
-# Remember fzf search history
+# Add user's private binaries
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Add binaries installed via 'cargo' to PATH
+if [ -d "$HOME/.cargo/bin" ] ; then
+    PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# Add more binaries
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# Default options for 'fzf'
 export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 
-# Fix for lldb-14
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1016436
-# Probably solved in lldb-15?
-export PYTHONPATH="/usr/lib/llvm-14/lib/python3.11/dist-packages"
-
 # Default editor
-export EDITOR="/home/davxy/bin/hx"
+export EDITOR="$HOME/bin/hx"
 
 # Enable Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1
@@ -26,17 +38,7 @@ export WOB_SOCK="/run/user/$(id -u)/wob.sock"
 # Dark theme for gtk applications
 export GTK_THEME="Adwaita:dark"
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# include .bashrc if it exists
+# Include .bashrc if it exists
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
 fi
