@@ -37,15 +37,6 @@ k = "move_line_up"
 # Vertical movement relative to warped lines
 C-j = "move_visual_line_down"
 C-k = "move_visual_line_up"
-# Invalidate some keys
-# right = "no_op"
-# left = "no_op"
-# up = "no_op"
-# down = "no_op"
-# pageup = "no_op"
-# pagedown = "no_op"
-# home = "no_op"
-# end = "no_op"
 
 [keys.insert]
 C-space = "completion"
@@ -60,8 +51,6 @@ F = "file_picker"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
-# r = ["extend_line_below", ":reflow"]
-# s = ["move_prev_word_start", "move_next_word_end", "surround_add"]
 "*" = ["move_prev_word_start", "move_next_word_end", "search_selection"]
 
 # Extensions using custom script
@@ -83,6 +72,8 @@ m = ":pipe-to helix-ext git --status"
 B = ":pipe-to helix-ext git --blame"
 # Git browse github repo using default browser
 O = ":pipe-to helix-ext git --browse"
+# Markdown toc
+i = ":pipe-to helix-ext markdown --toc"
 # Diff current buffer with content on disk
 d = ":pipe-to helix-ext diff"
 # Files tree
