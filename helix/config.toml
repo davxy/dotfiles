@@ -1,4 +1,5 @@
 theme = "gruvbox_material"
+# theme = "gruvbox_light"
 
 [editor]
 line-number = "relative"
@@ -51,8 +52,6 @@ F = "file_picker"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
-"*" = ["move_prev_word_start", "move_next_word_end", "search_selection"]
-
 # Extensions using custom script
 # Interactive search in current working directory
 s = ":pipe-to helix-ext search --current"
