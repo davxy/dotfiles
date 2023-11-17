@@ -14,9 +14,10 @@ normal = "underline"
 select = "underline"
 
 [editor.statusline]
-left = ["mode", "spinner"]
+left = ["mode", "spacer", "spinner"]
 center = ["file-name"]
-right = ["register", "diagnostics", "position-percentage", "position"]
+right = ["register", "separator", "diagnostics", "separator", "primary-selection-length", "separator", "position-percentage", "separator", "position"]
+separator = "  "
 
 [editor.lsp]
 display-messages = true
