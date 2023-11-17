@@ -97,6 +97,9 @@ copy_command "wl-copy"
 //
 // mirror_session true
 
+// Disable session serialization/resurrection
+session_serialization false
+
 // The folder in which Zellij will look for layouts
 //
 // layout_dir "/path/to/my/layout_dir"
@@ -258,6 +261,7 @@ keybinds clear-defaults=true {
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
+        bind "Alt N" { NewTab; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }
