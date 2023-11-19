@@ -17,6 +17,10 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# Default folder for go stuff 
+GOPATH="$HOME/.go"
+GOROOT="$HOME/.go"
+
 # Default options for 'fzf'
 export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 
