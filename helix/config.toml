@@ -39,6 +39,14 @@ k = "move_line_up"
 # Vertical movement relative to warped lines
 C-j = "move_visual_line_down"
 C-k = "move_visual_line_up"
+# deselect on insert/append
+# i = ["collapse_selection", "insert_mode"]
+# a = ["ensure_selections_forward", "collapse_selection", "move_char_right", "insert_mode"]
+
+[keys.select]
+# deselect on insert/append
+# i = ["collapse_selection", "insert_mode"]
+# a = ["ensure_selections_forward", "collapse_selection", "move_char_right", "insert_mode"]
 
 [keys.insert]
 C-space = "completion"
