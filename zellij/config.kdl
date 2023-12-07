@@ -260,8 +260,8 @@ keybinds clear-defaults=true {
     // }
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
-        bind "Alt n" { NewPane; }
-        bind "Alt N" { NewTab; }
+        bind "Alt p" { NewPane; }
+        bind "Alt t" { NewTab; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }
