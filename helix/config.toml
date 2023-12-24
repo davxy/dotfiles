@@ -32,6 +32,9 @@ smart-case = false
 enable = true
 wrap-indicator =" ⤷ "
 
+[editor.smart-tab]
+enable = false
+
 [keys.normal]
 # Vertical movement relative to hard lines
 j = "move_line_down"

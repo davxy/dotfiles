@@ -20,6 +20,7 @@ name = "rust"
 formatter = { command = "rustfmt", args = ["+nightly"] }
 
 [language-server.rust-analyzer]
+# command = "ra-multiplex"
 environment = { "SKIP_WASM_BUILD" = "1", "CARGO_TARGET_DIR" = "target/rust-analyzer" }
 # environment = { "CHALK_OVERFLOW_DEPTH" = "3000", "CHALK_SOLVER_MAX_SIZE" = "1500" }
 
