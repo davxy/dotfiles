@@ -108,6 +108,8 @@ alias cd=z
 alias ze="fzf --bind 'enter:execute(rifle {})'"
 # ranger
 alias ra=ranger
+# python
+alias py=python
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals for terminal output.
@@ -124,8 +126,7 @@ unset SSH_AGENT_PID
 export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 # Set GPG_TTY as stated in `man gpg-agent`
 export GPG_TTY=$(tty)
-#gpgconf --launch gpg-agent
-#gpg-connect-agent reloadagent /bye > /dev/null
+# gpg-connect-agent reloadagent /bye > /dev/null
 gpg-connect-agent updatestartuptty /bye > /dev/null
 
 # Enable vi mode
