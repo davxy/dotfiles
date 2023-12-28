@@ -1,0 +1,44 @@
+# Colors (Gruvbox Material Dark Medium)
+
+[colors.bright]
+black = "0x928374"
+blue = "0x7daea3"
+cyan = "0x89b482"
+green = "0xa9b665"
+magenta = "0xd3869b"
+red = "0xea6962"
+yellow = "0xe3a84e"
+
+[colors.normal]
+black = "0x665c54"
+blue = "0x7daea3"
+cyan = "0x89b482"
+green = "0xa9b665"
+magenta = "0xd3869b"
+red = "0xea6962"
+white = "0xdfbf8e"
+yellow = "0xe78a4e"
+
+[colors.primary]
+background = "0x282828"
+foreground = "0xd4be98"
+
+[cursor]
+blink_interval = 500
+blink_timeout = 10
+
+[cursor.style]
+blinking = "Always"
+shape = "Block"
+
+[font.bold]
+family = "monospace"
+style = "Bold"
+
+[font.normal]
+family = "monospace"
+style = "Regular"
+
+# Looks like not works
+[window]
+dynamic_title = true
