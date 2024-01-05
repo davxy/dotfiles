@@ -51,6 +51,10 @@ function zellij() {
     $(which zellij) "$@"
 }
 
+function open() {
+    (nohup $(which xdg-open) "$@" > /dev/null 2>&1 &) 2>/dev/null
+}
+
 # Custom commands to run on before prompt
 function __prompt_command_hook() {
     # Update last visited dir
