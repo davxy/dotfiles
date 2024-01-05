@@ -1,11 +1,14 @@
-Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+# Update gpg-agent to use the current tty
+Match host * exec "gpg-connect-agent updatestartuptty /bye"
 
 Host github.com
 	IdentitiesOnly yes
+	IdentityFile ~/.ssh/id_ed25519.pub
 
 Host behemoth
 	User davxy
 	IdentitiesOnly yes
+	# RemoteForward <remote> <local>
 	RemoteForward /run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent
 	RemoteForward /run/user/1000/gnupg/S.gpg-agent.ssh /run/user/1000/gnupg/S.gpg-agent.ssh
 
