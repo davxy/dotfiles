@@ -27,15 +27,16 @@ gpgsign = true
 
 [alias]
 graph = log --graph --all --abbrev-commit --decorate=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+l = log -9 --abbrev-commit --decorate=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
 copy = clone --depth 1
 root = rev-parse --show-toplevel
 # shortcuts
 s = status
-l = log
 c = commit
 p = push
 r = root
 g = graph
+b = branch -vv
 
 [delta]
 line-numbers = true
