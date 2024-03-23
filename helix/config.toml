@@ -14,9 +14,9 @@ normal = "underline"
 select = "underline"
 
 [editor.statusline]
-left = ["mode", "spacer", "spinner"]
+left = ["mode", "spacer", "spinner", "spacer", "workspace-diagnostics"]
 center = ["file-name"]
-right = ["register", "separator", "diagnostics", "separator", "primary-selection-length", "separator", "position-percentage", "separator", "position"]
+right = ["register", "spacer", "selections", "spacer", "primary-selection-length", "spacer", "position-percentage", "spacer", "position"]
 separator = "  "
 
 [editor.lsp]
@@ -58,13 +58,14 @@ C-space = "completion"
 [keys.normal.'space']
 c = ":buffer-close"
 h = ":toggle lsp.display-inlay-hints"
-r = ":reflow"
+R = ":reflow"
 f = "file_picker_in_current_directory"
 F = "file_picker"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
 # Extensions using custom script
+c = ":pipe-to helix-ext cd --current"
 # Interactive search in current working directory
 s = ":pipe-to helix-ext search --current"
 # Interactive search in current working directory (include path name in the search)
