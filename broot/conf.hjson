@@ -39,8 +39,8 @@
 # (you really should read https://dystroy.org/broot/modal/
 # before as it may not suit everybody even among vim users)
 #
-modal: true
-initial_mode: command
+#modal: true
+#initial_mode: command
 
 ###############################################################
 # Whether to mark the selected line with a triangle
