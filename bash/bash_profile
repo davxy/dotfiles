@@ -12,14 +12,15 @@ if [ -d "$HOME/.cargo/bin" ] ; then
     PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+# Add binaries installed via 'go' to PATH
+if [ -d "$HOME/.go/bin" ] ; then
+    PATH="$HOME/.go/bin:$PATH"
+fi
+
 # Add more binaries
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
-
-# Default folder for go stuff 
-GOPATH="$HOME/.go"
-GOROOT="$HOME/.go"
 
 # Default options for 'fzf'
 export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
@@ -41,6 +42,9 @@ export WOB_SOCK="/run/user/$(id -u)/wob.sock"
 
 # Dark theme for gtk applications
 export GTK_THEME="Adwaita:dark"
+
+# Folders for go stuff 
+export GOPATH="$HOME/.go"
 
 # Include .bashrc if it exists
 if [ -f "$HOME/.bashrc" ]; then
