@@ -42,6 +42,16 @@ function ranger() {
     fi
 }
 
+# Keep current directly when exit yazi
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
 # Allow exiting from zellij
 function zellij() {
     if [[ $1 == "exit" ]]; then
