@@ -42,6 +42,8 @@ shared_files=(
     "$HOME/.config/broot/ | broot/"
     # ranger
     "$HOME/.config/ranger/ | ranger/"
+    # yazi
+    "$HOME/.config/yazi/ | yazi/"
     # gitui
     "$HOME/.config/gitui/ | gitui/"
     # zathura
