@@ -42,11 +42,8 @@
         "pulseaudio",
         "custom/separator",
         "memory",
-        "custom/separator",
         "cpu",
-        "custom/separator",
         "temperature",
-        "custom/separator",
         "battery"
     ],
 

@@ -39,7 +39,7 @@
 /* Reset all styles */
 * {
     border: none;
-    border-radius: 0;
+    border-radius: 10;
     min-height: 0;
     margin: 0;
     padding: 0;
@@ -74,6 +74,7 @@ button:disabled {
 #tray {
     padding-left: 10px;
     padding-right: 10px;
+    background-color: rgba(102,51,0,0.5);
 }
 /* -----------------------------------------------------------------------------
  * Module styles
@@ -105,6 +106,7 @@ button:disabled {
 
 #clock {
     font-weight: bold;
+    border-radius: 10px;
 }
 
 #cpu {
@@ -197,13 +199,7 @@ button:disabled {
 /* hyprland */
 #workspaces button.active {
     color: #d4be98;
-    background-color: #525252;
-}
-
-/* sway */
-#workspaces button.focused {
-    color: #d4be98;
-    background-color: #525252;
+    background-color: rgba(102,51,0,0.5);
 }
 
 #workspaces button.urgent {
