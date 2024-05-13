@@ -7,6 +7,9 @@ signingkey = 0x9484AE9C0DE026ADF6A15A538F550699515C84CB
 editor = hx
 pager = delta
 
+# [interactive]
+# diffFilter = delta --color-only
+
 [gui]
 editor = hx
 
@@ -41,8 +44,8 @@ b = branch -vv
 [delta]
 line-numbers = true
 syntax-theme = gruvbox-dark
-light = false
+dark = true
 navigate = true
-#plus-style = syntax
-#minus-style = syntax
+plus-style = syntax
+minus-style = syntax
 
