@@ -1,0 +1,117 @@
+[[device-filter]]
+ref = "any-keyboard"
+#name = "Keyboard Name"
+kind = "keyboard"
+exclusive = true
+vendor = 0x17EF
+product = 0x60EE
+
+[[virtual-device]]
+ref = "virtual-keyboard"
+name = "virtual-keyboard"
+preset = "keyboard"
+vendor = 0x16C0
+product = 0x27DC
+
+[[script]]
+device = "any-keyboard"
+script = """
+
+let kbd = "virtual-keyboard";
+
+if first_run {
+    state.ctrl = false;
+    state.ctrl_sent = false;
+    state.ctrl_caught = false;
+}
+
+if event.key == Key_LeftCtrl {
+    if event.press {
+        state.ctrl = true;
+        state.ctrl_sent = true;
+        send_key(kbd, Key_LeftCtrl, true);
+    } else if state.ctrl {
+        if state.ctrl_sent == false {
+            if state.ctrl_caught == false {
+                send_key(kbd, Key_LeftCtrl, true);
+                state.ctrl_sent = true;
+            }
+        }
+
+        if state.ctrl_sent {
+            send_key(kbd, Key_LeftCtrl, false);
+            send_flush(kbd);
+        }
+
+        state.ctrl = false;
+        state.ctrl_caught = false;
+        state.ctrl_sent = false;
+    }
+} else {
+    if state.ctrl && event.type == Key {
+        if event.key == Key_H {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Left, event.press);
+        } else if event.key == Key_L {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Right, event.press);
+        } else if event.key == Key_J {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Down, event.press);
+        } else if event.key == Key_K {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Up, event.press);
+        } else if event.key == Key_U {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_PageUp, event.press);
+        } else if event.key == Key_D {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_PageDown, event.press);
+        } else if event.key == Key_N {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Backspace, event.press);
+        } else if event.key == Key_M {
+            state.ctrl_caught = true;
+            if state.ctrl_sent {
+                send_key(kbd, Key_LeftCtrl, false);
+                state.ctrl_sent = false;
+            }
+            send_key(kbd, Key_Delete, event.press);
+        } else {
+            send_to(kbd);
+        }
+    } else {
+        send_to(kbd);
+    }
+    send_flush(kbd);
+}
+
+"""

@@ -1,0 +1,10 @@
+[Unit]
+Description=Deaemon for system-wide scriptable input hooking
+
+[Service]
+ExecStart=%h/.local/bin/inputd start %h/.config/inputd/config.toml
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
