@@ -2,9 +2,9 @@
 #
 # executed by bash(1) for non-login shells.
 #
-# Version 0.2.1
+# Version 0.2.2
 #
-# Dependencies:
+# Assumes:
 # - alacritty
 # - zellij
 # - starship
@@ -12,6 +12,7 @@
 # - eza
 # - zoxide
 # - bat
+# - yazi
 
 # If not running interactively (e.g. scp), don't do anything
 if [[ $- != *i* ]]; then
@@ -43,7 +44,7 @@ function ranger() {
 }
 
 # Keep current directly when exit yazi
-function yy() {
+function mm() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 	yazi "$@" --cwd-file="$tmp"
 	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
@@ -63,6 +64,17 @@ function zellij() {
 
 function open() {
     (nohup $(which xdg-open) "$@" > /dev/null 2>&1 &) 2>/dev/null
+}
+
+function pipx_activate() {
+    local env_name="$1"
+    local pipx_home=$(pipx environment | awk -F= '/^PIPX_HOME/ && $2 { print $2 }')
+    local env_path="$pipx_home/venvs/$env_name/bin/activate"
+    if [ -f "$env_path" ]; then
+        source "$env_path"
+    else
+        echo "pipx environment '$env_name' not found in '$pipx_home/venvs'."
+    fi
 }
 
 # Custom commands to run on before prompt
@@ -124,6 +136,12 @@ alias ze="fzf --bind 'enter:execute(rifle {})'"
 alias ra=ranger
 # python
 alias py=python
+# gitui
+alias gu=gitui
+# zellij
+alias zj=zellij
+# jless
+alias jl=jless
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals for terminal output.
