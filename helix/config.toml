@@ -46,13 +46,10 @@ C-k = "move_visual_line_up"
 # i = ["collapse_selection", "insert_mode"]
 # a = ["ensure_selections_forward", "collapse_selection", "move_char_right", "insert_mode"]
 
-[keys.select]
+# [keys.select]
 # deselect on insert/append
 # i = ["collapse_selection", "insert_mode"]
 # a = ["ensure_selections_forward", "collapse_selection", "move_char_right", "insert_mode"]
-
-[keys.insert]
-C-space = "completion"
 
 # Add some custom binding to the space menu
 [keys.normal.'space']
