@@ -24,6 +24,8 @@ shared_files=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
+    # inputd
+    "$HOME/.config/inputd/ | inputd/"
     # hyprland
     "$HOME/.config/hypr/ | hypr/"
     # waybar
@@ -63,6 +65,8 @@ shared_files=(
     "$HOME/.ssh/config | ssh/config"
     # OTP tool
     "$HOME/.config/otp/ | otp/"
+    # Systemd
+    "$HOME/.config/systemd/ | systemd/"
 )
 
 behemoth_files=(
