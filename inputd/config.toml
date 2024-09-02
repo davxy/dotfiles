@@ -1,10 +1,16 @@
 [[device-filter]]
 ref = "any-keyboard"
-#name = "Keyboard Name"
 kind = "keyboard"
 exclusive = true
 vendor = 0x17EF
 product = 0x60EE
+
+[[device-filter]]
+ref = "any-keyboard"
+kind = "keyboard"
+exclusive = true
+vendor = 0x0001
+product = 0x0001
 
 [[virtual-device]]
 ref = "virtual-keyboard"
