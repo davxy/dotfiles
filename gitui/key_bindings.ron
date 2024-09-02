@@ -8,18 +8,18 @@
 // every key not overwritten via the config file will use the default specified there
 
 (
-    focus_right: Some(( code: Char('l'), modifiers: "")),
-    focus_left: Some(( code: Char('h'), modifiers: "")),
-    focus_above: Some(( code: Char('k'), modifiers: "")),
-    focus_below: Some(( code: Char('j'), modifiers: "")),
+    // focus_right: Some(( code: Char('l'), modifiers: "")),
+    // focus_left: Some(( code: Char('h'), modifiers: "")),
+    // focus_above: Some(( code: Char('k'), modifiers: "")),
+    // focus_below: Some(( code: Char('j'), modifiers: "")),
 
-    // Defaults to 'h' (now used to move left)
+    // Defaults to 'h'
     open_help: Some(( code: Char('?'), modifiers: "")),
 
-    move_left: Some(( code: Char('h'), modifiers: "")),
-    move_right: Some(( code: Char('l'), modifiers: "")),
-    move_up: Some(( code: Char('k'), modifiers: "")),
-    move_down: Some(( code: Char('j'), modifiers: "")),
+    // move_left: Some(( code: Char('h'), modifiers: "")),
+    // move_right: Some(( code: Char('l'), modifiers: "")),
+    // move_up: Some(( code: Char('k'), modifiers: "")),
+    // move_down: Some(( code: Char('j'), modifiers: "")),
 
     // popup_up: Some(( code: Char('p'), modifiers: "CTRL")),
     // popup_down: Some(( code: Char('n'), modifiers: "CTRL")),
