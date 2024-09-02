@@ -44,6 +44,7 @@
         "memory",
         "cpu",
         "temperature",
+        "idle_inhibitor",
         "battery"
     ],
 
@@ -184,5 +185,13 @@
         "exec": "cat /tmp/last_dir",
         "interval": 1,
         "tooltip": false
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
     }
 }
