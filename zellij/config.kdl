@@ -28,11 +28,6 @@ simplified_ui true
 //
 pane_frames false
 
-// Choose the theme that is specified in the themes section.
-// Default: default
-//
-theme "gruvbox-dark"
-
 // The name of the default layout to load on startup
 // Default: "default"
 //
@@ -117,7 +112,7 @@ keybinds clear-defaults=true {
         bind "Ctrl g" { SwitchToMode "Normal"; }
     }
     resize {
-        bind "Ctrl n" { SwitchToMode "Normal"; }
+        bind "Ctrl v" "Enter" "Space" { SwitchToMode "Normal"; }
         bind "h" "Left" { Resize "Increase Left"; }
         bind "j" "Down" { Resize "Increase Down"; }
         bind "k" "Up" { Resize "Increase Up"; }
@@ -129,8 +124,16 @@ keybinds clear-defaults=true {
         bind "=" "+" { Resize "Increase"; }
         bind "-" { Resize "Decrease"; }
     }
+    move {
+        bind "Ctrl f" "Enter" "Space" { SwitchToMode "Normal"; }
+        bind "n" "Tab" { MovePane; }
+        bind "h" "Left" { MovePane "Left"; }
+        bind "j" "Down" { MovePane "Down"; }
+        bind "k" "Up" { MovePane "Up"; }
+        bind "l" "Right" { MovePane "Right"; }
+    }
     pane {
-        bind "Ctrl p" { SwitchToMode "Normal"; }
+        bind "Ctrl p" "Enter" "Space" { SwitchToMode "Normal"; }
         bind "h" "Left" { MoveFocus "Left"; }
         bind "l" "Right" { MoveFocus "Right"; }
         bind "j" "Down" { MoveFocus "Down"; }
@@ -147,22 +150,16 @@ keybinds clear-defaults=true {
         bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
         bind "c" { SwitchToMode "RenamePane"; PaneNameInput 0;}
+        bind "[" { PreviousSwapLayout; }
+        bind "]" { NextSwapLayout; }
     }
     renamepane {
         bind "Enter" { SwitchToMode "Normal"; }
         bind "Esc" { UndoRenameTab; SwitchToMode "Normal"; }
         bind "Ctrl c" { UndoRenameTab; SwitchToMode "Pane"; }
     }
-    move {
-        bind "Ctrl h" { SwitchToMode "Normal"; }
-        bind "n" "Tab" { MovePane; }
-        bind "h" "Left" { MovePane "Left"; }
-        bind "j" "Down" { MovePane "Down"; }
-        bind "k" "Up" { MovePane "Up"; }
-        bind "l" "Right" { MovePane "Right"; }
-    }
     tab {
-        bind "Ctrl t" { SwitchToMode "Normal"; }
+        bind "Ctrl t" "Enter" "Space" { SwitchToMode "Normal"; }
         bind "c" { SwitchToMode "RenameTab"; TabNameInput 0; }
         bind "h" "Left" "Up" "k" { GoToPreviousTab; }
         bind "l" "Right" "Down" "j" { GoToNextTab; }
@@ -186,7 +183,7 @@ keybinds clear-defaults=true {
         bind "Ctrl c" { UndoRenameTab; SwitchToMode "Tab"; }
     }
     scroll {
-        bind "Ctrl s" { SwitchToMode "Normal"; }
+        bind "Ctrl e" { SwitchToMode "Normal"; }
         bind "Ctrl c" { ScrollToBottom; SwitchToMode "Normal"; }
         bind "e" { EditScrollback; SwitchToMode "Normal"; }
         bind "s" { SwitchToMode "EnterSearch"; SearchInput 0; }
@@ -227,7 +224,7 @@ keybinds clear-defaults=true {
         // bind "p" { Search "up"; }
     }
     session {
-        bind "Ctrl x" { SwitchToMode "Normal"; }
+        bind "Ctrl s" "Enter" "Space" { SwitchToMode "Normal"; }
         bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "zellij:session-manager" {
@@ -274,39 +271,26 @@ keybinds clear-defaults=true {
     }
     shared_except "normal" "locked" {
         bind "Esc" { SwitchToMode "Normal"; }
-        // bind "Enter" "Esc" { SwitchToMode "Normal"; }
     }
     shared_except "pane" "locked" {
         bind "Ctrl p" { SwitchToMode "Pane"; }
     }
-    shared_except "resize" "locked" {
-        bind "Ctrl n" { SwitchToMode "Resize"; }
-    }
     shared_except "scroll" "locked" {
-        bind "Ctrl s" { SwitchToMode "Scroll"; }
+        bind "Ctrl e" { SwitchToMode "Scroll"; }
     }
     shared_except "session" "locked" {
-        bind "Ctrl x" { SwitchToMode "Session"; }
+        bind "Ctrl s" { SwitchToMode "Session"; }
     }
     shared_except "tab" "locked" {
         bind "Ctrl t" { SwitchToMode "Tab"; }
     }
     shared_except "move" "locked" {
-        bind "Ctrl h" { SwitchToMode "Move"; }
+        bind "Ctrl f" { SwitchToMode "Move"; }
     }
-    // shared_except "tmux" "locked" {
-    //     bind "Ctrl b" { SwitchToMode "Tmux"; }
-    // }
+    shared_except "resize" "locked" {
+        bind "Ctrl v" { SwitchToMode "Resize"; }
+    }
 }
-
-// Plugins alias?
-// plugins {
-//     tab-bar { path "tab-bar"; }
-//     status-bar { path "status-bar"; }
-//     strider { path "strider"; }
-//     compact-bar { path "compact-bar"; }
-//     session-manager { path "session-manager"; }
-// }
 
 // Define color themes for Zellij
 // For more examples, see: https://github.com/zellij-org/zellij/tree/main/example/themes
@@ -338,4 +322,22 @@ themes {
         white 251 241 199
         orange 214 93 14
     }
+    dracula {
+        fg 248 248 242
+        bg 40 42 54
+        black 0 0 0
+        red 255 85 85
+        green 80 250 123
+        yellow 241 250 140
+        blue 98 114 164
+        magenta 255 121 198
+        cyan 139 233 253
+        white 255 255 255
+        orange 255 184 108
+    }
 }
+
+// Choose the theme that is specified in the themes section.
+// Default: default
+//
+theme "gruvbox-light"
