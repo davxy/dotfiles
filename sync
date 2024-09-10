@@ -64,7 +64,7 @@ shared_files=(
     # OTP tool
     "$HOME/.config/otp/ | otp/"
     # Systemd
-    "$HOME/.config/systemd/ | systemd/"
+    "$HOME/.config/systemd/user/inputd.service | systemd/user/inputd.service"
 )
 
 behemoth_files=(
