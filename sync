@@ -57,8 +57,6 @@ shared_files=(
     # lldb
     "$HOME/.lldbinit | lldb/lldbinit"
     "$HOME/.lldb/scripts/ | lldb/scripts/"
-    # X defaults
-    "$HOME/.Xdefaults | misc/Xdefaults"
     # Mime associations
     "$HOME/.config/mimeapps.list | misc/mimeapps.list"
     # ssh
