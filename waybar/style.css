@@ -39,7 +39,7 @@
 /* Reset all styles */
 * {
     border: none;
-    border-radius: 10;
+    border-radius: 10px;
     min-height: 0;
     margin: 0;
     padding: 0;
@@ -162,6 +162,10 @@ button:disabled {
 
 #network.parity-vpn {
     color: #fc79e4;
+}
+
+#network.tun-vpn {
+    color: #d58080;
 }
 
 #pulseaudio {
