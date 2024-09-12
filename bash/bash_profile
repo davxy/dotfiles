@@ -22,6 +22,9 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# VPN config files
+export VPN_CONFIG_DIR="$HOME/.wireguard"
+
 # Default options for 'fzf'
 export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 
