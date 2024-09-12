@@ -37,7 +37,7 @@
         "network#parity-vpn",
         "network#home-vpn",
         "network#tun-vpn",
-        "network#proton-vpn",
+        "network#wg-vpn",
         "custom/separator",
         "pulseaudio",
         "custom/separator",
@@ -106,8 +106,8 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
-    "network#proton-vpn": {
-        "interface": "proton*",
+    "network#wg-vpn": {
+        "interface": "wg*",
         "format": "",
         "format-disconnected": "",
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
