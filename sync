@@ -26,6 +26,8 @@ shared_files=(
     "$HOME/.config/zellij/ | zellij/"
     # inputd
     "$HOME/.config/inputd/ | inputd/"
+    # niri
+    "$HOME/.config/niri/ | niri/"
     # hyprland
     "$HOME/.config/hypr/ | hypr/"
     # waybar
