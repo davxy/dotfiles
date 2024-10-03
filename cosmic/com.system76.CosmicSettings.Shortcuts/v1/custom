@@ -1,0 +1,28 @@
+{
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "c",
+        description: Some("clock"),
+    ): Spawn("~/bin/clock"),
+    (
+        modifiers: [
+            Super,
+        ],
+    ): System(Launcher),
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "e",
+        description: Some("rofimoji"),
+    ): Spawn("rofimoji"),
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "Return",
+        description: Some("alacritty"),
+    ): Spawn("alacritty"),
+}
