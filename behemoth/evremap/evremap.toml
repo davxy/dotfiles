@@ -1,0 +1,34 @@
+device_name = "Lenovo TrackPoint Keyboard II"
+phys = "usb-0000:46:00.3-6.1/input0"
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_H"]
+output = ["KEY_LEFT"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_L"]
+output = ["KEY_RIGHT"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_J"]
+output = ["KEY_DOWN"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_K"]
+output = ["KEY_UP"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_F"]
+output = ["KEY_PAGEDOWN"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_B"]
+output = ["KEY_PAGEUP"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_N"]
+output = ["KEY_BACKSPACE"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_M"]
+output = ["KEY_DELETE"]

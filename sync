@@ -8,7 +8,7 @@
 SYNC="rsync -av --progress --delete"
 
 # Array of 'system | versioned' file couples
-shared_files=(
+common=(
     # bash
     "$HOME/.bashrc | bash/bashrc"
     "$HOME/.bash_profile | bash/bash_profile"
@@ -24,22 +24,12 @@ shared_files=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
-    # inputd
-    "$HOME/.config/inputd/ | inputd/"
     # cosmic
     "$HOME/.config/cosmic/ | cosmic"
-    # niri
-    "$HOME/.config/niri/ | niri/"
-    # waybar
-    "$HOME/.config/waybar/ | waybar/"
-    # swaylock
-    "$HOME/.config/swaylock/ | swaylock/"
-    # fuzzel
+    # fuzzel (used by rofimoji)
     "$HOME/.config/fuzzel/ | fuzzel/"
     # rofimoji
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
-    # wob
-    "$HOME/.config/wob/ | wob/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
     # broot
@@ -52,8 +42,6 @@ shared_files=(
     "$HOME/.config/gitui/ | gitui/"
     # zathura
     "$HOME/.config/zathura/ | zathura/"
-    # mako
-    "$HOME/.config/mako/ | mako/"
     # tridactyl
     "$HOME/.config/tridactyl/ | tridactyl/"
     # lldb
@@ -69,14 +57,18 @@ shared_files=(
     "$HOME/.config/systemd/user/inputd.service | systemd/user/inputd.service"
 )
 
-behemoth_files=(
+behemoth=(
     # wayvnc
     "$HOME/.config/wayvnc/ | wayvnc/"
     # samba
     "/etc/samba/smb.conf | samba/smb.conf"
+    # evremap
+    "/etc/evremap.toml | evremap/evremap.toml"
 )
 
 workmule_files=(
+    # evremap
+    "/etc/evremap.toml | evremap/evremap.toml"
 )
 
 if [[ $1 == "out" ]]; then
@@ -99,15 +91,16 @@ if [[ $2 == "--confirm" ]]; then
 fi
 
 function sync_files() {
+    target="$1"
+    echo "[$target]"
+
+    shift
     files=("$@")
 
     for file in "${files[@]}"; do
-        system_file=$(echo $file | cut -d'|' -f1)
-        local_file=$(echo $file | cut -d'|' -f2)
-
-        # Quick (and dirty) way to trim front/back whitespaces
-        system_file=$(echo $system_file)
-        local_file=$(echo $local_file)
+        system_file=$(echo $file | cut -d'|' -f1 | sed 's/^ *//;s/ *$//')
+        local_file=$(echo $file | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
+        local_file="$target/$local_file"
 
         if [[ $out == 1 ]]; then
             in_file=$local_file
@@ -117,7 +110,7 @@ function sync_files() {
             out_file=$local_file
         fi
 
-        echo "* " $in_file "->" $out_file
+        echo "* " $in_file ">" $out_file
 
         if [[ $confirm == 1 ]]; then
             printf "proceed [N/y]? "
@@ -128,6 +121,7 @@ function sync_files() {
 
         if [[ $confirmed == "y" ]]; then
             if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
+                mkdir -p $(dirname "$out_file")
                 $SYNC $in_file $out_file
             else
                 echo "Skipping unexistent file \"$in_file\""
@@ -136,14 +130,8 @@ function sync_files() {
     done
 }
 
-sync_files "${shared_files[@]}"
+# Sync common files
+sync_files "common" "${common[@]}"
 
-if [[ $HOSTNAME = "behemoth" ]]; then
-    echo "SYNCING BEHEMOTH"
-    sync_files "${behemoth_files[@]}"
-fi
-
-if [[ $HOSTNAME = "workmule" ]]; then
-    echo "SYNCING WORKMULE"
-    sync_files "${workmule_files[@]}"
-fi
+# Sync system specific files
+sync_files "$HOSTNAME" "${behemoth[@]}"
