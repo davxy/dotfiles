@@ -177,4 +177,3 @@ eval "$(zoxide init bash)"
 
 # Initialize starship
 eval "$(starship init bash)"
-

@@ -20,10 +20,9 @@
     // -------------------------------------------------------------------------
 
     "modules-left": [
-        "hyprland/workspaces",
+        "wlr/workspaces",
         "custom/separator",
-        "custom/last-dir",
-        "hyprland/submap",
+        "custom/last-dir"
     ],
 
     "modules-center": [
@@ -166,6 +165,12 @@
     },
 
     "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+
+    "wlr/workspaces": {
         "format": "{name}",
         "on-click": "activate",
         "sort-by-number": true
