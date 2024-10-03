@@ -53,8 +53,6 @@ common=(
     "$HOME/.ssh/config | ssh/config"
     # OTP tool
     "$HOME/.config/otp/ | otp/"
-    # Systemd
-    "$HOME/.config/systemd/user/inputd.service | systemd/user/inputd.service"
 )
 
 behemoth=(
@@ -66,7 +64,7 @@ behemoth=(
     "/etc/evremap.toml | evremap/evremap.toml"
 )
 
-workmule_files=(
+workmule=(
     # evremap
     "/etc/evremap.toml | evremap/evremap.toml"
 )
@@ -130,8 +128,14 @@ function sync_files() {
     done
 }
 
+if [[ $HOSTNAME = "" ]]; then
+    HOSTNAME=$(hostname)
+fi
+
+declare -n file_list="$HOSTNAME"
+
 # Sync common files
 sync_files "common" "${common[@]}"
 
 # Sync system specific files
-sync_files "$HOSTNAME" "${behemoth[@]}"
+sync_files "$HOSTNAME" "${file_list[@]}"
