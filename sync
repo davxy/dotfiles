@@ -5,10 +5,57 @@
 # Depends on:
 # - rsync
 
-SYNC="rsync -av --progress --delete"
+# Sync command
+SYNC="rsync -av --progress --delete --exclude='.git'"
+
+# Initialize flags
+DRYRUN=0
+CONFIRM=0
+OPERATION=""
+
+function usage() {
+    echo "Usage: sync [--confirm] (in|out) "
+    echo "  in : copy files from system folders"
+    echo "  out: copy files to system folders"
+    echo "  --confirm: prompt for confirmation before synchronization"
+    echo "  --dryrun: do not perform the action, just show the outcome"
+    exit $1
+}
+
+# Parse command line options, except for the last mandatory operation
+while [[ "$#" -gt 1 ]]; do
+    case "$1" in
+        --dryrun)
+            DRYRUN=1
+            ;;
+        --confirm)
+            CONFIRM=1
+            ;;
+        --help)
+            usage 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            usage 1
+            ;;
+    esac
+    shift
+done
+
+if [[ $1 == "--help" ]]; then
+    usage 0
+fi
+
+# Check if the last argument is provided and is either "in" or "out"
+if [[ "$#" -ne 1 || ( "$1" != "in" && "$1" != "out" ) ]]; then
+    echo "Error: Missing or invalid operation. Expected 'in' or 'out'."
+    usage 1
+else
+    OPERATION="$1"
+fi
 
 # Array of 'system | versioned' file couples
-shared_files=(
+common=(
     # bash
     "$HOME/.bashrc | bash/bashrc"
     "$HOME/.bash_profile | bash/bash_profile"
@@ -24,22 +71,12 @@ shared_files=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
-    # inputd
-    "$HOME/.config/inputd/ | inputd/"
     # cosmic
     "$HOME/.config/cosmic/ | cosmic"
-    # niri
-    "$HOME/.config/niri/ | niri/"
-    # waybar
-    "$HOME/.config/waybar/ | waybar/"
-    # swaylock
-    "$HOME/.config/swaylock/ | swaylock/"
-    # fuzzel
+    # fuzzel (used by rofimoji)
     "$HOME/.config/fuzzel/ | fuzzel/"
     # rofimoji
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
-    # wob
-    "$HOME/.config/wob/ | wob/"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
     # broot
@@ -52,8 +89,6 @@ shared_files=(
     "$HOME/.config/gitui/ | gitui/"
     # zathura
     "$HOME/.config/zathura/ | zathura/"
-    # mako
-    "$HOME/.config/mako/ | mako/"
     # tridactyl
     "$HOME/.config/tridactyl/ | tridactyl/"
     # lldb
@@ -65,51 +100,35 @@ shared_files=(
     "$HOME/.ssh/config | ssh/config"
     # OTP tool
     "$HOME/.config/otp/ | otp/"
-    # Systemd
-    "$HOME/.config/systemd/user/inputd.service | systemd/user/inputd.service"
 )
 
-behemoth_files=(
+behemoth=(
     # wayvnc
     "$HOME/.config/wayvnc/ | wayvnc/"
     # samba
     "/etc/samba/smb.conf | samba/smb.conf"
+    # evremap
+    "/etc/evremap.toml | evremap/evremap.toml"
 )
 
-workmule_files=(
+workmule=(
+    # evremap
+    "/etc/evremap.toml | evremap/evremap.toml"
 )
-
-if [[ $1 == "out" ]]; then
-    echo "Syncing OUT"
-    out=1
-elif [[ $1 == "in" ]]; then
-    echo "Syncing IN"
-    out=0
-else
-    echo "Usage: sync in|out [--confirm]"
-    echo "  in : copy files from system folders"
-    echo "  out: copy files to system folders"
-    echo "  --confirm: prompt for confirmation before synchronization"
-    exit
-fi
-
-confirm=0
-if [[ $2 == "--confirm" ]]; then
-    confirm=1
-fi
 
 function sync_files() {
+    target="$1"
+    echo "[$target]"
+
+    shift
     files=("$@")
 
     for file in "${files[@]}"; do
-        system_file=$(echo $file | cut -d'|' -f1)
-        local_file=$(echo $file | cut -d'|' -f2)
+        system_file=$(echo $file | cut -d'|' -f1 | sed 's/^ *//;s/ *$//')
+        local_file=$(echo $file | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
+        local_file="$target/$local_file"
 
-        # Quick (and dirty) way to trim front/back whitespaces
-        system_file=$(echo $system_file)
-        local_file=$(echo $local_file)
-
-        if [[ $out == 1 ]]; then
+        if [[ $OPERATION == "out" ]]; then
             in_file=$local_file
             out_file=$system_file
         else
@@ -117,9 +136,9 @@ function sync_files() {
             out_file=$local_file
         fi
 
-        echo "* " $in_file "->" $out_file
+        echo "* " $in_file ">" $out_file
 
-        if [[ $confirm == 1 ]]; then
+        if [[ $CONFIRM == 1 ]]; then
             printf "proceed [N/y]? "
             read confirmed
         else
@@ -128,7 +147,10 @@ function sync_files() {
 
         if [[ $confirmed == "y" ]]; then
             if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
-                $SYNC $in_file $out_file
+                if [[ $DRYRUN == 0 ]]; then
+                    mkdir -p $(dirname "$out_file")
+                    $SYNC $in_file $out_file
+                fi
             else
                 echo "Skipping unexistent file \"$in_file\""
             fi
@@ -136,14 +158,14 @@ function sync_files() {
     done
 }
 
-sync_files "${shared_files[@]}"
-
-if [[ $HOSTNAME = "behemoth" ]]; then
-    echo "SYNCING BEHEMOTH"
-    sync_files "${behemoth_files[@]}"
+if [[ $HOSTNAME = "" ]]; then
+    HOSTNAME=$(hostname)
 fi
 
-if [[ $HOSTNAME = "workmule" ]]; then
-    echo "SYNCING WORKMULE"
-    sync_files "${workmule_files[@]}"
-fi
+declare -n file_list="$HOSTNAME"
+
+# Sync common files
+sync_files "common" "${common[@]}"
+
+# Sync system specific files
+sync_files "$HOSTNAME" "${file_list[@]}"
