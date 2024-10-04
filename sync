@@ -5,7 +5,8 @@
 # Depends on:
 # - rsync
 
-SYNC="rsync -av --progress --delete"
+# Sync command
+SYNC="rsync -av --progress --delete --exclude='.git'"
 
 # Initialize flags
 DRYRUN=0
