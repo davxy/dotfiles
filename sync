@@ -72,7 +72,7 @@ common=(
     # zellij
     "$HOME/.config/zellij/ | zellij/"
     # cosmic
-    "$HOME/.config/cosmic/ | cosmic"
+    "$HOME/.config/cosmic/ | cosmic/"
     # fuzzel (used by rofimoji)
     "$HOME/.config/fuzzel/ | fuzzel/"
     # rofimoji
