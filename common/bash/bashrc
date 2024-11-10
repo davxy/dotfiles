@@ -44,9 +44,9 @@ function ranger() {
 }
 
 # Keep current directly when exit yazi
-function mm() {
+function yazi() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	yazi "$@" --cwd-file="$tmp"
+	$(which yazi) "$@" --cwd-file="$tmp"
 	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		cd -- "$cwd"
 	fi
@@ -142,6 +142,8 @@ alias gu=gitui
 alias zj=zellij
 # jless
 alias jl=jless
+# yazi
+alias yy=yazi
 
 # Disable START/STOP output control.
 # Do not interpret Ctrl-s and Ctrl-q as flow signals for terminal output.
