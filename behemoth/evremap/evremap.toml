@@ -1,6 +1,11 @@
 device_name = "Lenovo TrackPoint Keyboard II"
 phys = "usb-0000:46:00.3-6.1/input0"
 
+[[dual_role]]
+input = "KEY_CAPSLOCK"
+hold = ["KEY_LEFTCTRL"]
+tap = ["KEY_ESC"]
+
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_H"]
 output = ["KEY_LEFT"]
