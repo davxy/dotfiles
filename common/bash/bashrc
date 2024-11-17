@@ -59,7 +59,12 @@ function zellij() {
         touch /tmp/zexit
         exit
     fi
-    $(which zellij) "$@"
+
+    if [[ -z $ZELLIJ || -n "$@" ]]; then
+        $(which zellij) "$@"
+    else
+        $(which zellij) action new-tab
+    fi
 }
 
 function open() {
