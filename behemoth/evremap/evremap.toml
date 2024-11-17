@@ -7,6 +7,10 @@ hold = ["KEY_LEFTCTRL"]
 tap = ["KEY_ESC"]
 
 [[remap]]
+input = ["KEY_ESC"]
+output = []
+
+[[remap]]
 input = ["KEY_LEFTCTRL", "KEY_H"]
 output = ["KEY_LEFT"]
 
