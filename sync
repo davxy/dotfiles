@@ -6,7 +6,7 @@
 # - rsync
 
 # Sync command
-SYNC="rsync -av --progress --delete --exclude='.git'"
+SYNC="rsync -av --delete --quiet --exclude='.git'"
 
 # Initialize flags
 DRYRUN=0
