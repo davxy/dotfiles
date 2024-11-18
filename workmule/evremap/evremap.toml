@@ -1,5 +1,14 @@
 device_name = "AT Translated Set 2 keyboard"
 
+[[dual_role]]
+input = "KEY_CAPSLOCK"
+hold = ["KEY_LEFTCTRL"]
+tap = ["KEY_ESC"]
+
+[[remap]]
+input = ["KEY_ESC"]
+output = []
+
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_H"]
 output = ["KEY_LEFT"]
@@ -15,6 +24,14 @@ output = ["KEY_DOWN"]
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_K"]
 output = ["KEY_UP"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_F"]
+output = ["KEY_PAGEDOWN"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_B"]
+output = ["KEY_PAGEUP"]
 
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_N"]
