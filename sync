@@ -61,6 +61,8 @@ common=(
     "$HOME/.bash_profile | bash/bash_profile"
     "$HOME/.profile | bash/profile"
     "$HOME/.inputrc | bash/inputrc"
+    # systemd
+    "$HOME/.config/systemd/ | systemd/"
     # gnupg
     "$HOME/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf"
     # fonts configuration
