@@ -176,9 +176,6 @@ set -o vi
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 
-# Manually source broot commands
-source "$HOME/.config/broot/launcher/bash/br"
-
 # Initialize zoxide
 eval "$(zoxide init bash)"
 
