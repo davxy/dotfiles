@@ -3,9 +3,9 @@
         modifiers: [
             Super,
         ],
-        key: "c",
-        description: Some("clock"),
-    ): Spawn("~/bin/clock"),
+        key: "Return",
+        description: Some("alacritty"),
+    ): Spawn("alacritty"),
     (
         modifiers: [
             Super,
@@ -15,14 +15,14 @@
         modifiers: [
             Super,
         ],
-        key: "e",
-        description: Some("rofimoji"),
-    ): Spawn("rofimoji"),
+        key: "c",
+        description: Some("clock"),
+    ): Spawn("~/bin/clock"),
     (
         modifiers: [
             Super,
         ],
-        key: "Return",
-        description: Some("alacritty"),
-    ): Spawn("alacritty"),
+        key: "e",
+        description: Some("rofimoji"),
+    ): Spawn("rofimoji"),
 }
