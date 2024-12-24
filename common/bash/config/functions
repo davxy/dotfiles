@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Prevent nested `ranger` sessions
+function ranger() {
+    if [ -z "$RANGER_LEVEL" ]; then
+        $(which ranger) --choosedir=/tmp/rangerdir "$@"
+        cd "$(cat /tmp/rangerdir)"; rm /tmp/rangerdir
+    else
+        exit
+    fi
+}
+
+# Keep current directly when exit yazi
+function yazi() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	$(which yazi) "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+# Allow exiting from zellij
+function zellij() {
+    if [[ $1 == "exit" || $1 == "x" ]]; then
+        touch /tmp/zexit
+        exit
+    fi
+    if [[ -z $ZELLIJ || -n "$@" ]]; then
+        $(which zellij) "$@"
+    else
+        $(which zellij) action new-tab
+    fi
+}
+
+function open() {
+    (nohup $(which xdg-open) "$@" > /dev/null 2>&1 &) 2>/dev/null
+}
+
+function _pip_activate() {
+    local env_name="$1"
+    if [[ $2 == "pipx" ]]; then
+        local pip_venvs=$(pipx environment -V PIPX_LOCAL_VENVS)
+    else
+        local pip_venvs="$PIP_LOCAL_VENVS"
+    fi
+    local env_path="$pip_venvs/$env_name/bin/activate"
+    if [ -f "$env_path" ]; then
+        source "$env_path"
+    else
+        echo "environment '$env_name' not found in '$pip_venvs'."
+    fi
+}
+function pip_activate() {
+    _pip_activate $1
+}
+function pipx_activate() {
+    _pip_activate $1 "pipx"
+}
