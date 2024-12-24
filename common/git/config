@@ -14,13 +14,13 @@ pager = delta
 editor = hx
 
 [diff]
-	tool = meld
+tool = meld
 
 [merge]
-	tool = meld
+tool = meld
 
 [difftool]
-	prompt = false
+prompt = false
 
 [credential]
 helper = cache --timeout=3600
@@ -29,17 +29,21 @@ helper = cache --timeout=3600
 gpgsign = true
 
 [alias]
+alias = config --get-regexp ^alias.
 graph = log --graph --all --abbrev-commit --decorate=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
 l = log -9 --abbrev-commit --decorate=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
 copy = clone --depth 1
 root = rev-parse --show-toplevel
-# shortcuts
-s = status
+# terse
+g = graph
+s = status -s
+b = branch -vv
+a = add
 c = commit
 p = push
-r = root
-g = graph
-b = branch -vv
+f = fetch
+r = remote -v
+m = merge
 
 [delta]
 line-numbers = true
