@@ -67,7 +67,7 @@ layout {
                 tab_active   "#[fg=#83a598] {name}"               
                 tab_active_fullscreen   "#[fg=#f3a598,bold] {name}"               
 
-                command_hostname_command "bash -c \"hostname\""
+                command_hostname_command "uname -n"
                 command_hostname_format "#[fg=blue] {stdout} "
                 command_hostname_rendermode "static"
             }
