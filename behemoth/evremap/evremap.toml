@@ -11,6 +11,14 @@ input = ["KEY_ESC"]
 output = []
 
 [[remap]]
+input = ["KEY_BACKSPACE"]
+output = []
+
+[[remap]]
+input = ["KEY_DELETE"]
+output = []
+
+[[remap]]
 input = ["KEY_LEFTCTRL", "KEY_H"]
 output = ["KEY_LEFT"]
 
