@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# helix
+if ! which "hx" >/dev/null 2>&1; then
+    alias hx='helix'
+fi
+# alacritty
+alias term=alacritty
+# bat
+alias cat='bat -pP'
+# ripgrep
+alias grep=rg
+alias gr=rg
+# eza
+alias ls=eza
+alias ll='eza -lg'
+alias la='eza -ag'
+alias lla='eza -alg'
+alias tree='eza -T'
+# zoxide
+alias cd=z
+alias ze="fzf --bind 'enter:execute(rifle {})'"
+# ranger
+alias ra=ranger
+# python
+alias py=python
+# gitui
+alias gu=gitui
+# zellij
+alias zj=zellij
+# jless
+alias jl=jless
+# yazi
+alias yy=yazi
+# navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."

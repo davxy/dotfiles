@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+#
+# executed by bash(1) for non-login shells.
+#
+# Version 0.3.2
+#
+# Assumes:
+# - alacritty
+# - zellij
+# - starship
+# - ranger
+# - eza
+# - zoxide
+# - bat
+# - yazi
+
+# If not running interactively (e.g. scp), don't do anything
+if [[ $- != *i* ]]; then
+    return
+fi
+
+# Start zellij session
+# Do this asap to prevent double execution of this whole script
+if [[ -z "$ZELLIJ" ]]; then
+    zellij
+    if [[ -f /tmp/zexit ]]; then
+        rm /tmp/zexit
+    else
+        exit
+    fi
+fi    
+ 
+# Restore the last visited folder when a new terminal is opened
+if [[ -f /tmp/last_dir ]]; then
+    cd "$(cat /tmp/last_dir)"
+fi
+
+# Custom commands to run on before prompt
+function __prompt_command_hook() {
+    # Update last visited dir
+    echo $PWD > /tmp/last_dir
+    # Update global history
+    #history -a; history -c; history -r
+}
+PROMPT_COMMAND="__prompt_command_hook"
+
+# Start gpg-agent as ssh-agent
+# The gpg-agent need to be run once because ssh can't start it automatically.
+# (see gpg-agent man page for details under `--enable-ssh-support`)
+unset SSH_AGENT_PID
+export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+# Set GPG_TTY as stated in `man gpg-agent`
+export GPG_TTY=$(tty)
+# gpg-connect-agent reloadagent /bye > /dev/null
+gpg-connect-agent updatestartuptty /bye > /dev/null
+
+# Manually source fzf completions
+# (otherwise we require to trigger fzf once using fzf+<tab>)
+source /usr/share/fzf/key-bindings.bash
+source /usr/share/fzf/completion.bash
+
+CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source $CONFIG_DIR/exports
+source $CONFIG_DIR/functions
+source $CONFIG_DIR/aliases
+source $CONFIG_DIR/extra
+source $CONFIG_DIR/path
+
+# Initialize zoxide
+eval "$(zoxide init bash)"
+
+# Initialize starship
+eval "$(starship init bash)"
