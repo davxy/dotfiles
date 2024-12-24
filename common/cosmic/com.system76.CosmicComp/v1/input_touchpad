@@ -2,7 +2,7 @@
     state: Enabled,
     acceleration: Some((
         profile: Some(Adaptive),
-        speed: 0.4628044123886297,
+        speed: 0.5759425823787301,
     )),
     click_method: Some(Clickfinger),
     disable_while_typing: Some(true),
