@@ -35,3 +35,6 @@ export COSMIC_DATA_CONTROL_ENABLED="1"
 
 # Local folder for pip venvs
 export PIP_LOCAL_VENVS="$HOME/.local/pip"
+
+# File where we write the last visited folder
+export CWD_FILE="/tmp/${USER}_cwd_file"

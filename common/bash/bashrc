@@ -29,16 +29,27 @@ if [[ -z "$ZELLIJ" ]]; then
         exit
     fi
 fi    
+
+CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source $CONFIG_DIR/path
+source $CONFIG_DIR/exports
  
 # Restore the last visited folder when a new terminal is opened
-if [[ -f /tmp/last_dir ]]; then
-    cd "$(cat /tmp/last_dir)"
+if [[ -n "$CWD_FILE" ]]; then
+    if [[ -f "$CWD_FILE" ]]; then
+        target_dir=$(cat $CWD_FILE)
+        cd "$target_dir"
+    else
+        touch $CWD_FILE
+        umask 077 $CWD_FILE
+    fi
 fi
 
 # Custom commands to run on before prompt
 function __prompt_command_hook() {
     # Update last visited dir
-    echo $PWD > /tmp/last_dir
+    echo "$PWD" > "$CWD_FILE"
     # Update global history
     #history -a; history -c; history -r
 }
@@ -59,13 +70,9 @@ gpg-connect-agent updatestartuptty /bye > /dev/null
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 
-CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-source $CONFIG_DIR/exports
-source $CONFIG_DIR/functions
 source $CONFIG_DIR/aliases
+source $CONFIG_DIR/functions
 source $CONFIG_DIR/extra
-source $CONFIG_DIR/path
 
 # Initialize zoxide
 eval "$(zoxide init bash)"
