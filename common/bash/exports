@@ -38,3 +38,6 @@ export PIP_LOCAL_VENVS="$HOME/.local/pip"
 
 # File where we write the last visited folder
 export CWD_FILE="/tmp/${USER}_cwd_file"
+
+# By default libvirt uses 'qemu:///session'
+export LIBVIRT_DEFAULT_URI="qemu:///system"
