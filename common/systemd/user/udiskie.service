@@ -1,0 +1,17 @@
+[Unit]
+Description=Handle automounting for removable media
+Documentation=man:udiskie(8)
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+ExecStartPre=/bin/bash -c 'while ! pgrep -x "cosmic-panel" > /dev/null; do sleep 1; done'
+ExecStart=/usr/bin/udiskie \
+	--no-automount \
+	--tray \
+	--no-menu-update-workaround 
+ExecStop=/usr/bin/udiskie-umount -a
+
+[Install]
+WantedBy=default.target
