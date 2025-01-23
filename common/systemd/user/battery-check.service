@@ -1,0 +1,5 @@
+[Unit]
+Description=Battery check notification service
+
+[Service]
+ExecStart=%h/bin/battery-check
