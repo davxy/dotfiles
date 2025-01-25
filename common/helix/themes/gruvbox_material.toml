@@ -1,5 +1,7 @@
 inherits = "gruvbox"
 
+"ui.virtual.inlay-hint" = { fg = "gray", modifiers = ["italic"] }
+
 [palette]
 
 bg0 = "#282828" # main background

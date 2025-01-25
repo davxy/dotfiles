@@ -6,6 +6,10 @@ cursorline = true
 true-color = true
 scrolloff = 20
 bufferline = "always"
+end-of-line-diagnostics = "warning"
+
+[editor.inline-diagnostics]
+cursor-line = "warning" # show warnings and errors on the cursorline inline
 
 [editor.cursor-shape]
 insert = "bar"
@@ -23,6 +27,7 @@ display-messages = true
 auto-signature-help = true
 display-signature-help-docs = false
 display-inlay-hints = false
+display-progress-messages = true
 
 [editor.search]
 smart-case = false
