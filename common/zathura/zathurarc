@@ -1,3 +1,4 @@
 set selection-clipboard clipboard
+set database sqlite
 map <C-=> zoom in
 map <C--> zoom out
