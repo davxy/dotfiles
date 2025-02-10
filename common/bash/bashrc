@@ -53,7 +53,7 @@ function __prompt_command_hook() {
     # Update global history
     #history -a; history -c; history -r
 }
-PROMPT_COMMAND="__prompt_command_hook"
+PROMPT_COMMAND="__prompt_command_hook;${PROMPT_COMMAND#;}"
 
 # Start gpg-agent as ssh-agent
 # The gpg-agent need to be run once because ssh can't start it automatically.
@@ -74,8 +74,13 @@ source $CONFIG_DIR/aliases
 source $CONFIG_DIR/functions
 source $CONFIG_DIR/extra
 
-# Initialize zoxide
-eval "$(zoxide init bash)"
-
 # Initialize starship
 eval "$(starship init bash)"
+ 
+# Initialize `zoxide` AFTER `starship` because:
+# 1. Starship overwrites `PROMPT_COMMAND` with its own hook
+# 2. This hook then calls `STARSHIP_PROMPT_COMMAND` which contains original user commands
+# 3. Zoxide init script checks if its hook exists in `PROMPT_COMMAND`
+# 4. To avoid warnings, zoxide must be initialized after starship
+# Note: Set `_ZO_DOCTOR=0` to just skip this check
+eval "$(zoxide init bash)"

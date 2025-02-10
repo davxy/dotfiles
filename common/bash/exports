@@ -9,17 +9,17 @@ export FZF_DEFAULT_OPTS="--history=/tmp/fzf-history --no-sort --exact"
 # Default editor
 export EDITOR="$HOME/bin/hx"
 
-# Default terminal
-export TERMINAL=alacritty
-
-# Enable Wayland for Firefox
+# Enable Wayland for Firefox (maybe this is the default now)
 export MOZ_ENABLE_WAYLAND=1
 
 # Exclude the specified folders from the zoxide database
-#export _ZO_EXCLUDE_DIRS="/mnt/data/*"
+export _ZO_EXCLUDE_DIRS="/mnt/data:/mnt/data/*"
 
 # Resolve symlinks before adding directories to the database
 export _ZO_RESOLVE_SYMLINKS=1
+
+# Print matched directory before navigating to it 
+export _ZO_ECHO=1
 
 # WOB socket
 export WOB_SOCK="/run/user/$(id -u)/wob.sock"
@@ -41,3 +41,9 @@ export CWD_FILE="/tmp/${USER}_cwd_file"
 
 # By default libvirt uses 'qemu:///session'
 export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+# Default terminal
+export TERMINAL=cosmic-term
+ 
+# Cosmic terminal is based on alacritty
+export TERM="alacritty"
