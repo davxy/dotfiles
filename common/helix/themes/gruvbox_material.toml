@@ -1,6 +1,6 @@
 inherits = "gruvbox"
 
-"ui.virtual.inlay-hint" = { fg = "gray", modifiers = ["italic"] }
+"ui.virtual.inlay-hint" = { fg = "gray1", modifiers = ["italic"] }
 
 [palette]
 
@@ -9,7 +9,7 @@ bg1 = "#3c3836"
 bg2 = "#504945"
 bg3 = "#665c54"
 bg4 = "#7c6f64"
-bg_s = "#303030" # cursor line background
+# bg_s = "#101010" # cursor line background
 
 fg0 = "#fbf1c7"
 fg1 = "#d4be98"
@@ -19,7 +19,7 @@ fg4 = "#a89984"
 
 gray = "#a89984"
 gray0 = "#a89984"
-gray1 = "#928374"
+gray1 = "#7a6f60"
 
 red0 = "#ea6962"
 red1 = "#ea6962"
