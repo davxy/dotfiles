@@ -21,9 +21,6 @@ export _ZO_RESOLVE_SYMLINKS=1
 # Print matched directory before navigating to it 
 export _ZO_ECHO=1
 
-# WOB socket
-export WOB_SOCK="/run/user/$(id -u)/wob.sock"
-
 # Dark theme for gtk applications
 export GTK_THEME="Adwaita:dark"
 

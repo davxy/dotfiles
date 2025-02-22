@@ -66,7 +66,6 @@ export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye > /dev/null
 
 # Manually source fzf completions
-# (otherwise we require to trigger fzf once using fzf+<tab>)
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 
