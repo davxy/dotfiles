@@ -65,43 +65,37 @@ F = "file_picker"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
-# Extensions using custom script
-c = ":pipe-to helix-ext cd --current"
+# Change current working directory to current buffer file folder
+c = ":cd %sh{echo $(dirname %{buffer_name}) }"
 # Interactive search in current working directory
-s = ":pipe-to helix-ext search --current"
+s = ":open %sh{ff -c .}"
 # Interactive search in current working directory (include path name in the search)
-S = ":pipe-to helix-ext search --current-inc-path"
+S = ":open %sh{ff -cf .}"
 # Interactive search in current git directory
-w = ":pipe-to helix-ext search --workspace"
+w = ":open %sh{ff -c %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current git directory (include path name in the search)
-W = ":pipe-to helix-ext search --workspace-inc-path"
+W = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
-b = ":pipe-to helix-ext search --buffer"
-# Git-ui
-# g = ":pipe-to helix-ext git --ui"
-g = [
-  ":open git",
-  "select_all",
-  "delete_selection",
-  ":insert-output git status -s",
-  ":lang bash",
-]
+b = ":open %sh{ff %{buffer_name}}"
 # Git status
-m = ":pipe-to helix-ext git --status"
+g = ":sh git status -s"
 # Git blame
-B = ":pipe-to helix-ext git --blame"
-# Git browse github repo using default browser
-O = ":pipe-to helix-ext git --browse"
-# Markdown toc
-i = ":pipe-to helix-ext markdown --toc"
+B = ":sh git blame -L %{cursor_line},+1% %{buffer_name}"
+# TODO Git browse github repo using default browser
+O = ":echo %sh{git branch --show-current}"
 # Diff current buffer with content on disk
-d = ":pipe-to helix-ext diff"
-# Files tree
-t = ":pipe-to helix-ext tree"
-# Terminal
-T = ":pipe-to helix-ext term"
-# Cleanup helix-ext data
-C = ":pipe-to helix-ext clean"
-
+d = [
+  "select_all",
+  "yank",
+  "collapse_selection",
+  ":new",
+  "paste_before",
+  ":write! /tmp/helix-diff-dump",
+  ":buffer-close",
+  ":sh git diff %{buffer_name} /tmp/helix-diff-dump; true"
+  # ":sh diff -u --color %{buffer_name} /tmp/helix-diff-dump; true"
+]
 z = "shrink_selection"
 Z = "expand_selection"
+
+
