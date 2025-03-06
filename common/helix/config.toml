@@ -76,25 +76,34 @@ w = ":open %sh{ff -c %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current git directory (include path name in the search)
 W = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
-b = ":open %sh{ff %{buffer_name}}"
+b = ":open %sh{ff -c %{buffer_name}}"
 # Git status
 g = ":sh git status -s"
 # Git blame
-B = ":sh git blame -L %{cursor_line},+1% %{buffer_name}"
+B = ":sh git blame -L %{cursor_line},+1 %{buffer_name}"
 # TODO Git browse github repo using default browser
 O = ":echo %sh{git branch --show-current}"
 # Diff current buffer with content on disk
-d = [
+D = [
   "select_all",
   "yank",
   "collapse_selection",
   ":new",
   "paste_before",
+  "goto_file_end",
+  "delete_char_backward",
   ":write! /tmp/helix-diff-dump",
   ":buffer-close",
-  ":sh git diff %{buffer_name} /tmp/helix-diff-dump; true"
-  # ":sh diff -u --color %{buffer_name} /tmp/helix-diff-dump; true"
+  "goto_file_start",
+  "goto_next_change",
+  ":sh diff --unified=0 %{buffer_name} /tmp/helix-diff-dump; true"
 ]
+d = [
+  "goto_file_start",
+  "goto_next_change",
+  ":sh git diff --unified=0 %{buffer_name}; true"
+]
+r = ":reset-diff-change"
 z = "shrink_selection"
 Z = "expand_selection"
 
