@@ -82,8 +82,8 @@ common=(
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
     # alacritty
     "$HOME/.config/alacritty/ | alacritty/"
-    # ranger
-    "$HOME/.config/ranger/ | ranger/"
+    # paru
+    "$HOME/.config/paru/ | paru/"
     # yazi
     "$HOME/.config/yazi/ | yazi/"
     # gitui

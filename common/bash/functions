@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 
-# Prevent nested `ranger` sessions
-function ranger() {
-    if [ -z "$RANGER_LEVEL" ]; then
-        $(which ranger) --choosedir=/tmp/rangerdir "$@"
-        cd "$(cat /tmp/rangerdir)"; rm /tmp/rangerdir
-    else
-        exit
-    fi
-}
-
 # Keep current directly when exit yazi
 function yazi() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"

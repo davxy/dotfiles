@@ -5,10 +5,8 @@
 # Version 0.3.2
 #
 # Assumes:
-# - alacritty
 # - zellij
 # - starship
-# - ranger
 # - eza
 # - zoxide
 # - bat
