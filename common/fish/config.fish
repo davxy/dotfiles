@@ -1,0 +1,233 @@
+# Version 0.1.0
+#
+# Depends on
+# - zellij
+# - starship
+# - eza
+# - zoxide
+# - bat
+# - yazi
+
+if not status is-interactive
+    return
+end
+
+# eval (zellij setup --generate-auto-start fish | string collect)
+
+# Auto exit from zellij
+set -gx ZELLIJ_AUTO_EXIT true
+
+if not set -q ZELLIJ
+    if test "$ZELLIJ_AUTO_ATTACH" = true
+        zellij attach -c
+    else
+        if test -z "$ZELLIJ" -o (count $argv) -gt 0
+            zellij $argv
+        else
+            zellij action new-tab
+        end
+    end
+
+    if test -f /tmp/zexit
+        rm /tmp/zexit
+    else
+        kill $fish_pid
+    end
+end
+
+# Remove fish greeting
+set -g fish_greeting
+
+# Set vi key bindings
+set fish_key_bindings fish_vi_key_bindings
+
+# Emulates vim's cursor shape behavior
+# Set the normal and visual mode cursors to a block
+set fish_cursor_default block blink
+# Set the insert mode cursor to a line
+set fish_cursor_insert line blink
+# Set the replace mode cursors to an underscore
+set fish_cursor_replace_one underscore blink
+set fish_cursor_replace underscore blink
+# Set the external cursor to a line. The external cursor appears when a command is started.
+# The cursor shape takes the value of fish_cursor_default when fish_cursor_external is not specified.
+set fish_cursor_external line blink
+# The following variable can be used to configure cursor shape in
+# visual mode, but due to fish_cursor_default, is redundant here
+set fish_cursor_visual block blink
+
+#############################################
+# Exports
+#############################################
+
+# Path
+set -gxp PATH /home/davxy/bin /home/davxy/.cargo/bin
+
+# VPN config files
+set -gx VPN_CONFIG_DIR "$HOME/.wireguard"
+
+# Default options for 'fzf'
+set -gx FZF_DEFAULT_OPTS "--history=/tmp/fzf-history --no-sort --exact"
+
+# Default editor
+set -gx EDITOR "$HOME/bin/hx"
+
+# Enable Wayland for Firefox (maybe this is the default now)
+# set -gx MOZ_ENABLE_WAYLAND 1
+
+# Exclude the specified folders from the zoxide database
+set -gx _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
+
+# Resolve symlinks before adding directories to the database
+set -gx _ZO_RESOLVE_SYMLINKS 1
+
+# Print matched directory before navigating to it
+set -gx _ZO_ECHO 1
+
+# Dark theme for gtk applications
+set -gx GTK_THEME "Adwaita:dark"
+
+# Folders for go stuff
+set -gx GOPATH "$HOME/.go"
+
+# To make Wayland clipboard work
+set -gx COSMIC_DATA_CONTROL_ENABLED 1
+
+# Local folder for pip venvs
+set -gx PIP_LOCAL_VENVS "$HOME/.local/pip"
+
+# File where we write the last visited folder
+set -gx CWD_FILE "/tmp/"$USER"_cwd_file"
+
+# By default libvirt uses 'qemu:///session'
+set -gx LIBVIRT_DEFAULT_URI "qemu:///system"
+
+# Default terminal
+set -gx TERMINAL cosmic-term
+
+# Cosmic terminal is based on alacritty
+set -gx TERM alacritty
+
+# Auto exit from zellij
+set -gx ZELLIJ_AUTO_EXIT true
+
+# GPG stuff
+set -e SSH_AGENT_PID
+set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+set -x GPG_TTY (tty)
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
+#############################################
+# Alias
+#############################################
+
+# helix
+if not command -q hx
+    alias hx='helix'
+end
+# alacritty
+alias term=alacritty
+# bat
+alias cat='bat -pP'
+# ripgrep
+alias grep=rg
+alias gr=rg
+# eza
+alias ls=eza
+alias ll='eza -lg'
+alias la='eza -ag'
+alias lla='eza -alg'
+alias tree='eza -T'
+# zoxide
+alias cd=z
+alias ze="fzf --bind 'enter:execute(rifle {})'"
+# python
+alias py=python
+# gitui
+alias gu=gitui
+# zellij
+alias zj=zellij
+# jless
+alias jl=jless
+# yazi
+alias yy=yazi
+# paru
+alias pa=paru
+# navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+# misc
+alias wd=pwd
+
+#############################################
+# Misc
+#############################################
+
+# Restore the last visited folder when a new terminal is opened
+if set -q CWD_FILE
+    if test -f $CWD_FILE
+        set target_dir (cat $CWD_FILE)
+        # use builtin cd (has been aliased to z)
+        builtin cd $target_dir
+    else
+        touch $CWD_FILE
+        chmod 600 $CWD_FILE
+    end
+end
+
+function my_pre_prompt --on-event fish_prompt
+    echo "$PWD" >"$CWD_FILE"
+end
+
+function y
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+    if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        builtin cd -- "$cwd"
+    end
+    rm -f -- "$tmp"
+end
+
+function zexit
+    touch /tmp/zexit
+    exit
+end
+
+function _pip_activate
+    set -l env_name $argv[1]
+    set -l pip_venvs
+
+    if test (count $argv) -gt 1; and test $argv[2] = pipx
+        set pip_venvs (pipx environment -V PIPX_LOCAL_VENVS)
+    else
+        set pip_venvs $PIP_LOCAL_VENVS
+    end
+
+    set -l env_path "$pip_venvs/$env_name/bin/activate.fish"
+
+    if test -f "$env_path"
+        source "$env_path"
+    else
+        echo "environment '$env_name' not found in '$pip_venvs'."
+    end
+end
+
+function pip-activate
+    _pip_activate $argv[1]
+end
+
+function pipx-activate
+    _pip_activate $argv[1] pipx
+end
+
+#############################################
+# Third party tools init
+#############################################
+
+fzf_key_bindings
+
+starship init fish | source
+
+zoxide init fish | source

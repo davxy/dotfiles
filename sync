@@ -62,6 +62,8 @@ common=(
     "$HOME/.bash_profile | bash/bundle/bash_profile"
     "$HOME/.profile | bash/bundle/profile"
     "$HOME/.inputrc | bash/bundle/inputrc"
+    # fish
+    "$HOME/.config/fish/config.fish | fish/config.fish"
     # systemd
     "$HOME/.config/systemd/ | systemd/"
     # gnupg
