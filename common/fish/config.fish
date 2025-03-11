@@ -1,4 +1,4 @@
-# Version 0.1.0
+# Version 0.1.1
 #
 # Depends on
 # - zellij
@@ -12,11 +12,7 @@ if not status is-interactive
     return
 end
 
-# eval (zellij setup --generate-auto-start fish | string collect)
-
-# Auto exit from zellij
-set -gx ZELLIJ_AUTO_EXIT true
-
+# Modification to `zellij setup --generate-auto-start fish`
 if not set -q ZELLIJ
     if test "$ZELLIJ_AUTO_ATTACH" = true
         zellij attach -c
@@ -27,7 +23,6 @@ if not set -q ZELLIJ
             zellij action new-tab
         end
     end
-
     if test -f /tmp/zexit
         rm /tmp/zexit
     else
@@ -35,8 +30,13 @@ if not set -q ZELLIJ
     end
 end
 
+function zexit
+    touch /tmp/zexit
+    exit
+end
+
 # Remove fish greeting
-set -g fish_greeting
+set fish_greeting
 
 # Set vi key bindings
 set fish_key_bindings fish_vi_key_bindings
@@ -61,55 +61,50 @@ set fish_cursor_visual block blink
 #############################################
 
 # Path
-set -gxp PATH /home/davxy/bin /home/davxy/.cargo/bin
+set -xp PATH /home/davxy/bin /home/davxy/.cargo/bin
 
 # VPN config files
-set -gx VPN_CONFIG_DIR "$HOME/.wireguard"
+set -x VPN_CONFIG_DIR "$HOME/.wireguard"
 
 # Default options for 'fzf'
-set -gx FZF_DEFAULT_OPTS "--history=/tmp/fzf-history --no-sort --exact"
+set -x FZF_DEFAULT_OPTS "--history=/tmp/fzf-history --no-sort --exact"
 
 # Default editor
-set -gx EDITOR "$HOME/bin/hx"
-
-# Enable Wayland for Firefox (maybe this is the default now)
-# set -gx MOZ_ENABLE_WAYLAND 1
+set -x EDITOR "$HOME/bin/hx"
 
 # Exclude the specified folders from the zoxide database
-set -gx _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
-
+set -x _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
 # Resolve symlinks before adding directories to the database
-set -gx _ZO_RESOLVE_SYMLINKS 1
-
+set -x _ZO_RESOLVE_SYMLINKS 1
 # Print matched directory before navigating to it
-set -gx _ZO_ECHO 1
+# set -x _ZO_ECHO 1
 
 # Dark theme for gtk applications
-set -gx GTK_THEME "Adwaita:dark"
+set -x GTK_THEME "Adwaita:dark"
 
-# Folders for go stuff
-set -gx GOPATH "$HOME/.go"
+# Folder for Go stuff
+set -x GOPATH "$HOME/.go"
 
 # To make Wayland clipboard work
-set -gx COSMIC_DATA_CONTROL_ENABLED 1
+set -x COSMIC_DATA_CONTROL_ENABLED 1
 
 # Local folder for pip venvs
-set -gx PIP_LOCAL_VENVS "$HOME/.local/pip"
+set -x PIP_LOCAL_VENVS "$HOME/.local/pip"
 
 # File where we write the last visited folder
-set -gx CWD_FILE "/tmp/"$USER"_cwd_file"
+set -x CWD_FILE "/tmp/"$USER"_cwd_file"
 
 # By default libvirt uses 'qemu:///session'
-set -gx LIBVIRT_DEFAULT_URI "qemu:///system"
+set -x LIBVIRT_DEFAULT_URI "qemu:///system"
 
 # Default terminal
-set -gx TERMINAL cosmic-term
+set -x TERMINAL cosmic-term
 
 # Cosmic terminal is based on alacritty
-set -gx TERM alacritty
+set -x TERM alacritty
 
 # Auto exit from zellij
-set -gx ZELLIJ_AUTO_EXIT true
+set -x ZELLIJ_AUTO_EXIT true
 
 # GPG stuff
 set -e SSH_AGENT_PID
@@ -149,8 +144,6 @@ alias gu=gitui
 alias zj=zellij
 # jless
 alias jl=jless
-# yazi
-alias yy=yazi
 # paru
 alias pa=paru
 # navigation
@@ -168,8 +161,8 @@ alias wd=pwd
 # Restore the last visited folder when a new terminal is opened
 if set -q CWD_FILE
     if test -f $CWD_FILE
-        set target_dir (cat $CWD_FILE)
-        # use builtin cd (has been aliased to z)
+        set -l target_dir (cat $CWD_FILE)
+        # use builtin cd (been aliased to z)
         builtin cd $target_dir
     else
         touch $CWD_FILE
@@ -183,16 +176,11 @@ end
 
 function y
     set tmp (mktemp -t "yazi-cwd.XXXXXX")
-    yazi $argv --cwd-file="$tmp"
+    yazi $argv --cwd-file=$tmp
     if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
         builtin cd -- "$cwd"
     end
     rm -f -- "$tmp"
-end
-
-function zexit
-    touch /tmp/zexit
-    exit
 end
 
 function _pip_activate
