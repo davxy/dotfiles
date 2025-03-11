@@ -66,15 +66,17 @@ F = "file_picker"
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
 # Change current working directory to current buffer file folder
-c = ":cd %sh{echo $(dirname %{buffer_name}) }"
+c = ":cd %sh{fd --type d . | fzf}"
+# Change current working directory to git project root
+C = ":cd %sh{fd --type d . %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} | fzf}"
 # Interactive search in current working directory
 s = ":open %sh{ff -c .}"
-# Interactive search in current working directory (include path name in the search)
-S = ":open %sh{ff -cf .}"
-# Interactive search in current git directory
-w = ":open %sh{ff -c %sh{git rev-parse --show-toplevel 2>/dev/null}}"
-# Interactive search in current git directory (include path name in the search)
-W = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
+# Interactive search in current git project root
+S = ":open %sh{ff -c %sh{git rev-parse --show-toplevel 2>/dev/null}}"
+# Interactive search in current working directory (include path name)
+f = ":open %sh{ff -cf .}"
+# Interactive search in current git project root directory (include path name)
+F = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
 b = ":open %sh{ff -c %{buffer_name}}"
 # Git status
