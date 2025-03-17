@@ -66,7 +66,7 @@ F = "file_picker"
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
 # Change current working directory to current buffer file folder
-c = ":cd %sh{fd --type d . | fzf}"
+c = ":cd %sh{fd --type d . %sh{dirname %{buffer_name}} | fzf}"
 # Change current working directory to git project root
 C = ":cd %sh{fd --type d . %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} | fzf}"
 # Interactive search in current working directory
@@ -106,7 +106,5 @@ d = [
   ":sh git diff --unified=0 %{buffer_name}; true"
 ]
 r = ":reset-diff-change"
-z = "shrink_selection"
-Z = "expand_selection"
-
-
+# z = "shrink_selection"
+# Z = "expand_selection"
