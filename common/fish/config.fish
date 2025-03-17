@@ -23,10 +23,12 @@ if not set -q ZELLIJ
             zellij action new-tab
         end
     end
-    if test -f /tmp/zexit
-        rm /tmp/zexit
-    else
-        kill $fish_pid
+    if test $status -eq 0
+        if test -f /tmp/zexit
+            rm /tmp/zexit
+        else
+            kill $fish_pid
+        end
     end
 end
 
