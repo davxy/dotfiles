@@ -22,6 +22,10 @@ center = ["file-name"]
 right = ["register", "spacer", "selections", "spacer", "primary-selection-length", "spacer", "position-percentage", "spacer", "position"]
 separator = "  "
 
+[editor.auto-save]
+after-delay.enable = true
+after-delay.timeout = 1000
+
 [editor.lsp]
 display-messages = true
 auto-signature-help = true
@@ -78,9 +82,17 @@ f = ":open %sh{ff -cf .}"
 # Interactive search in current git project root directory (include path name)
 F = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
+# b = ":echo ."
 b = ":open %sh{ff -c %{buffer_name}}"
 # Git status
-g = ":sh git status -s"
+g = [
+  ":write-all",
+  ":new",
+  ":insert-output gitui >/dev/tty",
+  ":buffer-close!",
+  ":redraw",
+  ":reload-all"
+]
 # Git blame
 B = ":sh git blame -L %{cursor_line},+1 %{buffer_name}"
 # TODO Git browse github repo using default browser
