@@ -63,7 +63,7 @@ set fish_cursor_visual block blink
 #############################################
 
 # Path
-set -xp PATH /home/davxy/bin /home/davxy/.cargo/bin
+set -xp PATH /home/davxy/bin /home/davxy/.local/bin /home/davxy/.cargo/bin
 
 # VPN config files
 set -x VPN_CONFIG_DIR "$HOME/.wireguard"
