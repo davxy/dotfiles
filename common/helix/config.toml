@@ -66,13 +66,15 @@ H = ":toggle lsp.display-inlay-hints"
 R = ":reflow"
 f = "file_picker_in_current_directory"
 F = "file_picker"
+e = "file_explorer_in_current_buffer_directory"
+E = "file_explorer"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
 # Change current working directory to current buffer file folder
-c = ":cd %sh{fd --type d . %sh{dirname %{buffer_name}} | fzf}"
+c = ":cd %sh{find %sh{dirname %{buffer_name}} -type d -not -path '*/.git/*' | fzf}"
 # Change current working directory to git project root
-C = ":cd %sh{fd --type d . %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} | fzf}"
+C = ":echo %sh{find %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} -type d -not -path '*/.git/*' -not -path '*/target*' | fzf}"
 # Interactive search in current working directory
 s = ":open %sh{ff -c .}"
 # Interactive search in current git project root
@@ -84,7 +86,23 @@ F = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
 # b = ":echo ."
 b = ":open %sh{ff -c %{buffer_name}}"
-# Git status
+# Yazi current file directory
+e = [
+  ':sh rm -f /tmp/unique-file',
+  ':insert-output yazi %{buffer_name} --chooser-file=/tmp/unique-file',
+  ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat /tmp/unique-file}',
+  ':redraw',
+]
+# Yazi workspace directory
+E = [
+  ':sh rm -f /tmp/unique-file',
+  ':insert-output yazi %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} --chooser-file=/tmp/unique-file',
+  ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat /tmp/unique-file}',
+  ':redraw',
+]
+# Gitui
 g = [
   ":write-all",
   ":new",
@@ -118,5 +136,6 @@ d = [
   ":sh git diff --unified=0 %{buffer_name}; true"
 ]
 r = ":reset-diff-change"
-# z = "shrink_selection"
-# Z = "expand_selection"
+
+z = "shrink_selection"
+Z = "expand_selection"
