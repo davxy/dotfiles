@@ -1,4 +1,4 @@
-# Version 0.1.1
+# Version 0.1.2
 #
 # Depends on
 # - zellij
@@ -10,6 +10,10 @@
 
 if not status is-interactive
     return
+end
+
+if not set -q TMPDIR
+    set TMPDIR (dirname (mktemp))
 end
 
 # Modification to `zellij setup --generate-auto-start fish`
@@ -24,8 +28,8 @@ if not set -q ZELLIJ
         end
     end
     if test $status -eq 0
-        if test -f /tmp/zexit
-            rm /tmp/zexit
+        if test -f $TMPDIR/zexit
+            rm $TMPDIR/zexit
         else
             kill $fish_pid
         end
@@ -33,7 +37,7 @@ if not set -q ZELLIJ
 end
 
 function zexit
-    touch /tmp/zexit
+    touch $TMPDIR/zexit
     exit
 end
 
@@ -69,7 +73,7 @@ set -xp PATH /home/davxy/bin /home/davxy/.local/bin /home/davxy/.cargo/bin
 set -x VPN_CONFIG_DIR "$HOME/.wireguard"
 
 # Default options for 'fzf'
-set -x FZF_DEFAULT_OPTS "--history=/tmp/fzf-history --no-sort --exact"
+set -x FZF_DEFAULT_OPTS "--history=$TMPDIR/fzf-history --no-sort --exact"
 
 # Default editor
 set -x EDITOR "$HOME/bin/hx"
@@ -94,7 +98,7 @@ set -x COSMIC_DATA_CONTROL_ENABLED 1
 set -x PIP_LOCAL_VENVS "$HOME/.local/pip"
 
 # File where we write the last visited folder
-set -x CWD_FILE "/tmp/"$USER"_cwd_file"
+set -x CWD_FILE "$TMPDIR/$USER"_cwd_file
 
 # By default libvirt uses 'qemu:///session'
 set -x LIBVIRT_DEFAULT_URI "qemu:///system"
