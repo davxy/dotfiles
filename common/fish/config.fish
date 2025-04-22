@@ -16,6 +16,10 @@ if not set -q TMPDIR
     set TMPDIR (dirname (mktemp))
 end
 
+# Default editor
+# This should be done before zellij setup to make scrollback edit work.
+set -x EDITOR "$HOME/bin/hx"
+
 # Modification to `zellij setup --generate-auto-start fish`
 if not set -q ZELLIJ
     if test "$ZELLIJ_AUTO_ATTACH" = true
@@ -67,16 +71,13 @@ set fish_cursor_visual block blink
 #############################################
 
 # Path
-set -xp PATH /home/davxy/bin /home/davxy/.local/bin /home/davxy/.cargo/bin
+set -xp PATH "$HOME/bin" "$HOME/.local/bin" "$HOME/.cargo/bin"
 
 # VPN config files
 set -x VPN_CONFIG_DIR "$HOME/.wireguard"
 
 # Default options for 'fzf'
 set -x FZF_DEFAULT_OPTS "--history=$TMPDIR/fzf-history --no-sort --exact"
-
-# Default editor
-set -x EDITOR "$HOME/bin/hx"
 
 # Exclude the specified folders from the zoxide database
 set -x _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
@@ -112,7 +113,7 @@ set -x TERM alacritty
 # Auto exit from zellij
 set -x ZELLIJ_AUTO_EXIT true
 
-# GPG stuff
+# GPG as SSH auth agent
 set -e SSH_AGENT_PID
 set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
 set -x GPG_TTY (tty)

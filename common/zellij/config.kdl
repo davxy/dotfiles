@@ -84,7 +84,6 @@ copy_command "wl-copy"
 // Default: $EDITOR or $VISUAL
 //
 // scrollback_editor "hx"
-scrollback_editor "/home/davxy/bin/hx"
 
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
