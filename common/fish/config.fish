@@ -1,4 +1,4 @@
-# Version 0.1.2
+# Version 0.1.3
 #
 # Depends on
 # - zellij
@@ -23,13 +23,9 @@ set -x EDITOR "$HOME/bin/hx"
 # Modification to `zellij setup --generate-auto-start fish`
 if not set -q ZELLIJ
     if test "$ZELLIJ_AUTO_ATTACH" = true
-        zellij attach -c
+        command zellij attach -c
     else
-        if test -z "$ZELLIJ" -o (count $argv) -gt 0
-            zellij $argv
-        else
-            zellij action new-tab
-        end
+        command zellij
     end
     if test $status -eq 0
         if test -f $TMPDIR/zexit
@@ -40,9 +36,22 @@ if not set -q ZELLIJ
     end
 end
 
+function zellij
+    # Prevent nesting, just open a new tab
+    if test (count $argv) -gt 0
+        command zellij $argv
+    else
+        command zellij action new-tab
+    end
+end
+
 function zexit
-    touch $TMPDIR/zexit
-    exit
+    if set -q ZELLIJ
+        touch $TMPDIR/zexit
+        exit
+    else
+        echo "Zellij is not running"
+    end
 end
 
 # Remove fish greeting
