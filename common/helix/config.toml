@@ -22,10 +22,6 @@ center = ["file-name"]
 right = ["register", "spacer", "selections", "spacer", "primary-selection-length", "spacer", "position-percentage", "spacer", "position"]
 separator = "  "
 
-[editor.auto-save]
-after-delay.enable = true
-after-delay.timeout = 1000
-
 [editor.lsp]
 display-messages = true
 auto-signature-help = true
