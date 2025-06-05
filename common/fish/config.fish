@@ -1,4 +1,4 @@
-# Version 0.1.2
+# Version 0.1.3
 #
 # Depends on
 # - zellij
@@ -16,62 +16,16 @@ if not set -q TMPDIR
     set TMPDIR (dirname (mktemp))
 end
 
-# Default editor
-# This should be done before zellij setup to make scrollback edit work.
-set -x EDITOR "$HOME/bin/hx"
-
-# Modification to `zellij setup --generate-auto-start fish`
-if not set -q ZELLIJ
-    if test "$ZELLIJ_AUTO_ATTACH" = true
-        zellij attach -c
-    else
-        if test -z "$ZELLIJ" -o (count $argv) -gt 0
-            zellij $argv
-        else
-            zellij action new-tab
-        end
-    end
-    if test $status -eq 0
-        if test -f $TMPDIR/zexit
-            rm $TMPDIR/zexit
-        else
-            kill $fish_pid
-        end
-    end
-end
-
-function zexit
-    touch $TMPDIR/zexit
-    exit
-end
-
-# Remove fish greeting
-set fish_greeting
-
-# Set vi key bindings
-set fish_key_bindings fish_vi_key_bindings
-
-# Emulates vim's cursor shape behavior
-# Set the normal and visual mode cursors to a block
-set fish_cursor_default block blink
-# Set the insert mode cursor to a line
-set fish_cursor_insert line blink
-# Set the replace mode cursors to an underscore
-set fish_cursor_replace_one underscore blink
-set fish_cursor_replace underscore blink
-# Set the external cursor to a line. The external cursor appears when a command is started.
-# The cursor shape takes the value of fish_cursor_default when fish_cursor_external is not specified.
-set fish_cursor_external line blink
-# The following variable can be used to configure cursor shape in
-# visual mode, but due to fish_cursor_default, is redundant here
-set fish_cursor_visual block blink
-
 #############################################
 # Exports
 #############################################
 
 # Path
 set -xp PATH "$HOME/bin" "$HOME/.local/bin" "$HOME/.cargo/bin"
+
+# Default editor
+# This should be done before zellij setup to make scrollback edit work.
+set -x EDITOR "$HOME/bin/hx"
 
 # VPN config files
 set -x VPN_CONFIG_DIR "$HOME/.wireguard"
@@ -120,6 +74,61 @@ set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
 #############################################
+# Start zellij
+#############################################
+
+# Modification to `zellij setup --generate-auto-start fish`
+
+if not set -q ZELLIJ
+    if test "$ZELLIJ_AUTO_ATTACH" = true
+        zellij attach -c
+    else
+        if test -z "$ZELLIJ" -o (count $argv) -gt 0
+            zellij $argv
+        else
+            zellij action new-tab
+        end
+    end
+    if test $status -eq 0
+        if test -f $TMPDIR/zexit
+            rm $TMPDIR/zexit
+        else
+            kill $fish_pid
+        end
+    end
+end
+
+function zexit
+    touch $TMPDIR/zexit
+    exit
+end
+
+#############################################
+# Fish specific settings
+#############################################
+
+# Remove fish greeting
+set fish_greeting
+
+# Set vi key bindings
+set fish_key_bindings fish_vi_key_bindings
+
+# Emulates vim's cursor shape behavior
+# Set the normal and visual mode cursors to a block
+set fish_cursor_default block blink
+# Set the insert mode cursor to a line
+set fish_cursor_insert line blink
+# Set the replace mode cursors to an underscore
+set fish_cursor_replace_one underscore blink
+set fish_cursor_replace underscore blink
+# Set the external cursor to a line. The external cursor appears when a command is started.
+# The cursor shape takes the value of fish_cursor_default when fish_cursor_external is not specified.
+set fish_cursor_external line blink
+# The following variable can be used to configure cursor shape in
+# visual mode, but due to fish_cursor_default, is redundant here
+set fish_cursor_visual block blink
+
+#############################################
 # Alias
 #############################################
 
@@ -160,6 +169,9 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 # misc
 alias wd=pwd
+# ai
+alias aid=aider
+alias aic=aichat
 
 #############################################
 # Misc
@@ -215,6 +227,13 @@ end
 
 function pipx-activate
     _pip_activate $argv[1] pipx
+end
+
+# Open detached
+function opend
+    for i in $argv
+        nohup xdg-open $i >/dev/null 2>&1 &
+    end
 end
 
 #############################################
