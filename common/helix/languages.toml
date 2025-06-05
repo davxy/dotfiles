@@ -4,26 +4,16 @@ name = "markdown"
 language-servers = [ "marksman", "ltex-ls" ]
 file-types = ["md", "txt", "adoc"]
 scope = "source.markdown"
-# roots = []
-# config = { ltex.disabledRules = { "en-US" = [
-#   "PROFANITY",
-# ], "en-GB" = [
-#   "PROFANITY",
-# ] }, ltex.dictionary = { "en-US" = [
-#   "Subproblem",
-# ], "en-GB" = [
-#   "Subproblem",
-# ] }, ltex.completionEnabled = true }
 
 [[language]]
 name = "rust"
 formatter = { command = "rustfmt", args = ["+nightly"] }
 
 [language-server.rust-analyzer]
+# NOTE: Looks like `ra-multiplex` ignores the variables
 # command = "ra-multiplex"
-# Looks like `ra-multiplex` ignores the variables
 environment = { "SKIP_WASM_BUILD" = "1", "CARGO_TARGET_DIR" = "target/rust-analyzer" }
-# environment = { "CHALK_OVERFLOW_DEPTH" = "3000", "CHALK_SOLVER_MAX_SIZE" = "1500" }
+# args = ["--verbose"]
 
 # [language.debugger]
 # command = "codelldb"
