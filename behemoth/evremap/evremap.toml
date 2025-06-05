@@ -1,5 +1,5 @@
 device_name = "Lenovo TrackPoint Keyboard II"
-phys = "usb-0000:46:00.3-6.1/input0"
+phys = "usb-0000:46:00.3-6.4/input0"
 
 [[dual_role]]
 input = "KEY_CAPSLOCK"
