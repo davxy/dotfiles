@@ -32,3 +32,6 @@ bind k scrollline -5
 
 " hint and open in new tab
 bind F hint -t
+
+bind J tabprev
+bind K tabnext
