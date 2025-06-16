@@ -1,4 +1,4 @@
-theme = "gruvbox_material"
+theme = "gruvbox-material"
 
 [editor]
 line-number = "relative"
@@ -62,8 +62,8 @@ H = ":toggle lsp.display-inlay-hints"
 R = ":reflow"
 f = "file_picker_in_current_directory"
 F = "file_picker"
-e = "file_explorer_in_current_buffer_directory"
-E = "file_explorer"
+# e = "file_explorer_in_current_buffer_directory"
+# E = "file_explorer"
 
 # Add some custom bindings to the space-space menu (custom)
 [keys.normal.'space'.'space']
