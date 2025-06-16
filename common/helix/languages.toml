@@ -42,3 +42,15 @@ name = "binary (terminal)"
 request = "launch"
 completion = [ { name = "binary", completion = "filename" }]
 args = { program = "{0}", runInTerminal = true }
+
+[[language]]
+name = "asn1"
+scope = "source.asn1"
+file-types = ["asn", "asn1"]
+roots = []
+comment-tokens = "--"
+indent = { tab-width = 4, unit = "    " }
+
+[[grammar]]
+name = "asn1"
+source = { git = "https://github.com/JonathanWilbur/tree-sitter-asn1", rev = "c5b9d6427490fbbfd96d7717301866623e9114c0" }
