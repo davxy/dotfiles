@@ -1,8 +1,8 @@
 (
     output: "all",
-    source: Path("/home/davxy/Pictures/night.jpg"),
+    source: Color(Single((0.28735632, 0.27378044, 0.27378044))),
     filter_by_theme: false,
-    rotation_frequency: 300,
+    rotation_frequency: 900,
     filter_method: Lanczos,
     scaling_mode: Zoom,
     sampling_method: Alphanumeric,
