@@ -72,16 +72,16 @@ c = ":cd %sh{find %sh{dirname %{buffer_name}} -type d -not -path '*/.git/*' | fz
 # Change current working directory to git project root
 C = ":echo %sh{find %sh{git rev-parse --show-toplevel 2>/dev/null || pwd} -type d -not -path '*/.git/*' -not -path '*/target*' | fzf}"
 # Interactive search in current working directory
-s = ":open %sh{ff -c .}"
+s = ":open %sh{ff -c -q '%{selection}' .}"
 # Interactive search in current git project root
-S = ":open %sh{ff -c %sh{git rev-parse --show-toplevel 2>/dev/null}}"
+S = ":open %sh{ff -c -q '%{selection}' %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current working directory (include path name)
-f = ":open %sh{ff -cf .}"
+f = ":open %sh{ff -cf -q '%{selection}' .}"
 # Interactive search in current git project root directory (include path name)
-F = ":open %sh{ff -cf %sh{git rev-parse --show-toplevel 2>/dev/null}}"
+F = ":open %sh{ff -cf -q '%{selection}' %sh{git rev-parse --show-toplevel 2>/dev/null}}"
 # Interactive search in current buffer
 # b = ":echo ."
-b = ":open %sh{ff -c %{buffer_name}}"
+b = ":open %sh{ff -c -q '%{selection}' %{buffer_name}}"
 # Yazi current file directory
 e = [
   ':sh rm -f /tmp/unique-file',
