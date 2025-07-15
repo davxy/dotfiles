@@ -5,6 +5,8 @@
 # Depends on:
 # - rsync
 
+set -euo pipefail
+
 # Sync command
 SYNC="rsync -av --delete --quiet --exclude='.git'"
 
@@ -13,46 +15,88 @@ DRYRUN=0
 CONFIRM=0
 OPERATION=""
 
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
 function usage() {
-    echo "Usage: sync [--confirm] (in|out) "
-    echo "  in : copy files from system folders"
-    echo "  out: copy files to system folders"
-    echo "  --confirm: prompt for confirmation before synchronization"
-    echo "  --dryrun: do not perform the action, just show the outcome"
+    echo "Usage: sync [OPTIONS] OPERATION"
+    echo ""
+    echo "OPERATION:"
+    echo "  in      Copy files from system folders to versioned folders"
+    echo "  out     Copy files from versioned folders to system folders"
+    echo ""
+    echo "OPTIONS:"
+    echo "  --confirm   Prompt for confirmation before each synchronization"
+    echo "  --dryrun    Show what would be done without performing actions"
+    echo "  --help      Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  sync out                    # Copy all files to system"
+    echo "  sync --dryrun in            # Preview copying from system"
+    echo "  sync --confirm out          # Copy to system with confirmation"
     exit $1
 }
 
-# Parse command line options, except for the last mandatory operation
-while [[ "$#" -gt 1 ]]; do
-    case "$1" in
-        --dryrun)
-            DRYRUN=1
-            ;;
-        --confirm)
-            CONFIRM=1
-            ;;
-        --help)
-            usage 0
-            ;;
-        *)
-            echo "Unknown option: $1"
-            usage 1
-            ;;
-    esac
-    shift
-done
+function check_dependencies() {
+    if ! command -v rsync >/dev/null 2>&1; then
+        echo -e "${RED}Error: rsync is required but not installed${NC}" >&2
+        exit 1
+    fi
+}
 
-if [[ $1 == "--help" ]]; then
-    usage 0
-fi
+function log_info() {
+    echo -e "${BLUE}$1${NC}"
+}
 
-# Check if the last argument is provided and is either "in" or "out"
-if [[ "$#" -ne 1 || ( "$1" != "in" && "$1" != "out" ) ]]; then
-    echo "Error: Missing or invalid operation. Expected 'in' or 'out'."
-    usage 1
-else
-    OPERATION="$1"
-fi
+function log_success() {
+    echo -e "${GREEN}$1${NC}"
+}
+
+function log_warning() {
+    echo -e "${YELLOW}$1${NC}"
+}
+
+function log_error() {
+    echo -e "${RED}$1${NC}" >&2
+}
+
+function parse_arguments() {
+    # Parse command line options, except for the last mandatory operation
+    while [[ "$#" -gt 1 ]]; do
+        case "$1" in
+            --dryrun)
+                DRYRUN=1
+                ;;
+            --confirm)
+                CONFIRM=1
+                ;;
+            --help)
+                usage 0
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                usage 1
+                ;;
+        esac
+        shift
+    done
+
+    if [[ "${1:-}" == "--help" ]]; then
+        usage 0
+    fi
+
+    # Check if the last argument is provided and is either "in" or "out"
+    if [[ "$#" -ne 1 || ( "$1" != "in" && "$1" != "out" ) ]]; then
+        log_error "Missing or invalid operation. Expected 'in' or 'out'."
+        usage 1
+    else
+        OPERATION="$1"
+    fi
+}
 
 # Array of 'system | versioned' file couples
 common=(
@@ -119,16 +163,54 @@ workmule=(
     "/etc/evremap.toml | evremap/evremap.toml"
 )
 
-function sync_files() {
-    target="$1"
-    echo "[$target]"
+function sync_single_file() {
+    local in_file="$1"
+    local out_file="$2"
+    
+    if [[ $DRYRUN == 1 ]]; then
+        echo "  [DRY RUN] $in_file -> $out_file"
+        return 0
+    fi
 
+    if [[ $CONFIRM == 1 ]]; then
+        printf "  Proceed with $in_file -> $out_file [N/y]? "
+        read -r confirmed
+    else
+        confirmed="y"
+    fi
+
+    if [[ $confirmed == "y" ]]; then
+        if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
+            mkdir -p "$(dirname "$out_file")"
+            if $SYNC "$in_file" "$out_file"; then
+                log_success "  ✓ $in_file -> $out_file"
+            else
+                log_error "  ✗ Failed to sync $in_file -> $out_file"
+                return 1
+            fi
+        else
+            log_warning "  ⚠ Skipping non-existent file: $in_file"
+        fi
+    else
+        echo "  Skipped: $in_file -> $out_file"
+    fi
+}
+
+function sync_files() {
+    local target="$1"
     shift
-    files=("$@")
+    local files=("$@")
+
+    log_info "[$target]"
+
+    local sync_count=0
+    local error_count=0
 
     for file in "${files[@]}"; do
-        system_file=$(echo $file | cut -d'|' -f1 | sed 's/^ *//;s/ *$//')
-        local_file=$(echo $file | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
+        local system_file local_file in_file out_file
+        
+        system_file=$(echo "$file" | cut -d'|' -f1 | sed 's/^ *//;s/ *$//')
+        local_file=$(echo "$file" | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
         local_file="$target/$local_file"
 
         if [[ $OPERATION == "out" ]]; then
@@ -139,36 +221,47 @@ function sync_files() {
             out_file=$local_file
         fi
 
-        echo "* " $in_file ">" $out_file
-
-        if [[ $CONFIRM == 1 ]]; then
-            printf "proceed [N/y]? "
-            read confirmed
+        set +e
+        sync_single_file "$in_file" "$out_file"
+        if [[ $? -eq 0 ]]; then
+            ((sync_count++))
         else
-            confirmed="y"
+            ((error_count++))
         fi
-
-        if [[ $confirmed == "y" ]]; then
-            if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
-                if [[ $DRYRUN == 0 ]]; then
-                    mkdir -p $(dirname "$out_file")
-                    $SYNC $in_file $out_file
-                fi
-            else
-                echo "Skipping unexistent file \"$in_file\""
-            fi
-        fi
+        set -e
     done
+
+    if [[ $DRYRUN == 0 ]]; then
+        log_info "Completed: $sync_count synced, $error_count errors"
+    fi
 }
 
-if [[ $HOSTNAME = "" ]]; then
-    HOSTNAME=$(hostname)
-fi
+function main() {
+    check_dependencies
+    parse_arguments "$@"
 
-declare -n file_list="$HOSTNAME"
+    if [[ -z "${HOSTNAME:-}" ]]; then
+        HOSTNAME=$(hostname)
+    fi
 
-# Sync common files
-sync_files "common" "${common[@]}"
+    log_info "Starting sync operation: $OPERATION"
+    if [[ $DRYRUN == 1 ]]; then
+        log_info "DRY RUN MODE - No files will be modified"
+    fi
 
-# Sync system specific files
-sync_files "$HOSTNAME" "${file_list[@]}"
+    # Sync common files
+    sync_files "common" "${common[@]}"
+
+    # Sync system specific files if they exist
+    if declare -p "$HOSTNAME" >/dev/null 2>&1; then
+        declare -n file_list="$HOSTNAME"
+        sync_files "$HOSTNAME" "${file_list[@]}"
+    else
+        log_warning "No specific configuration found for hostname: $HOSTNAME"
+    fi
+
+    log_success "Sync operation completed"
+}
+
+# Run main function with all arguments
+main "$@"
