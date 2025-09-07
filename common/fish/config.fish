@@ -73,34 +73,40 @@ set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
 set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
+# PERSONAL DEV STUFF
+set -x JAM_CONFORMANCE /mnt/ssd/develop/jam/jam-conformance
+set -x JAM_REPORTS "$JAM_CONFORMANCE/fuzz-reports/0.7.0/reports"
+set -x JAM_TRACES "$JAM_CONFORMANCE/fuzz-reports/0.7.0/traces"
+set -x JAM_SOCK "/tmp/jam_target.sock"
+
 #############################################
 # Start zellij
 #############################################
 
-# Modification to `zellij setup --generate-auto-start fish`
-
-if not set -q ZELLIJ
+function zellij
     if test "$ZELLIJ_AUTO_ATTACH" = true
-        zellij attach -c
-    else
-        if test -z "$ZELLIJ" -o (count $argv) -gt 0
-            zellij $argv
-        else
-            zellij action new-tab
-        end
-    end
-    if test $status -eq 0
-        if test -f $TMPDIR/zexit
-            rm $TMPDIR/zexit
+        command zellij attach -c
+    else if test (count $argv) -gt 0
+        command zellij $argv
+    else if test -z "$ZELLIJ"
+        command zellij
+        if test -f "$TMPDIR/zexit"
+            rm "$TMPDIR/zexit"
         else
             kill $fish_pid
         end
+    else
+        command zellij action new-tab
     end
 end
 
 function zexit
     touch $TMPDIR/zexit
     exit
+end
+
+if not set -q ZELLIJ
+    zellij
 end
 
 #############################################
@@ -172,6 +178,8 @@ alias wd=pwd
 # ai
 alias aid=aider
 alias aic=aichat
+# common stuff
+alias unix='date +%s'
 
 #############################################
 # Misc
