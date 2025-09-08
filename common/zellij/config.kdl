@@ -142,6 +142,8 @@ keybinds clear-defaults=true {
         bind "]" { NextSwapLayout; }
         bind "r" { SwitchToMode "Resize"; }
         bind "m" { SwitchToMode "Move"; }
+        bind "b" { BreakPane; SwitchToMode "Normal"; }
+        bind "B" { BreakPaneRight; SwitchToMode "Normal"; }
     }
     resize {
         bind "Ctrl v" "Enter" "Space" { SwitchToMode "Normal"; }
