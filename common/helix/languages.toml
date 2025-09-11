@@ -9,6 +9,10 @@ scope = "source.markdown"
 name = "rust"
 formatter = { command = "rustfmt", args = ["+nightly"] }
 
+[[language]]
+name = "bash"
+formatter = { command = "shfmt", args = ["--indent", "4"] }
+
 [language-server.rust-analyzer]
 # NOTE: Looks like `ra-multiplex` ignores the variables
 # command = "ra-multiplex"
