@@ -132,6 +132,7 @@ d = [
   ":sh git diff --unified=0 %{buffer_name}; true"
 ]
 r = ":reset-diff-change"
+w = ":toggle-option soft-wrap.enable"
 
 z = "shrink_selection"
 Z = "expand_selection"
