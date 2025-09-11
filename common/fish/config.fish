@@ -160,6 +160,8 @@ alias cd=z
 alias ze="fzf --bind 'enter:execute(rifle {})'"
 # python
 alias py=python
+# git
+alias g=git
 # gitui
 alias gu=gitui
 # zellij
