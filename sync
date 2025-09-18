@@ -123,6 +123,8 @@ common=(
     "$HOME/.config/zellij/ | zellij/"
     # cosmic
     "$HOME/.config/cosmic/ | cosmic/"
+    # niri
+    "$HOME/.config/niri/ | niri/"
     # fuzzel (used by rofimoji)
     "$HOME/.config/fuzzel/ | fuzzel/"
     # rofimoji
