@@ -125,8 +125,10 @@ common=(
     "$HOME/.config/cosmic/ | cosmic/"
     # niri
     "$HOME/.config/niri/ | niri/"
-    # fuzzel (used by rofimoji)
+    # fuzzel
     "$HOME/.config/fuzzel/ | fuzzel/"
+    # mako
+    "$HOME/.config/mako/ | mako/"
     # rofimoji
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
     # alacritty
