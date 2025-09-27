@@ -59,7 +59,7 @@ set -x CWD_FILE "$TMPDIR/$USER"_cwd_file
 set -x LIBVIRT_DEFAULT_URI "qemu:///system"
 
 # Default terminal
-set -x TERMINAL cosmic-term
+set -x TERMINAL alacritty
 
 # Cosmic terminal is based on alacritty
 set -x TERM alacritty
@@ -74,9 +74,9 @@ set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # PERSONAL DEV STUFF
-set -x JAM_CONFORMANCE /mnt/ssd/develop/jam/jam-conformance
-set -x JAM_REPORTS "$JAM_CONFORMANCE/fuzz-reports/0.7.0/reports"
-set -x JAM_TRACES "$JAM_CONFORMANCE/fuzz-reports/0.7.0/traces"
+set -x JAM_CONFORMANCE_DIR /mnt/ssd/develop/jam/jam-conformance
+set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.0/reports"
+set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.0/traces"
 set -x JAM_SOCK "/tmp/jam_target.sock"
 
 #############################################
