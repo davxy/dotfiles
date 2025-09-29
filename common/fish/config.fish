@@ -88,21 +88,25 @@ function zellij
         command zellij attach -c
     else if test (count $argv) -gt 0
         command zellij $argv
-    else if test -z "$ZELLIJ"
+    else if set -q ZELLIJ
+        command zellij action new-tab
+    else
         command zellij
         if test -f "$TMPDIR/zexit"
             rm "$TMPDIR/zexit"
         else
             kill $fish_pid
         end
-    else
-        command zellij action new-tab
     end
 end
 
 function zexit
-    touch $TMPDIR/zexit
-    exit
+    if set -q ZELLIJ
+        touch $TMPDIR/zexit
+        exit
+    else
+        echo "Zellij not running"
+    end
 end
 
 if not set -q ZELLIJ
