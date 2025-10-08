@@ -9,6 +9,14 @@ tap = ["KEY_ESC"]
 input = ["KEY_ESC"]
 output = []
 
+# [[remap]]
+# input = ["KEY_BACKSPACE"]
+# output = []
+
+# [[remap]]
+# input = ["KEY_DELETE"]
+# output = []
+
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_H"]
 output = ["KEY_LEFT"]
@@ -40,3 +48,7 @@ output = ["KEY_BACKSPACE"]
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_M"]
 output = ["KEY_DELETE"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_SPACE"]
+output = ["KEY_LEFTCTRL", "KEY_L"]

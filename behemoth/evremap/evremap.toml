@@ -8,7 +8,7 @@ tap = ["KEY_ESC"]
 
 [[remap]]
 input = ["KEY_ESC"]
-output = ["KEY_CAPSLOCK"]
+output = []
 
 # [[remap]]
 # input = ["KEY_BACKSPACE"]
