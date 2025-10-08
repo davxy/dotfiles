@@ -40,7 +40,7 @@ input {
         // drag false
         // drag-lock
         natural-scroll
-        // accel-speed 0.2
+        accel-speed 0.5
         // accel-profile "flat"
         // scroll-method "two-finger"
         // disabled-on-external-mouse
@@ -57,7 +57,7 @@ input {
     trackpoint {
         // off
         // natural-scroll
-        // accel-speed 0.2
+        accel-speed 0.5
         // accel-profile "flat"
         // scroll-method "on-button-down"
         // scroll-button 273
@@ -287,6 +287,7 @@ cursor {
 // spawn-at-startup "waybar"
 // spawn-at-startup "xwayland-satellite"
 spawn-at-startup "alacritty"
+spawn-at-startup "wlpaste --primary --watch wl-copy"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -624,4 +625,6 @@ binds {
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
+
+    Mod+Shift+I { spawn "~/bin/info-notify"; }
 }
