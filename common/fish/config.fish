@@ -1,4 +1,4 @@
-# Version 0.1.3
+# Version 0.1.4
 #
 # Depends on
 # - zellij
@@ -45,9 +45,6 @@ set -x GTK_THEME "Adwaita:dark"
 
 # Folder for Go stuff
 set -x GOPATH "$HOME/.go"
-
-# To make Wayland clipboard work
-set -x COSMIC_DATA_CONTROL_ENABLED 1
 
 # Local folder for pip venvs
 set -x PIP_LOCAL_VENVS "$HOME/.local/pip"
