@@ -102,10 +102,11 @@ E = [
 g = [
   ":write-all",
   ":new",
-  ":insert-output gitui >/dev/tty",
+  ":insert-output helix-gitui >/dev/tty",
   ":buffer-close!",
   ":redraw",
-  ":reload-all"
+  ":reload-all",
+  ":open %sh{cat /tmp/helix_gitui_file}"
 ]
 # Git blame
 B = ":sh git blame -L %{cursor_line},+1 %{buffer_name}"
