@@ -121,8 +121,6 @@ common=(
     "$HOME/.config/helix/ | helix/"
     # zellij
     "$HOME/.config/zellij/ | zellij/"
-    # cosmic
-    "$HOME/.config/cosmic/ | cosmic/"
     # niri
     "$HOME/.config/niri/ | niri/"
     # fuzzel
