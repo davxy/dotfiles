@@ -49,3 +49,7 @@ output = ["KEY_BACKSPACE"]
 [[remap]]
 input = ["KEY_LEFTCTRL", "KEY_M"]
 output = ["KEY_DELETE"]
+
+[[remap]]
+input = ["KEY_LEFTCTRL", "KEY_SPACE"]
+output = ["KEY_LEFTCTRL", "KEY_L"]
