@@ -72,8 +72,8 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # PERSONAL DEV STUFF
 set -x JAM_CONFORMANCE_DIR /mnt/ssd/develop/jam/jam-conformance
-set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.0/reports"
-set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.0/traces"
+set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.1/reports"
+set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.1/traces"
 set -x JAM_SOCK "/tmp/jam_target.sock"
 
 #############################################
@@ -118,7 +118,8 @@ end
 set fish_greeting
 
 # Set vi key bindings
-set fish_key_bindings fish_vi_key_bindings
+# set fish_key_bindings fish_vi_key_bindings
+set fish_key_bindings fish_helix_key_bindings
 
 # Emulates vim's cursor shape behavior
 # Set the normal and visual mode cursors to a block
