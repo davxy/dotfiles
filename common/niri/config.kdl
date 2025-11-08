@@ -288,8 +288,8 @@ cursor {
 // This line starts waybar, a commonly used bar for Wayland compositors.
 // spawn-at-startup "xwayland-satellite"
 spawn-at-startup "alacritty"
-spawn-at-startup "wlpaste --primary --watch wl-copy"
 spawn-at-startup "niriswitcher"
+spawn-sh-at-startup "wl-paste --watch cliphist store"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -352,6 +352,7 @@ window-rule {
     match app-id="firefox"
     default-column-width { proportion 0.75; }
     open-on-workspace "browser"
+    block-out-from "screencast"
 }
 
 // Open the Firefox picture-in-picture player as floating by default.
@@ -424,7 +425,7 @@ binds {
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "~/bin/niri-fuzzel"; }
-    Mod+T hotkey-overlay-title="Run an Application: fuzzel" { spawn-sh "alacritty -e ~/bin/niri-fuzzel 1"; }
+    Mod+T hotkey-overlay-title="Run an Application: fuzzel" { spawn-sh "~/bin/niri-fuzzel 1"; }
     Mod+B hotkey-overlay-title="Run an Application: firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run an Application: rofimoji" { spawn "rofimoji"; }
 
@@ -433,8 +434,8 @@ binds {
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
     // Using spawn-sh allows to pass multiple arguments together with the command.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
     XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
     XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
 
@@ -608,6 +609,8 @@ binds {
     Mod+V       { toggle-window-floating; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
+    Mod+Ctrl+V { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+
     // Toggle tabbed column display mode.
     Mod+W { toggle-column-tabbed-display; }
 
@@ -648,4 +651,8 @@ gestures {
     hot-corners {
         off
     }
+}
+
+overview {
+    zoom 0.5
 }
