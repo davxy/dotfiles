@@ -1,5 +1,7 @@
 # Claude artifacts
-**/.claude/settings.local.json
+**/.claude
 CLAUDE.md
+# Aider artifacts
+**/.aider
 # Per project helix config
-.helix
+**/.helix
