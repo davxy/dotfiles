@@ -184,6 +184,8 @@ alias aid=aider
 alias aic=aichat
 # common stuff
 alias unix='date +%s'
+# wifi
+alias wifi=impala
 
 #############################################
 # Misc
