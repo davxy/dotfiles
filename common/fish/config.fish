@@ -13,8 +13,18 @@ if not status is-interactive
 end
 
 if not set -q TMPDIR
-    set TMPDIR (dirname (mktemp))
+    set -l tmpfile (mktemp)
+    set -x TMPDIR (dirname $tmpfile)
+    rm $tmpfile
 end
+
+set -l data_home $HOME/.local/share
+if set -q XDG_DATA_HOME
+    set data_home $XDG_DATA_HOME
+end
+set -gx SKIM_HISTORY $data_home/skim/history
+mkdir -p (dirname $SKIM_HISTORY)
+touch $SKIM_HISTORY
 
 #############################################
 # Exports
@@ -30,8 +40,11 @@ set -x EDITOR "$HOME/bin/hx"
 # VPN config files
 set -x VPN_CONFIG_DIR "$HOME/.wireguard"
 
-# Default options for 'fzf'
+# Default options for `fzf`
 set -x FZF_DEFAULT_OPTS "--history=$TMPDIR/fzf-history --no-sort --exact"
+
+# Default options for `skim`
+set -x SKIM_DEFAULT_OPTIONS "--history=$SKIM_HISTORY"
 
 # Exclude the specified folders from the zoxide database
 set -x _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
@@ -71,9 +84,10 @@ set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # PERSONAL DEV STUFF
+set -x JAM_VERSION "0.7.2"
 set -x JAM_CONFORMANCE_DIR /mnt/ssd/develop/jam/jam-conformance
-set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.1/reports"
-set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/0.7.1/traces"
+set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/reports"
+set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/traces"
 set -x JAM_SOCK "/tmp/jam_target.sock"
 
 #############################################
@@ -118,8 +132,8 @@ end
 set fish_greeting
 
 # Set vi key bindings
-# set fish_key_bindings fish_vi_key_bindings
-set fish_key_bindings fish_helix_key_bindings
+set fish_key_bindings fish_vi_key_bindings
+# set fish_key_bindings fish_helix_key_bindings
 
 # Emulates vim's cursor shape behavior
 # Set the normal and visual mode cursors to a block
@@ -254,7 +268,7 @@ end
 # Third party tools init
 #############################################
 
-fzf_key_bindings
+fzf --fish | source
 
 starship init fish | source
 
