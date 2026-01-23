@@ -288,7 +288,6 @@ cursor {
 // This line starts waybar, a commonly used bar for Wayland compositors.
 // spawn-at-startup "xwayland-satellite"
 spawn-at-startup "alacritty"
-spawn-at-startup "niriswitcher"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -350,8 +349,8 @@ window-rule {
 
 window-rule {
     match app-id="firefox"
-    default-column-width { proportion 0.75; }
-    open-on-workspace "browser"
+    // default-column-width { proportion 0.75; }
+    // open-on-workspace "browser"
     block-out-from "screencast"
 }
 
@@ -365,10 +364,10 @@ window-rule {
     open-floating true
 }
 
-window-rule {
-    match app-id=r#"[aA]lacritty"#
-    open-on-workspace "terminal"
-}
+// window-rule {
+//     match app-id=r#"[aA]lacritty"#
+//     open-on-workspace "terminal"
+// }
 
 // Opacity for inactive windows
 /-window-rule {
@@ -404,9 +403,7 @@ window-rule {
 // NOTE:
 // Left, down, up and right arrow are used in place of Ctrl+{H,J,K,L}.
 // This is because in my system I re-mapped Ctrl+{H,J,K,L} to left,down,up,right respectively
-binds {
-    Mod+Tab repeat=false { spawn "niriswitcherctl" "show" "--window"; }
-    
+binds {   
     // Keys consist of modifiers separated by + signs, followed by an XKB key name
     // in the end. To find an XKB name for a particular key, you may use a program
     // like wev.
@@ -560,9 +557,6 @@ binds {
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
-
-    // Switches focus between the current and the previous workspace.
-    // Mod+Tab { focus-workspace-previous; }
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.
