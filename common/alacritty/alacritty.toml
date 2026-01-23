@@ -42,3 +42,8 @@ style = "Regular"
 # Looks like not works
 [window]
 dynamic_title = true
+
+# [[keyboard.bindings]]
+# key = "Return"
+# mods = "Shift"
+# chars = "\x1b\r"
