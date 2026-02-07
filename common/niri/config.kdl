@@ -3,7 +3,7 @@
 // Check the wiki for a full description of the configuration:
 // https://yalter.github.io/niri/Configuration:-Introduction
 //
-// Version 0.1.0
+// Version 0.1.1
 
 // Input device configuration.
 // Find the full list of options on the wiki:
@@ -421,8 +421,8 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/bin/niri-fuzzel"; }
-    Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/bin/niri-fuzzel 1"; }
+    Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
+    Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/fuzzel 1"; }
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
@@ -449,7 +449,8 @@ binds {
     // or do a four-finger swipe up on a touchpad.
     Mod+O repeat=false { toggle-overview; }
 
-    Mod+Q repeat=false { close-window; }
+    Mod+Q repeat=false { spawn-sh "~/.config/niri/scripts/close-window"; }
+    Mod+P repeat=false hotkey-overlay-title="Toggle window close protection" { spawn-sh "~/.config/niri/scripts/protect-toggle"; }
 
     // Focus
     Mod+H { focus-column-left; }
@@ -457,10 +458,10 @@ binds {
     Mod+K { focus-window-or-workspace-up; }
     Mod+J { focus-window-or-workspace-down; }
 
-    Mod+Shift+H { spawn "~/bin/niri-move" "left"; }
-    Mod+Shift+L { spawn "~/bin/niri-move" "right"; }
-    Mod+Shift+K { spawn "~/bin/niri-move" "up"; }
-    Mod+Shift+J { spawn "~/bin/niri-move" "down"; }
+    Mod+Shift+H { spawn "~/.config/niri/scripts/move-center" "left"; }
+    Mod+Shift+L { spawn "~/.config/niri/scripts/move-center" "right"; }
+    Mod+Shift+K { spawn "~/.config/niri/scripts/move-center" "up"; }
+    Mod+Shift+J { spawn "~/.config/niri/scripts/move-center" "down"; }
 
     // Move
     Mod+Left  { move-column-left; }

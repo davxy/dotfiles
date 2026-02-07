@@ -1,0 +1,31 @@
+#!/bin/bash
+
+TERM_APPS=$1
+
+OPEN_OVERVIEW='{"Action":{"OpenOverview":{}}}'
+CLOSE_OVERVIEW='{"Action":{"CloseOverview":{}}}'
+
+# Check if fuzzel is already running
+if pgrep -x "fuzzel" > /dev/null; then
+    pkill -x "fuzzel"
+    # can you explain me this line? ai!
+    echo "$CLOSE_OVERVIEW" | socat - UNIX-CONNECT:"$NIRI_SOCKET"
+    exit 0
+fi
+
+
+function fuzzel_term() {
+  # Get a list of executables in $PATH
+  commands=$(compgen -c | sort -u)
+  chosen=$(printf '%s\n' "$commands" | fuzzel --dmenu)
+  [ -z "$chosen" ] && return 0  # if nothing chosen, exit
+  alacritty -e "$chosen"&
+}
+
+echo "$OPEN_OVERVIEW" | socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
+if [[ -z $TERM_APPS ]]; then
+  fuzzel
+else
+  fuzzel_term
+fi
+echo "$CLOSE_OVERVIEW" | socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null

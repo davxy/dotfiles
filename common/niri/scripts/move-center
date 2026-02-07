@@ -1,0 +1,26 @@
+#!/bin/bash
+
+direction=$1
+
+case $direction in
+    "left")
+        niri msg action focus-column-left
+        niri msg action center-column
+        ;;
+    "right")
+        niri msg action focus-column-right
+        niri msg action center-column
+        ;;
+    "up")
+        niri msg action focus-window-or-workspace-up
+        niri msg action center-column
+        ;;
+    "down")
+        niri msg action focus-window-or-workspace-down
+        niri msg action center-column
+        ;;
+    *)
+        echo "Usage: $0 {left|right|up|down}"
+        exit 1
+        ;;
+esac

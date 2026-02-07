@@ -1,0 +1,13 @@
+#!/bin/bash
+# Close the focused window unless it is protected.
+
+PROTECTED_FILE="/tmp/niri-protected-windows"
+
+id=$(niri msg --json focused-window | jq -r '.id') || exit 1
+
+if [ -f "$PROTECTED_FILE" ] && grep -qx "$id" "$PROTECTED_FILE"; then
+    notify-send -u normal "Window is protected" "Toggle protection off with Super+P"
+    exit 0
+fi
+
+niri msg action close-window
