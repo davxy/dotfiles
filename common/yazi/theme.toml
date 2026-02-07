@@ -2,7 +2,7 @@
 
 # : Manager {{{
 
-[mgr]
+[manager]
 cwd = { fg = "#83a598" }
 
 # Hovered
@@ -40,10 +40,6 @@ separator_open  = ""
 separator_close = ""
 separator_style = { fg = "#3c3836", bg = "#3c3836" }
 
-# Mode
-mode_normal = { fg = "#282828", bg = "#A89984", bold = true }
-mode_select = { fg = "#282828", bg = "#b8bb26", bold = true }
-mode_unset  = { fg = "#282828", bg = "#d3869b", bold = true }
 
 # Progress
 progress_label  = { fg = "#ebdbb2", bold = true }
@@ -60,10 +56,25 @@ permissions_s = { fg = "#665c54" }
 # : }}}
 
 
+# : mode {{{
+
+[mode]
+normal_main = { fg = "#282828", bg = "#A89984", bold = true }
+normal_alt = { fg = "#282828", bg = "#A89984", bold = true }
+
+select_main = { fg = "#282828", bg = "#b8bb26", bold = true }
+select_alt = { fg = "#282828", bg = "#b8bb26", bold = true }
+
+unset_main  = { fg = "#282828", bg = "#d3869b", bold = true }
+unset_alt  = { fg = "#282828", bg = "#d3869b", bold = true }
+
+# : }}}
+
+
 # : Input {{{
 
 [input]
-border   = { fg = "#504945" }
+border   = { fg = "#bdae93" }
 title    = {}
 value    = {}
 selected = { reversed = true }
