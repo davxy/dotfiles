@@ -427,6 +427,7 @@ binds {
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
     Mod+N hotkey-overlay-title="Clean mako notifications" { spawn-sh "makoctl dismiss --all"; }
+    Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
 
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
