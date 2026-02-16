@@ -422,7 +422,7 @@ binds {
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
-    Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/fuzzel 1"; }
+    Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
@@ -451,6 +451,7 @@ binds {
 
     Mod+Q repeat=false { spawn-sh "~/.config/niri/scripts/close-window"; }
     Mod+P repeat=false hotkey-overlay-title="Toggle window close protection" { spawn-sh "~/.config/niri/scripts/protect-toggle"; }
+    Mod+Ctrl+P repeat=false hotkey-overlay-title="Show protected windows" { spawn-sh "~/.config/niri/scripts/protect-jump"; }
 
     // Focus
     Mod+H { focus-column-left; }
@@ -473,24 +474,6 @@ binds {
     Mod+End  { focus-column-last; }
     Mod+Shift+Home { move-column-to-first; }
     Mod+Shift+End  { move-column-to-last; }
-
-    // Mod+Shift+Left  { focus-monitor-left; }
-    // Mod+Shift+Down  { focus-monitor-down; }
-    // Mod+Shift+Up    { focus-monitor-up; }
-    // Mod+Shift+Right { focus-monitor-right; }
-    // Mod+Shift+H     { focus-monitor-left; }
-    // Mod+Shift+J     { focus-monitor-down; }
-    // Mod+Shift+K     { focus-monitor-up; }
-    // Mod+Shift+L     { focus-monitor-right; }
-
-    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-    // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
-    // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-    // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
-    // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
-    // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
-    // Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
 
     Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
     Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
@@ -555,9 +538,6 @@ binds {
     Mod+Ctrl+7 { move-column-to-workspace 7; }
     Mod+Ctrl+8 { move-column-to-workspace 8; }
     Mod+Ctrl+9 { move-column-to-workspace 9; }
-
-    // Alternatively, there are commands to move just a single window:
-    // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.

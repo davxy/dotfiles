@@ -11,8 +11,8 @@ title=$(jq -r '.title' <<< "$info")
 
 if grep -qx "$id" "$PROTECTED_FILE"; then
     sed -i "/^${id}$/d" "$PROTECTED_FILE"
-    notify-send -u low "Window unprotected" "$title"
+    notify-send -h string:x-canonical-private-synchronous:protect -u low "Window unprotected" "$title"
 else
     echo "$id" >> "$PROTECTED_FILE"
-    notify-send -u low "Window protected" "$title"
+    notify-send -h string:x-canonical-private-synchronous:protect -u low "Window protected" "$title"
 fi

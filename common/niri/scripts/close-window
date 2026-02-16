@@ -6,7 +6,7 @@ PROTECTED_FILE="/tmp/niri-protected-windows"
 id=$(niri msg --json focused-window | jq -r '.id') || exit 1
 
 if [ -f "$PROTECTED_FILE" ] && grep -qx "$id" "$PROTECTED_FILE"; then
-    notify-send -u normal "Window is protected" "Toggle protection off with Super+P"
+    notify-send -h string:x-canonical-private-synchronous:protect -u normal "Window is protected" "Toggle protection off with Super+P"
     exit 0
 fi
 
