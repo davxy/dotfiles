@@ -127,6 +127,8 @@ common=(
     "$HOME/.config/fuzzel/ | fuzzel/"
     # mako
     "$HOME/.config/mako/ | mako/"
+    # swaylock
+    "$HOME/.config/swaylock/ | swaylock/"
     # rofimoji
     "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
     # alacritty
