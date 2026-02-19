@@ -1,0 +1,37 @@
+# Background
+color=282828
+
+# Indicator
+indicator-radius=100
+indicator-thickness=7
+
+# Ring
+ring-color=d4be98
+line-color=282828
+
+# Text
+text-color=d4be98
+
+# Key highlight
+key-hl-color=e78a4e
+
+# Backspace highlight
+bs-hl-color=ea6962
+
+# Verifying
+ring-ver-color=a9b665
+text-ver-color=a9b665
+inside-ver-color=282828
+
+# Wrong
+ring-wrong-color=ea6962
+text-wrong-color=ea6962
+inside-wrong-color=282828
+
+# Clear
+ring-clear-color=d8a657
+text-clear-color=d8a657
+inside-clear-color=282828
+
+# Inside (default)
+inside-color=282828
