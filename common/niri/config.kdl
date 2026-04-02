@@ -347,13 +347,6 @@ window-rule {
 }
 
 window-rule {
-    match app-id="app-launcher"
-    open-floating true
-    default-column-width { fixed 600; }
-    default-window-height { fixed 400; }
-}
-
-window-rule {
     match app-id="firefox"
     // default-column-width { proportion 0.75; }
     // open-on-workspace "browser"
@@ -428,7 +421,6 @@ binds {
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     // Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
-    // Mod+D hotkey-overlay-title="Run app launcher" { spawn "~/.config/niri/scripts/app-launcher"; }
     Mod+D hotkey-overlay-title="Run app launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     Mod+W hotkey-overlay-title="Running applications" { spawn-sh "qs -c noctalia-shell ipc call launcher windows"; }
     Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }

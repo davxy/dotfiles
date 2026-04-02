@@ -9,7 +9,7 @@ if pgrep -x "fuzzel" > /dev/null; then
     exit 0
 fi
 
-commands="poweroff reboot suspend bluetui impala"
+commands="poweroff reboot lock suspend bluetooth wifi"
 
 echo "$OPEN_OVERVIEW" | socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
 chosen=$(printf '%s\n' $commands | fuzzel --dmenu)
@@ -18,8 +18,14 @@ echo "$CLOSE_OVERVIEW" | socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
 [ -z "$chosen" ] && exit 0
 
 case "$chosen" in
-    bluetui|impala)
-        alacritty -e "$chosen" &
+    bluetooth)
+        alacritty -e bluetui &
+        ;;
+    wifi)
+        alacritty -e impala &
+        ;;
+    lock)
+        swaylock
         ;;
     poweroff|reboot|suspend)
         systemctl "$chosen"
