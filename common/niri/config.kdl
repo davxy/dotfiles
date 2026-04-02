@@ -129,7 +129,7 @@ layout {
     center-focused-column "never"
 
     // Add an empty workspace at the very start, in addition to the empty workspace at the very end.
-    // empty-workspace-above-first
+    empty-workspace-above-first
 
     // Always center a single column on a workspace, regardless of the center-focused-column option.
     always-center-single-column
@@ -287,11 +287,12 @@ cursor {
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
 // spawn-at-startup "xwayland-satellite"
+spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "alacritty"
-spawn-at-startup "swayidle" "-w" \
-    "timeout" "300" "swaylock -f" \
-    "timeout" "600" "systemctl suspend" \
-    "before-sleep" "swaylock -f"
+// spawn-at-startup "swayidle" "-w" \
+//     "timeout" "300" "swaylock -f" \
+//     "timeout" "600" "systemctl suspend" \
+//     "before-sleep" "swaylock -f"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -326,13 +327,7 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // Animation settings.
 // The wiki explains how to configure individual animations:
 // https://yalter.github.io/niri/Configuration:-Animations
-animations {
-    // Uncomment to turn off all animations.
-    // off
-
-    // Slow down all animations by this factor. Values below 1 speed them up instead.
-    // slowdown 3.0
-}
+include "./animations/glitch.kdl"
 
 
 workspace "terminal"
@@ -349,6 +344,13 @@ window-rule {
     // match app-id=r#"^org\.wezfurlong\.wezterm$"#
     clip-to-geometry true
     geometry-corner-radius 0
+}
+
+window-rule {
+    match app-id="app-launcher"
+    open-floating true
+    default-column-width { fixed 600; }
+    default-window-height { fixed 400; }
 }
 
 window-rule {
@@ -425,7 +427,10 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
+    // Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
+    // Mod+D hotkey-overlay-title="Run app launcher" { spawn "~/.config/niri/scripts/app-launcher"; }
+    Mod+D hotkey-overlay-title="Run app launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+    Mod+W hotkey-overlay-title="Running applications" { spawn-sh "qs -c noctalia-shell ipc call launcher windows"; }
     Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
@@ -433,21 +438,27 @@ binds {
     Mod+N hotkey-overlay-title="Clean mako notifications" { spawn-sh "makoctl dismiss --all"; }
     Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
 
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
     // Using spawn-sh allows to pass multiple arguments together with the command.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    // XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
+    // XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-; ogg123 /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"; }
+    // XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    // XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioRaiseVolume { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "volume" "increase"; }
+    XF86AudioLowerVolume { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "volume" "decrease"; }
+    XF86AudioMute { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
 
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    // XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    // XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "brightness" "increase"; }
+    XF86MonBrightnessDown { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -464,10 +475,13 @@ binds {
     Mod+K { focus-window-or-workspace-up; }
     Mod+J { focus-window-or-workspace-down; }
 
-    Mod+Shift+H { spawn "~/.config/niri/scripts/move-center" "left"; }
-    Mod+Shift+L { spawn "~/.config/niri/scripts/move-center" "right"; }
-    Mod+Shift+K { spawn "~/.config/niri/scripts/move-center" "up"; }
-    Mod+Shift+J { spawn "~/.config/niri/scripts/move-center" "down"; }
+    Mod+Shift+K { focus-workspace-up; }
+    Mod+Shift+J { focus-workspace-down; }
+
+    // Mod+Shift+H { spawn "~/.config/niri/scripts/move-center" "left"; }
+    // Mod+Shift+L { spawn "~/.config/niri/scripts/move-center" "right"; }
+    // Mod+Shift+K { spawn "~/.config/niri/scripts/move-center" "up"; }
+    // Mod+Shift+J { spawn "~/.config/niri/scripts/move-center" "down"; }
 
     // Move
     Mod+Left  { move-column-left; }
@@ -594,7 +608,7 @@ binds {
     Mod+Ctrl+V { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
 
     // Toggle tabbed column display mode.
-    Mod+W { toggle-column-tabbed-display; }
+    // Mod+W { toggle-column-tabbed-display; }
 
     // Actions to switch layouts.
     // Note: if you uncomment these, make sure you do NOT have
@@ -635,3 +649,5 @@ gestures {
 overview {
     zoom 0.5
 }
+
+include "./noctalia.kdl"
