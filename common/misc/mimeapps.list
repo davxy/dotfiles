@@ -234,6 +234,9 @@ x-scheme-handler/terminal=Alacritty.desktop
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
 x-scheme-handler/webcal=userapp-Thunderbird-5F8Z51.desktop
 x-scheme-handler/webcals=userapp-Thunderbird-5F8Z51.desktop
+x-scheme-handler/sgnl=signal.desktop
+x-scheme-handler/signalcaptcha=signal.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 
 [Added Associations]
 application/vnd.ms-publisher=helix.desktop
