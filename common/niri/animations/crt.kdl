@@ -1,0 +1,166 @@
+animations {
+    window-open {
+        duration-ms 500
+        curve "ease-out-cubic"
+        custom-shader r"
+            float hash(vec2 p) {
+                vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return fract((p3.x + p3.y) * p3.z);
+            }
+
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                float progress = niri_clamped_progress;
+
+                // Smooth vertical expand from center. Uses smoothstep for
+                // a continuous soft edge rather than hard phase cutoffs.
+                float dist_y = abs(coords_geo.y - 0.5);
+                float half_height = progress * 0.5;
+                float edge_width = 0.06 * (1.0 - progress * 0.5);
+                float v_mask = smoothstep(half_height + edge_width, half_height - edge_width, dist_y);
+
+                // Phosphor glow at the expanding edge.
+                float edge_glow = smoothstep(half_height + edge_width, half_height, dist_y)
+                                * smoothstep(half_height - edge_width * 2.0, half_height, dist_y);
+                vec3 glow_color = vec3(0.831, 0.745, 0.596) * edge_glow * (1.0 - progress) * 0.5;
+
+                // Outside window content area: transparent.
+                if (coords_geo.x < 0.0 || coords_geo.x > 1.0 ||
+                    coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+                    return vec4(0.0);
+                }
+
+                vec2 uv = coords_geo.xy;
+
+                // Barrel distortion (CRT curvature), fades out with progress.
+                vec2 centered = uv - 0.5;
+                float r2 = dot(centered, centered);
+                float distortion = 0.08 * (1.0 - progress);
+                uv = 0.5 + centered * (1.0 + distortion * r2);
+
+                // Chromatic aberration fades as picture stabilizes.
+                float aberration = (1.0 - progress) * (1.0 - progress) * 0.01;
+                vec3 cr = niri_geo_to_tex * vec3(uv + vec2(aberration, 0.0), 1.0);
+                vec3 cg = niri_geo_to_tex * vec3(uv, 1.0);
+                vec3 cb = niri_geo_to_tex * vec3(uv - vec2(aberration, 0.0), 1.0);
+                vec4 color = vec4(
+                    texture2D(niri_tex, cr.st).r,
+                    texture2D(niri_tex, cg.st).g,
+                    texture2D(niri_tex, cb.st).b,
+                    texture2D(niri_tex, cg.st).a
+                );
+
+                // Scanlines that fade out.
+                float scanline = sin(coords_geo.y * size_geo.y * 3.14159) * 0.5 + 0.5;
+                scanline = 1.0 - pow(scanline, 6.0) * 0.15 * (1.0 - progress);
+                color.rgb *= scanline;
+
+                // Static noise that settles.
+                float noise = hash(vec2(coords_geo.x * size_geo.x, coords_geo.y * size_geo.y)
+                            + niri_random_seed + floor(progress * 20.0));
+                float noise_strength = (1.0 - progress) * (1.0 - progress) * 0.2;
+                color.rgb += (noise - 0.5) * noise_strength;
+
+                // Phosphor tint on early frames.
+                float phosphor = (1.0 - progress) * (1.0 - progress) * 0.15;
+                color.rgb = mix(color.rgb, color.rgb * vec3(0.9, 1.1, 0.85), phosphor);
+
+                // Vignette, fades out with progress.
+                float vignette = 1.0 - r2 * 0.8;
+                color.rgb *= mix(1.0, vignette, 0.3 * (1.0 - progress));
+
+                // Add edge glow and apply vertical mask.
+                color.rgb += glow_color;
+                color *= v_mask;
+
+                // Fade in overall opacity for extra smoothness.
+                color *= smoothstep(0.0, 0.15, progress);
+
+                return color;
+            }
+        "
+    }
+
+    window-close {
+        duration-ms 750
+        curve "ease-out-cubic"
+        custom-shader r"
+            float hash(vec2 p) {
+                vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return fract((p3.x + p3.y) * p3.z);
+            }
+
+            vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+                float progress = niri_clamped_progress;
+
+                if (coords_geo.x < 0.0 || coords_geo.x > 1.0 ||
+                    coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+                    return vec4(0.0);
+                }
+
+                // CRT power-off: vertical collapse to center line.
+                float phase1 = clamp(progress * 1.5, 0.0, 1.0);
+
+                // Vertical collapsing band.
+                float half_height = (1.0 - phase1) * 0.5;
+                float dist_y = abs(coords_geo.y - 0.5);
+
+                if (dist_y > half_height + 0.01) {
+                    return vec4(0.0);
+                }
+
+                float v_edge = smoothstep(half_height + 0.01, half_height - 0.02, dist_y);
+
+                vec2 uv = coords_geo.xy;
+
+                // Barrel distortion increases as it collapses.
+                vec2 centered = uv - 0.5;
+                float r2 = dot(centered, centered);
+                uv = 0.5 + centered * (1.0 + (0.08 + progress * 0.15) * r2);
+
+                // Chromatic aberration grows.
+                float aberration = progress * 0.015;
+                vec3 cr = niri_geo_to_tex * vec3(uv + vec2(aberration, 0.0), 1.0);
+                vec3 cg = niri_geo_to_tex * vec3(uv, 1.0);
+                vec3 cb = niri_geo_to_tex * vec3(uv - vec2(aberration, 0.0), 1.0);
+                vec4 color = vec4(
+                    texture2D(niri_tex, cr.st).r,
+                    texture2D(niri_tex, cg.st).g,
+                    texture2D(niri_tex, cb.st).b,
+                    texture2D(niri_tex, cg.st).a
+                );
+
+                // Scanlines intensify.
+                float scanline = sin(coords_geo.y * size_geo.y * 3.14159) * 0.5 + 0.5;
+                scanline = 1.0 - pow(scanline, 6.0) * (0.15 + progress * 0.25);
+                color.rgb *= scanline;
+
+                // RGB sub-pixel pattern grows more visible.
+                float px = mod(coords_geo.x * size_geo.x, 3.0);
+                vec3 subpixel = vec3(
+                    smoothstep(0.0, 1.0, px) * smoothstep(2.0, 1.0, px),
+                    smoothstep(1.0, 2.0, px) * smoothstep(3.0, 2.0, px),
+                    smoothstep(2.0, 3.0, px)
+                );
+                color.rgb = mix(color.rgb, color.rgb * subpixel * 2.5, 0.1 + progress * 0.2);
+
+                // Static noise increases.
+                float noise = hash(vec2(coords_geo.x * size_geo.x, coords_geo.y * size_geo.y)
+                            + niri_random_seed + floor(progress * 30.0));
+                color.rgb += (noise - 0.5) * progress * progress * 0.35;
+
+                // Brightness flash on collapse (CRT voltage dump).
+                float flash = exp(-progress * 6.0) * 0.3;
+                color.rgb += flash;
+
+                // Vignette.
+                float vignette = 1.0 - r2 * 0.8;
+                color.rgb *= mix(1.0, vignette, 0.3 + progress * 0.3);
+
+                color *= v_edge;
+                return color;
+            }
+        "
+    }
+}
