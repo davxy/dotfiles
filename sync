@@ -123,6 +123,8 @@ common=(
     "$HOME/.config/zellij/ | zellij/"
     # niri
     "$HOME/.config/niri/ | niri/"
+    # noctalia
+    "$HOME/.config/noctalia/ | noctalia/"
     # fuzzel
     "$HOME/.config/fuzzel/ | fuzzel/"
     # mako
