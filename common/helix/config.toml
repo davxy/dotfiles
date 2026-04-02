@@ -1,4 +1,5 @@
 theme = "gruvbox-material"
+# theme = "noctalia"
 
 [editor]
 line-number = "relative"
@@ -136,6 +137,10 @@ d = [
 ]
 r = ":reset-diff-change"
 w = ":toggle-option soft-wrap.enable"
+t = ":theme gruvbox_material"
+T = ":theme gruvbox_light"
 
 z = "shrink_selection"
 Z = "expand_selection"
+
+space = ":reload-all"
