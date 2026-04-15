@@ -8,6 +8,7 @@ true-color = true
 scrolloff = 20
 bufferline = "always"
 end-of-line-diagnostics = "warning"
+insecure = true
 
 [editor.inline-diagnostics]
 cursor-line = "warning" # show warnings and errors on the cursorline inline
@@ -137,8 +138,7 @@ d = [
 ]
 r = ":reset-diff-change"
 w = ":toggle-option soft-wrap.enable"
-t = ":theme gruvbox_material"
-T = ":theme gruvbox_light"
+t = ":theme %sh{if [ \"$(cat /tmp/helix-theme 2>/dev/null)\" = dark ]; then echo gruvbox_light; echo light > /tmp/helix-theme; else echo gruvbox_material; echo dark > /tmp/helix-theme; fi}"
 
 z = "shrink_selection"
 Z = "expand_selection"
