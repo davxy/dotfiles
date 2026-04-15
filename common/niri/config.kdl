@@ -75,7 +75,6 @@ input {
     // focus-follows-mouse max-scroll-amount="0%"
 }
 
-
 // You can configure outputs by their name, which you can find
 // by running `niri msg outputs` while inside a niri instance.
 // The built-in laptop monitor is usually called "eDP-1".
@@ -278,6 +277,8 @@ layout {
 cursor {
     hide-when-typing
     hide-after-inactive-ms 1000
+    xcursor-theme "breeze_cursors"
+    xcursor-size 24
 }
 
 // Add lines like this to spawn processes at startup.
