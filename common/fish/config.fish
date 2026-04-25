@@ -90,8 +90,6 @@ set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/reports"
 set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/traces"
 set -x JAM_SOCK "/tmp/jam_target.sock"
 
-set -x CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING 1
-
 #############################################
 # Start zellij
 #############################################
