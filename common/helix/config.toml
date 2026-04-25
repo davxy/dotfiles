@@ -1,4 +1,4 @@
-theme = "gruvbox-material"
+theme = "gruvbox_material_light_soft"
 # theme = "noctalia"
 
 [editor]
@@ -138,7 +138,7 @@ d = [
 ]
 r = ":reset-diff-change"
 w = ":toggle-option soft-wrap.enable"
-t = ":theme %sh{if [ \"$(cat /tmp/helix-theme 2>/dev/null)\" = dark ]; then echo gruvbox_light; echo light > /tmp/helix-theme; else echo gruvbox_material; echo dark > /tmp/helix-theme; fi}"
+t = ":theme %sh{if [ \"$(cat /tmp/helix-theme 2>/dev/null)\" = dark ]; then echo gruvbox_material_light_soft; echo light > /tmp/helix-theme; else echo gruvbox_material_dark_soft; echo dark > /tmp/helix-theme; fi}"
 
 z = "shrink_selection"
 Z = "expand_selection"
