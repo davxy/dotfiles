@@ -21,3 +21,13 @@ Host datawok
 	User pi
 	Port 2809
 	IdentitiesOnly yes
+
+Host jamserver-001
+	User davide
+	HostName 78.137.198.98
+	Port 22003
+
+Host jamtoaster-*
+	ProxyJump jamserver-001
+Host jambuilder-* 
+	ProxyJump jamserver-001
