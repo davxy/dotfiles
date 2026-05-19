@@ -14,9 +14,9 @@ animations {
         duration-ms 250
         curve "linear"
         custom-shader r"
-            // Pseudo-random hash
+            // Pseudo-random hash, reseeded per animation via niri_random_seed
             float hash(vec2 p) {
-                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+                return fract(sin(dot(p, vec2(127.1, 311.7)) + niri_random_seed * 43.0) * 43758.5453);
             }
 
             vec4 open_color(vec3 coords_geo, vec3 size_geo) {
@@ -58,11 +58,11 @@ animations {
                 color = mix(color, vec3(noise), noise_amount);
 
                 // Scrolling scanlines
-                float scanline_pos = uv.y * 400.0 + niri_progress * 3.0 * 400.0;
+                float scanline_pos = uv.y * 400.0 + niri_progress * 3.0 * 400.0 + niri_random_seed * 6.2831853;
                 float scanline = 1.0 - 0.12 + 0.12 * sin(scanline_pos);
 
                 // Thicker interference bar that scrolls down
-                float bar = smoothstep(0.0, 0.02, abs(fract(uv.y - niri_progress * 1.5) - 0.5));
+                float bar = smoothstep(0.0, 0.02, abs(fract(uv.y - niri_progress * 1.5 + niri_random_seed) - 0.5));
                 scanline *= mix(0.85, 1.0, bar);
 
                 return vec4(color * scanline, a * progress);
@@ -75,7 +75,7 @@ animations {
         curve "linear"
         custom-shader r"
             float hash(vec2 p) {
-                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+                return fract(sin(dot(p, vec2(127.1, 311.7)) + niri_random_seed * 43.0) * 43758.5453);
             }
 
             vec4 close_color(vec3 coords_geo, vec3 size_geo) {
@@ -115,11 +115,11 @@ animations {
                 color = mix(color, vec3(noise), noise_amount);
 
                 // Scrolling scanlines
-                float scanline_pos = uv.y * 400.0 + niri_progress * 3.0 * 400.0;
+                float scanline_pos = uv.y * 400.0 + niri_progress * 3.0 * 400.0 + niri_random_seed * 6.2831853;
                 float scanline = 1.0 - 0.12 + 0.12 * sin(scanline_pos);
 
                 // Interference bar
-                float bar = smoothstep(0.0, 0.02, abs(fract(uv.y - niri_progress * 1.5) - 0.5));
+                float bar = smoothstep(0.0, 0.02, abs(fract(uv.y - niri_progress * 1.5 + niri_random_seed) - 0.5));
                 scanline *= mix(0.85, 1.0, bar);
 
                 return vec4(color * scanline, a * (1.0 - progress));
