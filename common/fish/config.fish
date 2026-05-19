@@ -47,7 +47,7 @@ set -x FZF_DEFAULT_OPTS "--history=$TMPDIR/fzf-history --no-sort --exact"
 set -x SKIM_DEFAULT_OPTIONS "--history=$SKIM_HISTORY"
 
 # Exclude the specified folders from the zoxide database
-set -x _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*"
+set -x _ZO_EXCLUDE_DIRS "/mnt/data:/mnt/data/*:/home/davxy/mnt:/home/davxy/mnt/*"
 # Resolve symlinks before adding directories to the database
 set -x _ZO_RESOLVE_SYMLINKS 1
 # Print matched directory before navigating to it
