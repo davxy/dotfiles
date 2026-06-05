@@ -200,6 +200,8 @@ alias aic=aichat
 alias unix='date +%s'
 # wifi
 alias wifi=impala
+# opencode
+alias oc=opencode
 
 #############################################
 # Misc
@@ -210,7 +212,9 @@ if set -q CWD_FILE
     if test -f $CWD_FILE
         set -l target_dir (cat $CWD_FILE)
         # use builtin cd (been aliased to z)
-        builtin cd $target_dir
+        if test -d "$target_dir"
+            builtin cd $target_dir
+        end
     else
         touch $CWD_FILE
         chmod 600 $CWD_FILE
