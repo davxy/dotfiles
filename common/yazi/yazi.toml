@@ -1,13 +1,17 @@
 [opener]
 open = [
-	{ run = "xdg-open %s", orphan = true, desc = "Open", for = "unix" },
+	{ run = "xdg-open %s1", orphan = true, desc = "Open", for = "unix" },
 ]
 play = [
 	{ run = "mpv %s", orphan = true, desc = "Play", for = "unix" },
 ]
+image = [
+	{ run = "imv %s", orphan = true, desc = "View images", for = "unix" },
+]
 
 [open]
 prepend_rules = [
+	{ mime = "image/*", use = [ "image", "open", "reveal" ] },
 	{ mime = "video/*", use = [ "play", "open", "reveal" ] },
 	{ mime = "audio/*", use = [ "play", "open", "reveal" ] },
 ]
