@@ -1,0 +1,64 @@
+# imv config — based on /etc/imv_config defaults, with rotate-and-save binds added.
+
+[options]
+# Binds below are fully explicit; don't merge imv's compiled-in defaults.
+suppress_default_binds = true
+
+[aliases]
+# alias = command to run
+
+[binds]
+q = quit
+
+# Image navigation
+<Left> = prev
+<bracketleft> = prev
+<Right> = next
+<bracketright> = next
+gg = goto 1
+<Shift+G> = goto -1
+
+# Panning
+j = pan 0 -50
+k = pan 0 50
+h = pan 50 0
+l = pan -50 0
+
+# Zooming
+<Up> = zoom 1
+<Shift+plus> = zoom 1
+i = zoom 1
+<Down> = zoom -1
+<minus> = zoom -1
+o = zoom -1
+
+# Rotate / flip — VIEW ONLY (not written to disk)
+# <Ctrl+r> = rotate by 90
+# <Ctrl+f> = flip horizontal
+# <Ctrl+v> = flip vertical
+
+# Rotate AND SAVE to disk.
+# The script rotates the on-screen image instantly via imv-msg (no re-decode),
+# then persists the rotation to disk in the background: JPEG losslessly via
+# jpegtran, everything else via ImageMagick mogrify.
+<Ctrl+r> = exec /home/davxy/.config/imv/rotate-save.sh 90 "$imv_current_file"
+<Ctrl+v> = exec /home/davxy/.config/imv/rotate-save.sh 180 "$imv_current_file"
+
+# Other commands
+x = close
+f = fullscreen
+d = overlay
+p = exec echo $imv_current_file
+c = center
+s = scaling next
+<Shift+S> = upscaling next
+a = zoom actual
+r = reset
+
+# Gif playback
+<period> = next_frame
+<space> = toggle_playing
+
+# Slideshow control
+t = slideshow +1
+<Shift+T> = slideshow -1
