@@ -424,7 +424,7 @@ binds {
     // Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
     Mod+D hotkey-overlay-title="Run app launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     Mod+W hotkey-overlay-title="Running applications" { spawn-sh "qs -c noctalia-shell ipc call launcher windows"; }
-    Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }
+    // Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
@@ -601,7 +601,7 @@ binds {
     Mod+Ctrl+V { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
 
     // Toggle tabbed column display mode.
-    // Mod+W { toggle-column-tabbed-display; }
+    Mod+T { toggle-column-tabbed-display; }
 
     // Actions to switch layouts.
     // Note: if you uncomment these, make sure you do NOT have
