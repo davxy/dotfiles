@@ -9,9 +9,14 @@ local function write_cwd_to_file(cwd)
     end
 end
 
+-- Quote a string for safe use as a single shell argument
+local function shell_quote(s)
+    return "'" .. tostring(s):gsub("'", "'\\''") .. "'"
+end
+
 -- Run the zoxide add command for the entered folder
 local function update_zoxide(cwd)
-    local command = "zoxide add " .. tostring(cwd)
+    local command = "zoxide add " .. shell_quote(cwd)
     os.execute(command)
 end
 

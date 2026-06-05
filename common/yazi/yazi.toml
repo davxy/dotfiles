@@ -1,6 +1,13 @@
 [opener]
 open = [
-	{ run = 'nohup xdg-open "$@"',          desc = "Open", for = "linux" },
-	{ run = 'open "$@"',                    desc = "Open", for = "macos" },
-	{ run = 'start "" "%1"', orphan = true, desc = "Open", for = "windows" },
+	{ run = "xdg-open %s", orphan = true, desc = "Open", for = "unix" },
+]
+play = [
+	{ run = "mpv %s", orphan = true, desc = "Play", for = "unix" },
+]
+
+[open]
+prepend_rules = [
+	{ mime = "video/*", use = [ "play", "open", "reveal" ] },
+	{ mime = "audio/*", use = [ "play", "open", "reveal" ] },
 ]
