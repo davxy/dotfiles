@@ -193,14 +193,12 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 # misc
 alias wd=pwd
-# ai
-alias aid=aider
-alias aic=aichat
 # common stuff
 alias unix='date +%s'
 # wifi
 alias wifi=impala
-# opencode
+# ai
+alias aic=aichat
 alias oc=opencode
 
 #############################################
