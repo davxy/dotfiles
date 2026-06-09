@@ -1,4 +1,5 @@
-theme = "gruvbox_material_light_soft"
+theme = "gruvbox_material_dark_soft"
+# theme = "gruvbox_material_light_soft"
 # theme = "noctalia"
 
 [editor]
