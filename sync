@@ -7,8 +7,8 @@
 
 set -euo pipefail
 
-# Sync command
-SYNC="rsync -av --delete --quiet --exclude='.git'"
+# Sync command (array preserves correct word-splitting/quoting)
+SYNC=(rsync -a --delete --quiet --exclude=.git)
 
 # Initialize flags
 DRYRUN=0
@@ -38,7 +38,7 @@ function usage() {
     echo "  sync out                    # Copy all files to system"
     echo "  sync --dryrun in            # Preview copying from system"
     echo "  sync --confirm out          # Copy to system with confirmation"
-    exit $1
+    exit "$1"
 }
 
 function check_dependencies() {
@@ -65,8 +65,7 @@ function log_error() {
 }
 
 function parse_arguments() {
-    # Parse command line options, except for the last mandatory operation
-    while [[ "$#" -gt 1 ]]; do
+    while [[ "$#" -gt 0 ]]; do
         case "$1" in
             --dryrun)
                 DRYRUN=1
@@ -77,24 +76,28 @@ function parse_arguments() {
             --help)
                 usage 0
                 ;;
-            *)
+            in|out)
+                if [[ -n "$OPERATION" ]]; then
+                    log_error "Operation specified more than once"
+                    usage 1
+                fi
+                OPERATION="$1"
+                ;;
+            -*)
                 log_error "Unknown option: $1"
+                usage 1
+                ;;
+            *)
+                log_error "Unknown argument: $1"
                 usage 1
                 ;;
         esac
         shift
     done
 
-    if [[ "${1:-}" == "--help" ]]; then
-        usage 0
-    fi
-
-    # Check if the last argument is provided and is either "in" or "out"
-    if [[ "$#" -ne 1 || ( "$1" != "in" && "$1" != "out" ) ]]; then
-        log_error "Missing or invalid operation. Expected 'in' or 'out'."
+    if [[ -z "$OPERATION" ]]; then
+        log_error "Missing operation. Expected 'in' or 'out'."
         usage 1
-    else
-        OPERATION="$1"
     fi
 }
 
@@ -156,6 +159,8 @@ common=(
     "$HOME/.config/otp/ | otp/"
     # imv
     "$HOME/.config/imv/ | imv/"
+    # aichat
+    "$HOME/.config/aichat/ | aichat/"
 
 )
 
@@ -177,32 +182,36 @@ function sync_single_file() {
     local in_file="$1"
     local out_file="$2"
     
+    # Return codes: 0 = synced, 1 = error, 2 = skipped
+    if [[ ! -e "$in_file" ]]; then
+        log_warning "  ⚠ Skipping non-existent source: $in_file"
+        return 2
+    fi
+
     if [[ $DRYRUN == 1 ]]; then
         echo "  [DRY RUN] $in_file -> $out_file"
         return 0
     fi
 
     if [[ $CONFIRM == 1 ]]; then
-        printf "  Proceed with $in_file -> $out_file [N/y]? "
+        printf "  Proceed with %s -> %s [N/y]? " "$in_file" "$out_file"
         read -r confirmed
     else
         confirmed="y"
     fi
 
-    if [[ $confirmed == "y" ]]; then
-        if [[ -f "$in_file" ]] || [[ -d "$in_file" ]]; then
-            mkdir -p "$(dirname "$out_file")"
-            if $SYNC "$in_file" "$out_file"; then
-                log_success "  ✓ $in_file -> $out_file"
-            else
-                log_error "  ✗ Failed to sync $in_file -> $out_file"
-                return 1
-            fi
-        else
-            log_warning "  ⚠ Skipping non-existent file: $in_file"
-        fi
-    else
+    if [[ $confirmed != "y" ]]; then
         echo "  Skipped: $in_file -> $out_file"
+        return 2
+    fi
+
+    mkdir -p "$(dirname "$out_file")"
+    if "${SYNC[@]}" "$in_file" "$out_file"; then
+        log_success "  ✓ $in_file -> $out_file"
+        return 0
+    else
+        log_error "  ✗ Failed to sync $in_file -> $out_file"
+        return 1
     fi
 }
 
@@ -214,13 +223,19 @@ function sync_files() {
     log_info "[$target]"
 
     local sync_count=0
+    local skip_count=0
     local error_count=0
 
     for file in "${files[@]}"; do
-        local system_file local_file in_file out_file
-        
-        system_file=$(echo "$file" | cut -d'|' -f1 | sed 's/^ *//;s/ *$//')
-        local_file=$(echo "$file" | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
+        local system_file local_file in_file out_file rc
+
+        system_file=${file%%|*}
+        local_file=${file#*|}
+        # Trim surrounding whitespace
+        system_file=${system_file#"${system_file%%[![:space:]]*}"}
+        system_file=${system_file%"${system_file##*[![:space:]]}"}
+        local_file=${local_file#"${local_file%%[![:space:]]*}"}
+        local_file=${local_file%"${local_file##*[![:space:]]}"}
         local_file="$target/$local_file"
 
         if [[ $OPERATION == "out" ]]; then
@@ -233,17 +248,16 @@ function sync_files() {
 
         set +e
         sync_single_file "$in_file" "$out_file"
-        if [[ $? -eq 0 ]]; then
-            ((sync_count++))
-        else
-            ((error_count++))
-        fi
+        rc=$?
         set -e
+        case $rc in
+            0) sync_count=$((sync_count + 1)) ;;
+            2) skip_count=$((skip_count + 1)) ;;
+            *) error_count=$((error_count + 1)) ;;
+        esac
     done
 
-    if [[ $DRYRUN == 0 ]]; then
-        log_info "Completed: $sync_count synced, $error_count errors"
-    fi
+    log_info "Completed: $sync_count synced, $skip_count skipped, $error_count errors"
 }
 
 function main() {
