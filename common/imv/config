@@ -33,16 +33,16 @@ i = zoom 1
 o = zoom -1
 
 # Rotate / flip — VIEW ONLY (not written to disk)
-# <Ctrl+r> = rotate by 90
-# <Ctrl+f> = flip horizontal
-# <Ctrl+v> = flip vertical
+<Ctrl+r> = rotate by 90
+<Ctrl+f> = flip horizontal
+<Ctrl+v> = flip vertical
 
 # Rotate AND SAVE to disk.
 # The script rotates the on-screen image instantly via imv-msg (no re-decode),
 # then persists the rotation to disk in the background: JPEG losslessly via
 # jpegtran, everything else via ImageMagick mogrify.
-<Ctrl+r> = exec /home/davxy/.config/imv/rotate-save.sh 90 "$imv_current_file"
-<Ctrl+v> = exec /home/davxy/.config/imv/rotate-save.sh 180 "$imv_current_file"
+<Shift+R> = exec /home/davxy/.config/imv/rotate-save.sh 90 "$imv_current_file"
+<Shift+V> = exec /home/davxy/.config/imv/rotate-save.sh 180 "$imv_current_file"
 
 # Other commands
 x = close
