@@ -8,11 +8,12 @@
 set -euo pipefail
 
 # Sync command (array preserves correct word-splitting/quoting)
-SYNC=(rsync -a --delete --quiet --exclude=.git)
+SYNC=(rsync -a --delete --exclude=.git)
 
 # Initialize flags
 DRYRUN=0
 CONFIRM=0
+JOBS=0          # 0 = auto (number of CPUs); 1 = sequential
 OPERATION=""
 
 # Colors for output
@@ -30,14 +31,18 @@ function usage() {
     echo "  out     Copy files from versioned folders to system folders"
     echo ""
     echo "OPTIONS:"
-    echo "  --confirm   Prompt for confirmation before each synchronization"
-    echo "  --dryrun    Show what would be done without performing actions"
-    echo "  --help      Show this help message"
+    echo "  --confirm     Prompt for confirmation before each synchronization"
+    echo "                (forces -j 1)"
+    echo "  --dryrun      Show what would be done without performing actions"
+    echo "  -j N          Max parallel jobs (default: number of CPUs; 1 = sequential)"
+    echo "  --help        Show this help message"
     echo ""
     echo "Examples:"
-    echo "  sync out                    # Copy all files to system"
+    echo "  sync out                    # Copy all files to system (parallel)"
     echo "  sync --dryrun in            # Preview copying from system"
     echo "  sync --confirm out          # Copy to system with confirmation"
+    echo "  sync -j 1 out               # Force one-at-a-time syncing"
+    echo "  sync -j 4 out               # Cap parallelism at 4 jobs"
     exit "$1"
 }
 
@@ -72,6 +77,14 @@ function parse_arguments() {
                 ;;
             --confirm)
                 CONFIRM=1
+                ;;
+            -j)
+                shift
+                if [[ ! "${1:-}" =~ ^[1-9][0-9]*$ ]]; then
+                    log_error "-j requires a positive integer"
+                    usage 1
+                fi
+                JOBS="$1"
                 ;;
             --help)
                 usage 0
@@ -215,6 +228,30 @@ function sync_single_file() {
     fi
 }
 
+# Resolve a "system | versioned" map entry into in/out paths for the current
+# OPERATION. Sets the global RESOLVED_IN / RESOLVED_OUT.
+function resolve_entry() {
+    local target="$1" file="$2"
+    local system_file local_file
+
+    system_file=${file%%|*}
+    local_file=${file#*|}
+    # Trim surrounding whitespace
+    system_file=${system_file#"${system_file%%[![:space:]]*}"}
+    system_file=${system_file%"${system_file##*[![:space:]]}"}
+    local_file=${local_file#"${local_file%%[![:space:]]*}"}
+    local_file=${local_file%"${local_file##*[![:space:]]}"}
+    local_file="$target/$local_file"
+
+    if [[ $OPERATION == "out" ]]; then
+        RESOLVED_IN=$local_file
+        RESOLVED_OUT=$system_file
+    else
+        RESOLVED_IN=$system_file
+        RESOLVED_OUT=$local_file
+    fi
+}
+
 function sync_files() {
     local target="$1"
     shift
@@ -226,36 +263,64 @@ function sync_files() {
     local skip_count=0
     local error_count=0
 
-    for file in "${files[@]}"; do
-        local system_file local_file in_file out_file rc
+    # --confirm reads from stdin per entry, which cannot be interleaved across
+    # parallel jobs, so force sequential when confirming.
+    local max_jobs=1
+    if [[ $CONFIRM == 0 ]]; then
+        max_jobs=$JOBS
+        [[ $max_jobs -le 0 ]] && max_jobs=$(nproc 2>/dev/null || echo 4)
+    fi
 
-        system_file=${file%%|*}
-        local_file=${file#*|}
-        # Trim surrounding whitespace
-        system_file=${system_file#"${system_file%%[![:space:]]*}"}
-        system_file=${system_file%"${system_file##*[![:space:]]}"}
-        local_file=${local_file#"${local_file%%[![:space:]]*}"}
-        local_file=${local_file%"${local_file##*[![:space:]]}"}
-        local_file="$target/$local_file"
+    if [[ $max_jobs -le 1 ]]; then
+        # Sequential path
+        local file rc
+        for file in "${files[@]}"; do
+            resolve_entry "$target" "$file"
+            set +e
+            sync_single_file "$RESOLVED_IN" "$RESOLVED_OUT"
+            rc=$?
+            set -e
+            case $rc in
+                0) sync_count=$((sync_count + 1)) ;;
+                2) skip_count=$((skip_count + 1)) ;;
+                *) error_count=$((error_count + 1)) ;;
+            esac
+        done
+    else
+        # Parallel path: keep at most max_jobs background jobs in flight,
+        # tracking each PID's outcome via its exit code.
+        local file rc pid
+        declare -A pids=()
+        for file in "${files[@]}"; do
+            resolve_entry "$target" "$file"
+            sync_single_file "$RESOLVED_IN" "$RESOLVED_OUT" &
+            pids[$!]=1
 
-        if [[ $OPERATION == "out" ]]; then
-            in_file=$local_file
-            out_file=$system_file
-        else
-            in_file=$system_file
-            out_file=$local_file
-        fi
-
-        set +e
-        sync_single_file "$in_file" "$out_file"
-        rc=$?
-        set -e
-        case $rc in
-            0) sync_count=$((sync_count + 1)) ;;
-            2) skip_count=$((skip_count + 1)) ;;
-            *) error_count=$((error_count + 1)) ;;
-        esac
-    done
+            if [[ ${#pids[@]} -ge $max_jobs ]]; then
+                # Wait for any one job to finish, then tally it
+                wait -n -p pid
+                rc=$?
+                unset 'pids[$pid]'
+                case $rc in
+                    0) sync_count=$((sync_count + 1)) ;;
+                    2) skip_count=$((skip_count + 1)) ;;
+                    *) error_count=$((error_count + 1)) ;;
+                esac
+            fi
+        done
+        # Drain the rest
+        for pid in "${!pids[@]}"; do
+            set +e
+            wait "$pid"
+            rc=$?
+            set -e
+            case $rc in
+                0) sync_count=$((sync_count + 1)) ;;
+                2) skip_count=$((skip_count + 1)) ;;
+                *) error_count=$((error_count + 1)) ;;
+            esac
+        done
+    fi
 
     log_info "Completed: $sync_count synced, $skip_count skipped, $error_count errors"
 }
