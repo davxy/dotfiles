@@ -8,10 +8,15 @@ play = [
 image = [
 	{ run = "imv %s", orphan = true, desc = "View images", for = "unix" },
 ]
+firefox = [
+	{ run = "firefox %s", orphan = true, desc = "Open in firefox" }
+]
 
 [open]
 prepend_rules = [
 	{ mime = "image/*", use = [ "image", "open", "reveal" ] },
 	{ mime = "video/*", use = [ "play", "open", "reveal" ] },
 	{ mime = "audio/*", use = [ "play", "open", "reveal" ] },
+	{ mime = "text/*", use = [ "edit", "firefox", "reveal" ] },
+	{ mime = "inode/{empty,x-empty}", use = [ "edit", "reveal" ] },
 ]
