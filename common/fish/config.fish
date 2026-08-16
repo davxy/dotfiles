@@ -154,6 +154,8 @@ set fish_cursor_visual block blink
 # Alias
 #############################################
 
+# built-in
+alias cl=clear
 # helix
 if not command -q hx
     alias hx='helix'
@@ -176,6 +178,7 @@ alias cd=z
 alias ze="fzf --bind 'enter:execute(rifle {})'"
 # python
 alias py=python
+alias ipy=ipython
 # git
 alias g=git
 # gitui
