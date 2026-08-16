@@ -174,8 +174,6 @@ common=(
     "$HOME/.config/imv/ | imv/"
     # aichat
     "$HOME/.config/aichat/ | aichat/"
-    # opencode
-    "$HOME/.config/opencode/ | opencode/"
 )
 
 behemoth=(
