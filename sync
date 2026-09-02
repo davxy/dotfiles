@@ -127,6 +127,8 @@ common=(
     "$HOME/.config/fish/conf.d/ | fish/conf.d/"
     # systemd
     "$HOME/.config/systemd/ | systemd/"
+    # rclone
+    "$HOME/.config/rclone/mount-mega.env | rclone/mount-mega.env"
     # gnupg
     "$HOME/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf"
     # fonts configuration
@@ -174,6 +176,8 @@ common=(
     "$HOME/.config/imv/ | imv/"
     # aichat
     "$HOME/.config/aichat/ | aichat/"
+    # protonmail bridge
+    "$HOME/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json"
 )
 
 behemoth=(
