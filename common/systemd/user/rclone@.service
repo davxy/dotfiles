@@ -1,16 +1,19 @@
 # User service for Rclone mounting
 #
 # Place in ~/.config/systemd/user/
-# 
+#
 # File must include the '@' (ex rclone@.service)
-# 
-# As your normal user, run 
-# 
+#
+# As your normal user, run
+#
 #   systemctl --user daemon-reload
-# 
+#
 # You can now start/enable each remote by using rclone@<remote>. E.g.:
-# 
+#
 #   systemctl --user enable --now rclone@pcloud
+#
+# Per-remote overrides go in ~/.config/rclone/mount-<remote>.env as
+# RCLONE_* variables (e.g. RCLONE_VFS_CACHE_MODE=writes).
 #
 # Credits: kabili207 - https://gist.github.com/kabili207/2cd2d637e5c7617411a666d8d7e97101
 
@@ -19,19 +22,25 @@ Description=rclone: Remote FUSE filesystem for cloud storage config %i
 Documentation=man:rclone(1)
 After=network-online.target
 Wants=network-online.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=notify
+Environment=RCLONE_VFS_CACHE_MODE=full
+Environment=RCLONE_VFS_CACHE_MAX_SIZE=5G
+Environment=RCLONE_VFS_CACHE_MAX_AGE=24h
+Environment=RCLONE_VFS_CACHE_MIN_FREE_SPACE=20G
+Environment=RCLONE_DIR_CACHE_TIME=1h
+Environment=RCLONE_POLL_INTERVAL=1m
+EnvironmentFile=-%h/.config/rclone/mount-%i.env
 ExecStartPre=-/usr/bin/mkdir -p %h/mnt/%i
+ExecStartPre=-/usr/bin/fusermount -uz %h/mnt/%i
 ExecStart=/usr/bin/rclone mount \
 	--config=%h/.config/rclone/rclone.conf \
-	--vfs-cache-mode writes \
-	--vfs-cache-max-size 100M \
-	--dir-cache-time 15s \
-	--poll-interval 10s \
 	%i: %h/mnt/%i
-ExecStop=/bin/fusermount -u -z "%h/mnt/%i"
+ExecStop=-/usr/bin/fusermount -uz %h/mnt/%i
 Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=default.target
