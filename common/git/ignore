@@ -1,7 +1,12 @@
 # Claude artifacts
-**/.claude
+.claude
 CLAUDE.md
+CLAUDE.local.md
 # Aider artifacts
-**/.aider
+.aider*
 # Per project helix config
-**/.helix
+.helix
+# AI agent files
+.agent
+# Scratch/temporary files (any depth): _tmp, _tmp.rs, _tmp-notes/, ...
+_tmp*
