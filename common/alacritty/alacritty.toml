@@ -1,6 +1,3 @@
-[general]
-# import = ["~/.config/alacritty/themes/noctalia.toml"]
-
 # Colors (Gruvbox Material Dark Medium)
 
 [colors.bright]
@@ -45,8 +42,3 @@ style = "Regular"
 # Looks like not works
 [window]
 dynamic_title = true
-
-# [[keyboard.bindings]]
-# key = "Return"
-# mods = "Shift"
-# chars = "\x1b\r"
