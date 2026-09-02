@@ -154,8 +154,6 @@ set fish_cursor_visual block blink
 # Alias
 #############################################
 
-# built-in
-alias cl=clear
 # helix
 if not command -q hx
     alias hx='helix'
@@ -202,6 +200,7 @@ alias unix='date +%s'
 alias wifi=impala
 # ai
 alias aic=aichat
+alias vp=vibepen
 alias oc=opencode
 
 #############################################
