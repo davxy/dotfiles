@@ -4,15 +4,17 @@
 #
 # Depends on:
 # - rsync
+# - sudo (only with --sudo)
 
 set -euo pipefail
 
 # Sync command (array preserves correct word-splitting/quoting)
-SYNC=(rsync -a --delete --exclude=.git)
+SYNC=(rsync -a --no-owner --no-group --delete --exclude=.git)
 
 # Initialize flags
 DRYRUN=0
 CONFIRM=0
+SUDO=0
 JOBS=0          # 0 = auto (number of CPUs); 1 = sequential
 OPERATION=""
 
@@ -34,6 +36,8 @@ function usage() {
     echo "  --confirm     Prompt for confirmation before each synchronization"
     echo "                (forces -j 1)"
     echo "  --dryrun      Show what would be done without performing actions"
+    echo "  --sudo        Use sudo for destinations the user cannot write"
+    echo "                (without it, these entries are skipped)"
     echo "  -j N          Max parallel jobs (default: number of CPUs; 1 = sequential)"
     echo "  --help        Show this help message"
     echo ""
@@ -41,6 +45,7 @@ function usage() {
     echo "  sync out                    # Copy all files to system (parallel)"
     echo "  sync --dryrun in            # Preview copying from system"
     echo "  sync --confirm out          # Copy to system with confirmation"
+    echo "  sync --sudo out             # Also copy root-owned files (e.g. /etc)"
     echo "  sync -j 1 out               # Force one-at-a-time syncing"
     echo "  sync -j 4 out               # Cap parallelism at 4 jobs"
     exit "$1"
@@ -77,6 +82,9 @@ function parse_arguments() {
                 ;;
             --confirm)
                 CONFIRM=1
+                ;;
+            --sudo)
+                SUDO=1
                 ;;
             -j)
                 shift
@@ -194,14 +202,46 @@ workmule=(
     "/etc/evremap.toml | evremap/evremap.toml"
 )
 
+function needs_root() {
+    local path="$1"
+    while [[ ! -e "$path" ]]; do
+        path=$(dirname "$path")
+    done
+    [[ ! -w "$path" ]]
+}
+
+# Validate sudo once before the jobs start, so parallel jobs do not prompt
+# for the password at the same time.
+function authorize_root() {
+    local target="$1"
+    shift
+    local file
+    for file in "$@"; do
+        resolve_entry "$target" "$file"
+        if needs_root "$RESOLVED_OUT"; then
+            sudo -v
+            return
+        fi
+    done
+}
+
 function sync_single_file() {
     local in_file="$1"
     local out_file="$2"
     
-    # Return codes: 0 = synced, 1 = error, 2 = skipped
+    # Return codes: 0 = synced, 1 = error, 2 = skipped, 3 = needs --sudo
     if [[ ! -e "$in_file" ]]; then
         log_warning "  ⚠ Skipping non-existent source: $in_file"
         return 2
+    fi
+
+    local -a privilege=()
+    if needs_root "$out_file"; then
+        if [[ $SUDO == 0 ]]; then
+            log_warning "  ⚠ Skipped (needs --sudo): $in_file -> $out_file"
+            return 3
+        fi
+        privilege=(sudo)
     fi
 
     if [[ $DRYRUN == 1 ]]; then
@@ -216,13 +256,13 @@ function sync_single_file() {
         confirmed="y"
     fi
 
-    if [[ $confirmed != "y" ]]; then
+    if [[ $confirmed != [yY] ]]; then
         echo "  Skipped: $in_file -> $out_file"
         return 2
     fi
 
-    mkdir -p "$(dirname "$out_file")"
-    if "${SYNC[@]}" "$in_file" "$out_file"; then
+    "${privilege[@]}" mkdir -p "$(dirname "$out_file")"
+    if "${privilege[@]}" "${SYNC[@]}" "$in_file" "$out_file"; then
         log_success "  ✓ $in_file -> $out_file"
         return 0
     else
@@ -262,8 +302,13 @@ function sync_files() {
 
     log_info "[$target]"
 
+    if [[ $SUDO == 1 && $DRYRUN == 0 ]]; then
+        authorize_root "$target" "${files[@]}"
+    fi
+
     local sync_count=0
     local skip_count=0
+    local root_skip_count=0
     local error_count=0
 
     # --confirm reads from stdin per entry, which cannot be interleaved across
@@ -286,6 +331,7 @@ function sync_files() {
             case $rc in
                 0) sync_count=$((sync_count + 1)) ;;
                 2) skip_count=$((skip_count + 1)) ;;
+                3) root_skip_count=$((root_skip_count + 1)) ;;
                 *) error_count=$((error_count + 1)) ;;
             esac
         done
@@ -301,12 +347,15 @@ function sync_files() {
 
             if [[ ${#pids[@]} -ge $max_jobs ]]; then
                 # Wait for any one job to finish, then tally it
+                set +e
                 wait -n -p pid
                 rc=$?
+                set -e
                 unset 'pids[$pid]'
                 case $rc in
                     0) sync_count=$((sync_count + 1)) ;;
                     2) skip_count=$((skip_count + 1)) ;;
+                    3) root_skip_count=$((root_skip_count + 1)) ;;
                     *) error_count=$((error_count + 1)) ;;
                 esac
             fi
@@ -320,12 +369,16 @@ function sync_files() {
             case $rc in
                 0) sync_count=$((sync_count + 1)) ;;
                 2) skip_count=$((skip_count + 1)) ;;
+                3) root_skip_count=$((root_skip_count + 1)) ;;
                 *) error_count=$((error_count + 1)) ;;
             esac
         done
     fi
 
     log_info "Completed: $sync_count synced, $skip_count skipped, $error_count errors"
+    if [[ $root_skip_count -gt 0 ]]; then
+        log_warning "⚠ $root_skip_count skipped: run again with --sudo"
+    fi
 }
 
 function main() {
@@ -333,7 +386,7 @@ function main() {
     parse_arguments "$@"
 
     if [[ -z "${HOSTNAME:-}" ]]; then
-        HOSTNAME=$(hostname)
+        HOSTNAME=$(uname -n)
     fi
 
     log_info "Starting sync operation: $OPERATION"
@@ -344,9 +397,11 @@ function main() {
     # Sync common files
     sync_files "common" "${common[@]}"
 
-    # Sync system specific files if they exist
-    if declare -p "$HOSTNAME" >/dev/null 2>&1; then
-        declare -n file_list="$HOSTNAME"
+    # Sync system specific files if they exist. A bash array name cannot
+    # contain "-", so host "work-mule" reads the list "work_mule".
+    local host_list=${HOSTNAME//[^[:alnum:]_]/_}
+    if declare -p "$host_list" >/dev/null 2>&1; then
+        declare -n file_list="$host_list"
         sync_files "$HOSTNAME" "${file_list[@]}"
     else
         log_warning "No specific configuration found for hostname: $HOSTNAME"
