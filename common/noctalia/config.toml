@@ -1,0 +1,67 @@
+# Converted from the Noctalia v4 settings.json on 2026-09-04.
+# Values here are the hand-written layer. ~/.local/state/noctalia/settings.toml
+# (written by the settings UI) overrides any key that it also contains.
+
+[accessibility]
+ui_scale = 0.9
+
+[shell]
+password_style = "random"
+
+[audio]
+enable_sounds = true
+volume_change_sound = "/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga"
+
+[theme.templates]
+builtin_ids = ["alacritty", "gtk3", "gtk4", "helix", "niri", "starship"]
+community_ids = ["fuzzel", "yazi", "zathura", "zed"]
+
+[bar.default]
+auto_hide = true
+show_on_workspace_switch = false
+capsule = true
+capsule_fill = "primary"
+capsule_opacity = 0.25
+start = ["workspaces", "cpu", "temp", "ram", "media"]
+center = ["clock", "pomodoro"]
+end = ["tray", "notifications", "battery", "volume", "brightness", "theme_mode", "network", "control-center"]
+
+[widget.workspaces]
+show_labels = false
+
+[widget.cpu]
+visualization = "none"
+
+[widget.temp]
+visualization = "none"
+
+[widget.ram]
+stat = "ram_pct"
+visualization = "none"
+
+[widget.media]
+max_length = 145
+artist_first = true
+title_scroll = "on_hover"
+
+[widget.clock]
+format = "{:%H:%M %a, %b %d}"
+
+[widget.battery]
+display_mode = "graphic"
+
+[widget.volume]
+show_label = false
+
+[widget.brightness]
+show_label = false
+
+[widget.network]
+show_label = false
+vpn_status = "both"
+
+[widget.pomodoro]
+type = "thepunkoff/pomodoro:widget"
+
+[plugins]
+enabled = ["thepunkoff/pomodoro"]
