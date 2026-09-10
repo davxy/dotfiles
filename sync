@@ -182,8 +182,6 @@ common=(
     "$HOME/.config/otp/ | otp/"
     # imv
     "$HOME/.config/imv/ | imv/"
-    # aichat
-    "$HOME/.config/aichat/ | aichat/"
     # protonmail bridge
     "$HOME/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json"
 )
