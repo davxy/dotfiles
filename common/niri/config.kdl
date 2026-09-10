@@ -420,10 +420,13 @@ binds {
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
-    Mod+N hotkey-overlay-title="Clean mako notifications" { spawn-sh "makoctl dismiss --all"; }
-    Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
+    Mod+N hotkey-overlay-title="Clean notifications" { spawn-sh "noctalia msg notification-clear-active"; }
+    // Mod+N hotkey-overlay-title="Clean notifications" { spawn-sh "makoctl dismiss --all"; }
+    // Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
 
-    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn-sh "noctalia msg session lock"; }
+    Mod+S hotkey-overlay-title="Session menu" { spawn-sh "noctalia msg panel-toggle session"; }
+
+    Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn-sh "noctalia msg session lock"; }
     // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     // Audio & Brightness
@@ -608,7 +611,7 @@ binds {
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
     // The quit action will show a confirmation dialog to avoid accidental exits.
-    Mod+Shift+E { quit; }
+    // Mod+Shift+E { quit; }
 
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
@@ -624,3 +627,4 @@ gestures {
 overview {
     zoom 0.5
 }
+
