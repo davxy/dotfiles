@@ -2,6 +2,8 @@
 #
 # Tool to synchronize versioned and system dot files.
 #
+# The pairs to synchronize are read from sync.map in the current directory.
+#
 # Depends on:
 # - rsync
 # - sudo (only with --sudo)
@@ -10,6 +12,8 @@ set -euo pipefail
 
 # Sync command (array preserves correct word-splitting/quoting)
 SYNC=(rsync -a --no-owner --no-group --delete --exclude=.git)
+
+MAP_FILE="sync.map"
 
 # Initialize flags
 DRYRUN=0
@@ -27,6 +31,9 @@ NC='\033[0m' # No Color
 
 function usage() {
     echo "Usage: sync [OPTIONS] OPERATION"
+    echo ""
+    echo "Reads the 'system | versioned' pairs from ./sync.map. Section [common]"
+    echo "applies to every machine, section [<hostname>] to that host only."
     echo ""
     echo "OPERATION:"
     echo "  in      Copy files from system folders to versioned folders"
@@ -122,84 +129,6 @@ function parse_arguments() {
     fi
 }
 
-# Array of 'system | versioned' file couples
-common=(
-    # bash
-    "$HOME/.config/bash/ | bash/"
-    "$HOME/.bashrc | bash/bundle/bashrc"
-    "$HOME/.bash_profile | bash/bundle/bash_profile"
-    "$HOME/.profile | bash/bundle/profile"
-    "$HOME/.inputrc | bash/bundle/inputrc"
-    # fish
-    "$HOME/.config/fish/config.fish | fish/config.fish"
-    "$HOME/.config/fish/conf.d/ | fish/conf.d/"
-    # systemd
-    "$HOME/.config/systemd/ | systemd/"
-    # rclone
-    "$HOME/.config/rclone/mount-mega.env | rclone/mount-mega.env"
-    # gnupg
-    "$HOME/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf"
-    # fonts configuration
-    "$HOME/.config/fontconfig/ | fontconfig/"
-    # git
-    "$HOME/.config/git/ | git/"
-    # helix
-    "$HOME/.config/helix/ | helix/"
-    # zellij
-    "$HOME/.config/zellij/ | zellij/"
-    # niri
-    "$HOME/.config/niri/ | niri/"
-    # noctalia
-    "$HOME/.config/noctalia/ | noctalia/"
-    # fuzzel
-    "$HOME/.config/fuzzel/ | fuzzel/"
-    # mako
-    "$HOME/.config/mako/ | mako/"
-    # swaylock
-    "$HOME/.config/swaylock/ | swaylock/"
-    # rofimoji
-    "$HOME/.config/rofimoji.rc | rofimoji/rofimoji.rc"
-    # alacritty
-    "$HOME/.config/alacritty/ | alacritty/"
-    # paru
-    "$HOME/.config/paru/ | paru/"
-    # yazi
-    "$HOME/.config/yazi/ | yazi/"
-    # gitui
-    "$HOME/.config/gitui/ | gitui/"
-    # zathura
-    "$HOME/.config/zathura/ | zathura/"
-    # tridactyl
-    "$HOME/.config/tridactyl/ | tridactyl/"
-    # lldb
-    "$HOME/.lldbinit | lldb/lldbinit"
-    "$HOME/.lldb/scripts/ | lldb/scripts/"
-    # Mime associations
-    "$HOME/.config/mimeapps.list | misc/mimeapps.list"
-    # ssh
-    "$HOME/.ssh/config | ssh/config"
-    # OTP tool
-    "$HOME/.config/otp/ | otp/"
-    # imv
-    "$HOME/.config/imv/ | imv/"
-    # protonmail bridge
-    "$HOME/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json"
-)
-
-behemoth=(
-    # wayvnc
-    "$HOME/.config/wayvnc/ | wayvnc/"
-    # samba
-    "/etc/samba/smb.conf | samba/smb.conf"
-    # evremap
-    "/etc/evremap.toml | evremap/evremap.toml"
-)
-
-workmule=(
-    # evremap
-    "/etc/evremap.toml | evremap/evremap.toml"
-)
-
 function needs_root() {
     local path="$1"
     while [[ ! -e "$path" ]]; do
@@ -282,6 +211,7 @@ function resolve_entry() {
     system_file=${system_file%"${system_file##*[![:space:]]}"}
     local_file=${local_file#"${local_file%%[![:space:]]*}"}
     local_file=${local_file%"${local_file##*[![:space:]]}"}
+    system_file=${system_file/#'~/'/"$HOME/"}
     local_file="$target/$local_file"
 
     if [[ $OPERATION == "out" ]]; then
@@ -290,6 +220,42 @@ function resolve_entry() {
     else
         RESOLVED_IN=$system_file
         RESOLVED_OUT=$local_file
+    fi
+}
+
+# Fill MAP_ENTRIES with the pairs of section [$1]. The whole file is checked
+# on every call, so a bad line stops the script before any copy.
+function read_map_section() {
+    local wanted="$1"
+    local line section="" found=0 number=0
+    MAP_ENTRIES=()
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        number=$((number + 1))
+        [[ "$line" =~ ^[[:space:]]*(#.*)?$ ]] && continue
+        if [[ "$line" =~ ^[[:space:]]*\[([^]]+)\][[:space:]]*$ ]]; then
+            section=${BASH_REMATCH[1]}
+            [[ $section == "$wanted" ]] && found=1
+            continue
+        fi
+        if [[ -z "$section" ]]; then
+            log_error "$MAP_FILE:$number: pair before the first [section]"
+            exit 1
+        fi
+        if [[ "$line" != *"|"* ]]; then
+            log_error "$MAP_FILE:$number: expected 'system | versioned'"
+            exit 1
+        fi
+        [[ $section == "$wanted" ]] && MAP_ENTRIES+=("$line")
+    done < "$MAP_FILE"
+    [[ $found == 1 ]]
+}
+
+function sync_map_section() {
+    local name="$1"
+    if read_map_section "$name"; then
+        sync_files "$name" "${MAP_ENTRIES[@]}"
+    else
+        log_warning "No [$name] section in $MAP_FILE"
     fi
 }
 
@@ -387,23 +353,18 @@ function main() {
         HOSTNAME=$(uname -n)
     fi
 
+    if [[ ! -f "$MAP_FILE" ]]; then
+        log_error "Error: $MAP_FILE not found in $(pwd)"
+        exit 1
+    fi
+
     log_info "Starting sync operation: $OPERATION"
     if [[ $DRYRUN == 1 ]]; then
         log_info "DRY RUN MODE - No files will be modified"
     fi
 
-    # Sync common files
-    sync_files "common" "${common[@]}"
-
-    # Sync system specific files if they exist. A bash array name cannot
-    # contain "-", so host "work-mule" reads the list "work_mule".
-    local host_list=${HOSTNAME//[^[:alnum:]_]/_}
-    if declare -p "$host_list" >/dev/null 2>&1; then
-        declare -n file_list="$host_list"
-        sync_files "$HOSTNAME" "${file_list[@]}"
-    else
-        log_warning "No specific configuration found for hostname: $HOSTNAME"
-    fi
+    sync_map_section "common"
+    sync_map_section "$HOSTNAME"
 
     log_success "Sync operation completed"
 }

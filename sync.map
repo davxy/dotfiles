@@ -1,0 +1,79 @@
+# Files that ./sync keeps in step, one "system | versioned" pair per line.
+#
+# [common] applies to every machine. [<hostname>] applies to that host only.
+# The versioned path is relative to the folder with the section name.
+# A system path that starts with ~/ expands to $HOME.
+
+[common]
+# bash
+~/.config/bash/ | bash/
+~/.bashrc | bash/bundle/bashrc
+~/.bash_profile | bash/bundle/bash_profile
+~/.profile | bash/bundle/profile
+~/.inputrc | bash/bundle/inputrc
+# fish
+~/.config/fish/config.fish | fish/config.fish
+~/.config/fish/conf.d/ | fish/conf.d/
+# systemd
+~/.config/systemd/ | systemd/
+# rclone
+~/.config/rclone/mount-mega.env | rclone/mount-mega.env
+# gnupg
+~/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf
+# fonts configuration
+~/.config/fontconfig/ | fontconfig/
+# git
+~/.config/git/ | git/
+# helix
+~/.config/helix/ | helix/
+# zellij
+~/.config/zellij/ | zellij/
+# niri
+~/.config/niri/ | niri/
+# noctalia
+~/.config/noctalia/ | noctalia/
+# fuzzel
+~/.config/fuzzel/ | fuzzel/
+# mako
+~/.config/mako/ | mako/
+# swaylock
+~/.config/swaylock/ | swaylock/
+# rofimoji
+~/.config/rofimoji.rc | rofimoji/rofimoji.rc
+# alacritty
+~/.config/alacritty/ | alacritty/
+# paru
+~/.config/paru/ | paru/
+# yazi
+~/.config/yazi/ | yazi/
+# gitui
+~/.config/gitui/ | gitui/
+# zathura
+~/.config/zathura/ | zathura/
+# tridactyl
+~/.config/tridactyl/ | tridactyl/
+# lldb
+~/.lldbinit | lldb/lldbinit
+~/.lldb/scripts/ | lldb/scripts/
+# Mime associations
+~/.config/mimeapps.list | misc/mimeapps.list
+# ssh
+~/.ssh/config | ssh/config
+# OTP tool
+~/.config/otp/ | otp/
+# imv
+~/.config/imv/ | imv/
+# protonmail bridge
+~/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json
+
+[behemoth]
+# wayvnc
+~/.config/wayvnc/ | wayvnc/
+# samba
+/etc/samba/smb.conf | samba/smb.conf
+# evremap
+/etc/evremap.toml | evremap/evremap.toml
+
+[workmule]
+# evremap
+/etc/evremap.toml | evremap/evremap.toml
