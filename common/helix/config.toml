@@ -9,7 +9,6 @@ true-color = true
 scrolloff = 20
 bufferline = "always"
 end-of-line-diagnostics = "warning"
-insecure = true
 
 [editor.inline-diagnostics]
 cursor-line = "warning" # show warnings and errors on the cursorline inline
