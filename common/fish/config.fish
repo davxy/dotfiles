@@ -268,6 +268,16 @@ function opend
     end
 end
 
+# Parity LLM proxy key, kept encrypted in pass
+function opencode --wraps opencode
+    set -l key (pass show api/parity-llm-proxy 2>/dev/null | head -1)
+    if test -z "$key"
+        echo "opencode: cannot read api/parity-llm-proxy from pass; parity-proxy models will not work" >&2
+    end
+    set -lx PARITY_LLM_PROXY_KEY $key
+    command opencode $argv
+end
+
 #############################################
 # Third party tools init
 #############################################
