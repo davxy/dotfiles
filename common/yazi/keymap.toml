@@ -2,5 +2,6 @@
 
 [mgr]
 append_keymap = [
-  { on = [ "g", "e" ], run = "arrow bot", desc = "Move cursor to the bottom" }
+  { on = [ "g", "e" ], run = "arrow bot", desc = "Move cursor to the bottom" },
+  { on = [ "c", "h" ], run = "shell --block 'xxh128sum %s | sed -E \"s/^([0-9a-f]{8})[0-9a-f]+/\\1/\"; printf \"\\nPress Enter to continue\"; read -r dummy'", desc = "Show xxHash (8 hex digits)" },
 ]
