@@ -278,6 +278,14 @@ function opencode --wraps opencode
     command opencode $argv
 end
 
+function corral --wrap corral
+    set -l key (pass show api/github 2>/dev/null | head -1)
+    if test -z "$key"
+        echo "corral: cannot read api/github from pass; gh tool will not work" >&2
+    end
+    command corral -e GH_TOKEN=$key $argv
+end
+
 #############################################
 # Third party tools init
 #############################################
