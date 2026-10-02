@@ -360,10 +360,7 @@ themes {
 theme "gruvbox-dark"
 
 plugins {
-    // compact-bar location="zellij:compact-bar"
-    compact-bar location="zellij:compact-bar" {
-        tooltip "F1"
-    }
+    compact-bar location="zellij:compact-bar"
     plugin-manager location="zellij:plugin-manager"
     session-manager location="zellij:session-manager"
 }
