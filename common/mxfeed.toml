@@ -24,10 +24,10 @@ rooms = [
   "!vMpYyTkvjXcevxSdsQ:web3.foundation",
   # Jam Conformance
   "#jam-conformance:matrix.org",
-  # Graypaper
-  "#graypaper:polkadot.io",
-  # Let's Jam
-  "#jam:polkadot.io",
+  # Graypaper (#graypaper:polkadot.io)
+  "!ddsEwXlCWnreEGuqXZ:polkadot.io",
+  # Let's Jam (#jam:polkadot.io)
+  "!wBOJlzaOULZOALhaRh:polkadot.io",
   # Polkadot Technical Fellowship
   "#fellowship-members:parity.io",
   # Polkadot Technical Fellowship Open-Chan
