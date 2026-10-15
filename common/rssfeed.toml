@@ -1,0 +1,1279 @@
+# Copy this file to ~/.config/rssfeed/config.toml, or let `rssfeed import` make it.
+# A path that starts with ~ starts at the home directory.
+# Other relative paths are relative to this file.
+#
+# The feeds are at the end of the file, one block for each feed. `rssfeed import` adds the
+# feeds of an OPML file. The fields of a feed:
+#
+#   [[feed]]
+#   name = "LWN.net"
+#   url = "https://lwn.net/headlines/rss"
+#   # The web site. `rssfeed import` uses it to find the same feed with a different URL.
+#   site = "https://lwn.net"
+#   tags = ["linux"]
+#   # "auto" (default): download the article page if the item text is short.
+#   # "always": download the article page for each item. "never": use only the feed text.
+#   full_text = "auto"
+
+# Items go to <data_dir>/items/<YYYY-MM-DD>/<feed>--<title>-<hash>.md. The day is the day
+# when rssfeed found the item.
+data_dir = "~/.local/share/rssfeed"
+
+# The state of the feeds and the items that rssfeed already found.
+state_dir = "~/.local/state/rssfeed"
+
+# Some sites refuse requests with an unknown or empty User-Agent.
+user_agent = "rssfeed/0.1"
+
+# The first fetch of a feed writes only the items of the last N days. It records the older
+# items, and the items with no date, as found. Without this, a new feed gives all its old items.
+first_fetch_days = 30
+
+# For full_text = "auto": download the article page when the text of the item is shorter.
+full_text_min_chars = 500
+
+# Cut a longer text of an item at this number of characters.
+max_chars = 50000
+
+[[feed]]
+name = "A Few Thoughts on Cryptographic Engineering"
+url = "http://blog.cryptographyengineering.com/feeds/posts/default"
+site = "https://blog.cryptographyengineering.com"
+
+[[feed]]
+name = "Adam Caudill"
+url = "https://adamcaudill.com/index.xml"
+site = "https://adamcaudill.com/"
+
+[[feed]]
+name = "Algorithmic Assertions - Craig Gidney's Computer Science Blog"
+url = "https://algassert.com/feed.xml"
+site = "http://algassert.com"
+
+[[feed]]
+name = "Andreas Hülsing"
+url = "https://huelsing.net/wordpress/?feed=rss2"
+site = "https://huelsing.net/wordpress"
+
+[[feed]]
+name = "Andrew Ayer - Blog"
+url = "https://www.agwa.name/blog/feed"
+site = "https://www.agwa.name/blog"
+
+[[feed]]
+name = "Assembly Language Programming"
+url = "https://programmer209.wordpress.com/feed/"
+site = "https://programmer209.wordpress.com"
+
+[[feed]]
+name = "Azimuth"
+url = "https://johncarlosbaez.wordpress.com/feed/"
+site = "https://johncarlosbaez.wordpress.com"
+
+[[feed]]
+name = "blogs.ams.org"
+url = "https://blogs.ams.org/phdplus/feed/"
+site = "https://blogs.ams.org/phdplus"
+
+[[feed]]
+name = "Bentham’s Gaze"
+url = "https://www.benthamsgaze.org/feed/"
+site = "https://www.benthamsgaze.org"
+
+[[feed]]
+name = "BrainOverfl0w"
+url = "https://www.fredericjacobs.com/blog/feed.xml"
+site = "https://www.fredericjacobs.com/blog/"
+
+[[feed]]
+name = "Bristol Cryptography Blog"
+url = "http://bristolcrypto.blogspot.com/feeds/posts/default"
+site = "http://bristolcrypto.blogspot.com/"
+
+[[feed]]
+name = "Bulletproof TLS Newsletter"
+url = "https://www.feistyduck.com/bulletproof-tls-newsletter/feed"
+site = "https://www.feistyduck.com/bulletproof-tls-newsletter/"
+
+[[feed]]
+name = "cr.yp.to blog"
+url = "http://blog.cr.yp.to/feed.application=xml"
+site = "http://blog.cr.yp.to"
+
+[[feed]]
+name = "Chosen Plaintext"
+url = "https://www.chosenplaintext.ca/feed.xml"
+site = "https://www.chosenplaintext.ca/"
+
+[[feed]]
+name = "Command Line Fanatic"
+url = "http://commandlinefanatic.com/rss.xml"
+site = "http://www.commandlinefanatic.com/index.html"
+
+[[feed]]
+name = "Crypto Fails"
+url = "https://www.cryptofails.com/rss"
+site = "https://www.cryptofails.com/"
+
+[[feed]]
+name = "Cryptography in The Coinbase Blog on Medium"
+url = "https://medium.com/feed/the-coinbase-blog/tagged/cryptography"
+site = "https://blog.coinbase.com/tagged/cryptography?source=rss----c114225aeaf7--cryptography"
+
+[[feed]]
+name = "Cryptography Services NCC Group"
+url = "https://cryptoservices.github.io/index.xml"
+site = "https://cryptoservices.github.io/"
+
+[[feed]]
+name = "Daan Sprenkels"
+url = "https://dsprenkels.com/feed.xml"
+site = "https://dsprenkels.com/"
+
+[[feed]]
+name = "David Wong"
+url = "https://www.youtube.com/feeds/videos.xml?channel_id=UCY1UW1QQZ2xzdBEEep8R0nA"
+site = "https://www.youtube.com/channel/UCY1UW1QQZ2xzdBEEep8R0nA"
+
+[[feed]]
+name = "David Wong | Cryptologie | HTML"
+url = "https://www.cryptologie.net/feed.xml"
+site = "http://www.cryptologie.net/"
+
+[[feed]]
+name = "Dhole Moments"
+url = "https://soatok.blog/feed/"
+site = "https://soatok.blog"
+
+[[feed]]
+name = "Diary of a reverse-engineer"
+url = "https://doar-e.github.io/feeds/rss.xml"
+site = "https://doar-e.github.io/"
+
+[[feed]]
+name = "ellipticnews"
+url = "https://ellipticnews.wordpress.com/feed/"
+site = "https://ellipticnews.wordpress.com"
+
+[[feed]]
+name = "ECRYPT-EU"
+url = "https://www.blogger.com/feeds/5149574209636840277/posts/default"
+site = "http://ecrypt-eu.blogspot.com/"
+
+[[feed]]
+name = "Electrospaces.net"
+url = "https://www.electrospaces.net/feeds/posts/default?alt=rss"
+site = "https://www.electrospaces.net/"
+
+[[feed]]
+name = "Filippo.io"
+url = "https://blog.filippo.io/rss/"
+site = "https://blog.filippo.io/"
+
+[[feed]]
+name = "Financial Cryptography"
+url = "https://financialcryptography.com/index.rdf"
+site = "http://financialcryptography.com/"
+
+[[feed]]
+name = "Frank DENIS random thoughts."
+url = "https://00f.net/atom.xml"
+site = "https://00f.net/atom.xml"
+
+[[feed]]
+name = "Gödel's Lost Letter and P=NP"
+url = "https://rjlipton.wpcomstaging.com/feed/"
+site = "https://rjlipton.wpcomstaging.com"
+
+[[feed]]
+name = "Henry de Valence :: Blog"
+url = "https://hdevalence.ca/rss.xml"
+site = "http://www.hdevalence.ca"
+
+[[feed]]
+name = "HEAT Project Blog"
+url = "http://heat-h2020-project.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://heat-h2020-project.blogspot.com/"
+
+[[feed]]
+name = "ImperialViolet"
+url = "https://www.imperialviolet.org/iv-rss.xml"
+site = "http://www.imperialviolet.org/iv-rss.xml"
+
+[[feed]]
+name = "Insane Coding"
+url = "http://insanecoding.blogspot.com/feeds/posts/default"
+site = "https://insanecoding.blogspot.com/"
+
+[[feed]]
+name = "Into the symmetry"
+url = "http://intothesymmetry.blogspot.com/feeds/posts/default"
+site = "http://blog.intothesymmetry.com/"
+
+[[feed]]
+name = "JBZ CTF Team"
+url = "https://jbzteam.github.io/feed.xml"
+site = "https://jbzteam.github.io/"
+
+[[feed]]
+name = "kel.bz"
+url = "https://kel.bz/index.xml"
+site = "https://kel.bz/"
+
+[[feed]]
+name = "lvh"
+url = "https://www.lvh.io/rss.xml"
+site = "https://www.lvh.io/"
+
+[[feed]]
+name = "Latacora"
+url = "https://latacora.micro.blog/2019/07/16/the-pgp-problem.html/index.xml"
+site = "https://latacora.micro.blog/"
+
+[[feed]]
+name = "Little Man In My Head"
+url = "https://littlemaninmyhead.wordpress.com/feed/"
+site = "https://littlemaninmyhead.wordpress.com"
+
+[[feed]]
+name = "Logic ForAll"
+url = "http://logic-forall.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://logic-forall.blogspot.com/"
+
+[[feed]]
+name = "m1el"
+url = "https://m1el.github.io/feed.xml"
+site = "http://m1el.github.io"
+
+[[feed]]
+name = "malb::blog"
+url = "https://martinralbrecht.wordpress.com/feed/"
+site = "https://martinralbrecht.wordpress.com"
+
+[[feed]]
+name = "Math with Bad Drawings"
+url = "https://mathwithbaddrawings.com/feed/"
+site = "https://mathwithbaddrawings.com"
+
+[[feed]]
+name = "Math ∩ Programming"
+url = "https://jeremykun.com/feed/"
+site = "https://jeremykun.com"
+
+[[feed]]
+name = "Matt Baker's Math Blog"
+url = "https://mattbaker.blog/feed/"
+site = "https://mattbaker.blog"
+
+[[feed]]
+name = "Matt Blaze's Exhaustive Search"
+url = "https://www.mattblaze.org/blog/rss20.xml"
+site = "https://www.mattblaze.org/blog"
+
+[[feed]]
+name = "More Smoked Leet Chicken"
+url = "http://mslc.ctf.su/feed/"
+site = "http://mslc.ctf.su"
+
+[[feed]]
+name = "My Biased Coin"
+url = "http://mybiasedcoin.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://mybiasedcoin.blogspot.com/"
+
+[[feed]]
+name = "neuromancer.sk"
+url = "https://neuromancer.sk/feed.xml"
+site = "https://neuromancer.sk"
+
+[[feed]]
+name = "Noncombatant"
+url = "https://noncombatant.org/feed/"
+site = "https://noncombatant.org/feed/"
+
+[[feed]]
+name = "Not Even Wrong"
+url = "https://www.math.columbia.edu/~woit/wordpress/?feed=rss2"
+site = "https://www.math.columbia.edu/~woit/wordpress"
+
+[[feed]]
+name = "Objective-See's Blog"
+url = "https://objective-see.com/rss.xml"
+site = "https://www.objective-see.com"
+
+[[feed]]
+name = "On Cryptography and Security"
+url = "https://blog.susanka.eu/rss/"
+site = "https://blog.susanka.eu/"
+
+[[feed]]
+name = "On Web-Security and -Insecurity"
+url = "https://web-in-security.blogspot.com/feeds/posts/default?alt=rss"
+site = "https://web-in-security.blogspot.com/"
+
+[[feed]]
+name = "OpenSSL Blog"
+url = "https://www.openssl.org/blog/atom.xml"
+site = "https://www.openssl.org/blog/atom.xml"
+
+[[feed]]
+name = "Patterns in the Void"
+url = "https://blog.patternsinthevoid.net/feeds/all.atom.xml"
+site = "https://blog.patternsinthevoid.net/"
+
+[[feed]]
+name = "Paul Wouters at more then 140 chars"
+url = "https://nohats.ca/wordpress/feed/"
+site = "https://nohats.ca/wordpress"
+
+[[feed]]
+name = "Persiflage"
+url = "https://galoisrepresentations.org/feed/"
+site = "https://www.galoisrepresentations.com"
+
+[[feed]]
+name = "Pomcor"
+url = "https://pomcor.com/feed/"
+site = "https://pomcor.com"
+
+[[feed]]
+name = "Project Zero"
+url = "https://googleprojectzero.blogspot.com/feeds/posts/default?alt=rss"
+site = "https://googleprojectzero.blogspot.com/"
+
+[[feed]]
+name = "Pseudorandom Musings"
+url = "https://pseudorandomized.wordpress.com/feed/"
+site = "https://pseudorandomized.wordpress.com"
+
+[[feed]]
+name = "Quantiki - Quantum Information Portal and Wiki"
+url = "https://www.quantiki.org/rss.xml"
+site = "https://www.quantiki.org/frontpage"
+
+[[feed]]
+name = "rya.nc"
+url = "https://rya.nc/feeds/all.rss"
+site = "https://rya.nc/"
+
+[[feed]]
+name = "Random Oracle"
+url = "https://randomoracle.wordpress.com/feed/"
+site = "https://randomoracle.wordpress.com"
+
+[[feed]]
+name = "Real World Cryptographers Podcast"
+url = "https://feeds.buzzsprout.com/1393207.rss"
+site = "https://feeds.buzzsprout.com/1393207.rss"
+
+[[feed]]
+name = "Rot256 : Cryptography & Other Random Bits."
+url = "https://rot256.dev/index.xml"
+site = "https://rot256.dev/"
+
+[[feed]]
+name = "RSS: Hanno's blog -"
+url = "https://blog.hboeck.de/feeds/index.rss2"
+site = "https://blog.hboeck.de/"
+
+[[feed]]
+name = "sean cassidy"
+url = "https://www.seancassidy.me/atom.xml"
+site = "https://www.seancassidy.me/"
+
+[[feed]]
+name = "Sagi Kedmi"
+url = "https://sagi.io/rss.xml"
+site = "https://sagi.io"
+
+[[feed]]
+name = "Schneier on Security"
+url = "https://www.schneier.com/feed/"
+site = "https://www.schneier.com"
+
+[[feed]]
+name = "Sebastien Martini's blog"
+url = "http://seb.dbzteam.org/rss"
+site = "http://seb.dbzteam.org/blog/"
+
+[[feed]]
+name = "Short, Fat Matrices"
+url = "https://dustingmixon.wordpress.com/feed/"
+site = "https://dustingmixon.wordpress.com"
+
+[[feed]]
+name = "Shtetl-Optimized"
+url = "https://www.scottaaronson.com/blog/?feed=rss2"
+site = "https://scottaaronson.blog"
+
+[[feed]]
+name = "Signal Blog"
+url = "https://whispersystems.org/blog/rss.xml"
+site = "https://signal.org/blog/"
+
+[[feed]]
+name = "Simon Josefsson's blog"
+url = "https://blog.josefsson.org/feed/"
+site = "https://blog.josefsson.org"
+
+[[feed]]
+name = "SIGINT CHATTER"
+url = "https://rijmenants.blogspot.com/feeds/posts/default?alt=rss"
+site = "https://rijmenants.blogspot.com/"
+
+[[feed]]
+name = "StarkWare - Medium"
+url = "https://medium.com/feed/starkware"
+site = "https://medium.com/starkware?source=rss----4f99567ac65a---4"
+
+[[feed]]
+name = "Stories by Sergey Gorbunov on Medium"
+url = "https://medium.com/feed/@sergeynog"
+site = "https://medium.com/@sergeynog?source=rss-5085ffc6b019------2"
+
+[[feed]]
+name = "thái"
+url = "http://vnhacker.blogspot.com/feeds/posts/default"
+site = "http://vnhacker.blogspot.com/"
+
+[[feed]]
+name = "top scoring links : crypto"
+url = "https://www.reddit.com/r/crypto/top.rss?t=month"
+site = "https://www.reddit.com/r/crypto/top?t=month"
+
+[[feed]]
+name = "Terse Systems"
+url = "https://tersesystems.com/feed.xml"
+site = "https://tersesystems.com/"
+
+[[feed]]
+name = "The blog of Christopher A. Wood"
+url = "https://chris-wood.github.io/feed/feed.xml"
+site = "/atom.xml"
+
+[[feed]]
+name = "The Call of the Open Sidewalk"
+url = "https://articles.59.ca/feed.php?num=10&linkto=current&content=html&ns=pgpfan"
+site = "https://articles.59.ca/"
+
+[[feed]]
+name = "The Cloudflare Blog"
+url = "https://blog.cloudflare.com/rss/"
+site = "https://blog.cloudflare.com/"
+
+[[feed]]
+name = "The n-Category Café"
+url = "https://golem.ph.utexas.edu/category/atom10.xml"
+site = "https://golem.ph.utexas.edu/category/"
+
+[[feed]]
+name = "Tim Taubert"
+url = "https://timtaubert.de/atom.xml"
+site = "https://timtaubert.de/atom.xml"
+
+[[feed]]
+name = "Tony Arcieri"
+url = "https://tonyarcieri.com/feed"
+site = "https://tonyarcieri.com"
+
+[[feed]]
+name = "Trail of Bits Blog"
+url = "https://blog.trailofbits.com/feed/"
+site = "https://blog.trailofbits.com"
+
+[[feed]]
+name = "UNMITIGATED RISK"
+url = "https://unmitigatedrisk.com/?feed=rss2"
+site = "https://unmitigatedrisk.com"
+
+[[feed]]
+name = "Vitalik Buterin's website"
+url = "https://vitalik.eth.limo/feed.xml"
+site = "https://vitalik.ca/"
+
+[[feed]]
+name = "What's new"
+url = "https://terrytao.wordpress.com/feed/"
+site = "https://terrytao.wordpress.com"
+
+[[feed]]
+name = "What's on my blackboard?"
+url = "https://whatsonmyblackboard.wordpress.com/feed/"
+site = "https://whatsonmyblackboard.wordpress.com"
+
+[[feed]]
+name = "ZK Podcast"
+url = "https://www.zeroknowledge.fm/rss"
+site = "https://zeroknowledge.fm"
+
+[[feed]]
+name = "0x1338"
+url = "https://0x1338.blogspot.com/feeds/posts/default"
+site = "http://0x1338.blogspot.com/"
+
+[[feed]]
+name = "0xStubs"
+url = "https://0xstubs.org/feed/"
+site = "https://0xstubs.org"
+
+[[feed]]
+name = "Aaron Toponce"
+url = "https://pthree.org/feed/"
+site = "https://pthree.org"
+
+[[feed]]
+name = "ADD / XOR / ROL"
+url = "http://addxorrol.blogspot.com/feeds/posts/default"
+site = "http://addxorrol.blogspot.com/"
+
+[[feed]]
+name = "AlexSci Blog"
+url = "https://blog.alexsci.com/feed.xml"
+site = "https://blog.alexsci.com"
+
+[[feed]]
+name = "alxdavids"
+url = "https://alxdavids.xyz/rss/"
+site = "https://alxdavids.xyz/"
+
+[[feed]]
+name = "ambrosie"
+url = "http://iambrosie.github.io/feed.xml"
+site = "https://iambrosie.github.io/"
+
+[[feed]]
+name = "Andreas Hülsing"
+url = "https://huelsing.wordpress.com/feed/"
+site = "https://huelsing.wordpress.com"
+
+[[feed]]
+name = "Android Programming for Fun"
+url = "http://androiddevblog.blogspot.com/feeds/posts/default"
+site = "http://androiddevblog.blogspot.com/"
+
+[[feed]]
+name = "Application & Cyber Security Blog"
+url = "http://securityinnovation.typepad.com/blog/rss.xml"
+site = "http://securityinnovation.typepad.com/blog/"
+
+[[feed]]
+name = "Austin's blog"
+url = "https://austinmarton.wordpress.com/feed/"
+site = "https://austinmarton.wordpress.com"
+
+[[feed]]
+name = "Azeria Labs"
+url = "https://azeria-labs.com/feed/"
+site = "https://azeria-labs.com"
+
+[[feed]]
+name = "Benlog"
+url = "http://benlog.com/feed/"
+site = "https://benlog.com"
+
+[[feed]]
+name = "BetterCrypto⋅org"
+url = "https://bettercrypto.org/atom.xml"
+site = "https://bettercrypto.org/"
+
+[[feed]]
+name = "Bits on blocks"
+url = "https://bitsonblocks.net/feed/"
+site = "https://bitsonblocks.net"
+
+[[feed]]
+name = "Blaze's Security Blog"
+url = "https://bartblaze.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://bartblaze.blogspot.com/"
+
+[[feed]]
+name = "Blog"
+url = "https://hector-project.eu/blog?format=feed&amp;type=rss"
+site = "https://hector-project.eu/blog"
+
+[[feed]]
+name = "Blog of Ivan Raszl"
+url = "http://raszl.com/rss.xml"
+site = "http://raszl.com"
+
+[[feed]]
+name = "Blog: Ivan Ristić"
+url = "https://blog.ivanristic.com/atom.xml"
+site = "http://blog.ivanristic.com/"
+
+[[feed]]
+name = "Blogtonomous"
+url = "http://botland.net/blog/index.php/feed/"
+site = "http://botland.net/blog"
+
+[[feed]]
+name = "BlueMatt's Blog"
+url = "http://bluematt.bitcoin.ninja/atom.xml"
+site = "http://bluematt.bitcoin.ninja/"
+
+[[feed]]
+name = "Brian Smith"
+url = "https://briansmith.org/feed.atom"
+site = "https://briansmith.org/"
+
+[[feed]]
+name = "Brian Warner"
+url = "https://blog.mozilla.org/warner/feed/"
+site = "https://blog.mozilla.org/warner"
+
+[[feed]]
+name = "Bruno Kerouanton"
+url = "http://bruno.kerouanton.net/blog/feed/"
+site = "https://bruno.kerouanton.net/blog"
+
+[[feed]]
+name = "Coding Horror"
+url = "http://feeds.feedburner.com/codinghorror"
+site = "https://blog.codinghorror.com/"
+
+[[feed]]
+name = "contagio"
+url = "http://contagiodump.blogspot.com/feeds/posts/default"
+site = "http://contagiodump.blogspot.com/"
+
+[[feed]]
+name = "contagio malware exchange"
+url = "http://contagioexchange.blogspot.com/feeds/posts/default"
+site = "http://contagioexchange.blogspot.com/"
+
+[[feed]]
+name = "Cryptanalysis – breaking news"
+url = "http://cryptanalysis.eu/blog/feed/"
+site = "https://cryptanalysis.eu/blog"
+
+[[feed]]
+name = "Cryptography"
+url = "http://cryptographi.blogspot.com/feeds/posts/default"
+site = "http://cryptographi.blogspot.com/"
+
+[[feed]]
+name = "D0hnuts"
+url = "https://d0hnuts.com/feed/"
+site = "https://d0hnuts.com"
+
+[[feed]]
+name = "David Cerezo Sánchez"
+url = "http://cerezo.name/blog/feed/"
+site = "http://cerezo.name/blog"
+
+[[feed]]
+name = "DigiNinja"
+url = "https://digi.ninja/rss.xml"
+site = "https://digi.ninja/rss.xml"
+
+[[feed]]
+name = "Donncha O'Cearbhaill"
+url = "https://donncha.is/feed/"
+site = "https://donncha.is"
+
+[[feed]]
+name = "duksctf"
+url = "https://duksctf.github.io/feed.xml"
+site = "http://duksctf.github.io"
+
+[[feed]]
+name = "Electrospaces.net"
+url = "http://electrospaces.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://electrospaces.blogspot.com/"
+
+[[feed]]
+name = "FraudWatch International Blog"
+url = "https://blog.fraudwatchinternational.com/rss.xml"
+site = "https://blog.fraudwatchinternational.com"
+
+[[feed]]
+name = "grocid.net"
+url = "https://grocid.net/feed/"
+site = "https://grocid.net"
+
+[[feed]]
+name = "Infobyte Security Research Labs"
+url = "http://blog.infobytesec.com/feeds/posts/default?alt=rss"
+site = "http://blog.infobytesec.com/"
+
+[[feed]]
+name = "Jef ~ Crypto Diary"
+url = "http://jf.gallais.free.fr/blog/index.php?feed/atom"
+site = "http://jf.gallais.free.fr/blog/index.php?"
+
+[[feed]]
+name = "Journal"
+url = "http://ethnologician.org/journal/atom.xml"
+site = "http://ethnologician.org/journal/"
+
+[[feed]]
+name = "Ken Shirriff's blog"
+url = "http://www.righto.com/feeds/posts/default?alt=rss"
+site = "http://www.righto.com/"
+
+[[feed]]
+name = "Kristov Atlas"
+url = "https://www.kristovatlas.com/feed/"
+site = "https://www.kristovatlas.com"
+
+[[feed]]
+name = "La Consigna"
+url = "http://laconsigna.wordpress.com/feed/"
+site = "https://laconsigna.wordpress.com"
+
+[[feed]]
+name = "Legitimate Business Syndicate"
+url = "http://blog.legitbs.net/feeds/posts/default?alt=rss"
+site = "http://blog.legitbs.net/"
+
+[[feed]]
+name = "Lekkertech"
+url = "http://blog.lekkertech.net/atom.xml"
+site = "http://blog.lekkertech.net/"
+
+[[feed]]
+name = "Mamuta memuāri"
+url = "http://marozols.wordpress.com/feed/"
+site = "https://marozols.wordpress.com"
+
+[[feed]]
+name = "Mathematics and Computation"
+url = "http://math.andrej.com/feed/"
+site = "http://math.andrej.com"
+
+[[feed]]
+name = "Mathematics under the Microscope"
+url = "http://micromath.wordpress.com/feed/"
+site = "https://micromath.wordpress.com"
+
+[[feed]]
+name = "Mathematics: The Language of the universe"
+url = "http://hardyramanujan.wordpress.com/feed/"
+site = "https://hardyramanujan.wordpress.com"
+
+[[feed]]
+name = "Matt Blaze's Exhaustive Search"
+url = "http://www.crypto.com/blog/rss20.xml"
+site = "http://www.crypto.com/blog"
+
+[[feed]]
+name = "Matt Leifer"
+url = "http://feeds.feedburner.com/MattLeifer"
+site = "http://mattleifer.info"
+
+[[feed]]
+name = "Matthew Garrett"
+url = "http://mjg59.dreamwidth.org/data/rss"
+site = "http://mjg59.dreamwidth.org/"
+
+[[feed]]
+name = "Medium of Expression"
+url = "http://mediumofexpression.blogspot.com/feeds/posts/default"
+site = "http://mediumofexpression.blogspot.com/"
+
+[[feed]]
+name = "Michael Nielsen"
+url = "http://michaelnielsen.org/blog/feed/"
+site = "http://michaelnielsen.org/blog"
+
+[[feed]]
+name = "Michael S. Mikowski"
+url = "https://mmikowski.github.io/feed.xml"
+site = "http://mmikowski.github.io"
+
+[[feed]]
+name = "Mick's Mix"
+url = "https://micksmix.wordpress.com/feed/"
+site = "https://micksmix.wordpress.com"
+
+[[feed]]
+name = "Minus Two Fish"
+url = "http://feeds.feedburner.com/minustwofish"
+site = "https://minustwofish.com"
+
+[[feed]]
+name = "modexp"
+url = "https://modexp.wordpress.com/feed/"
+site = "https://modexp.wordpress.com"
+
+[[feed]]
+name = "Morris"
+url = "https://morris.sc/rss/"
+site = "https://morris.sc/"
+
+[[feed]]
+name = "Moxie Marlinspike's Blog"
+url = "https://moxie.org/blog/rss.xml"
+site = "http://www.thoughtcrime.org/blog/"
+
+[[feed]]
+name = "Mozilla Security Blog"
+url = "https://blog.mozilla.org/security/feed/"
+site = "https://blog.mozilla.org/security"
+
+[[feed]]
+name = "MrReid.org"
+url = "http://wordpress.mrreid.org/feed/"
+site = "http://wordpress.mrreid.org"
+
+[[feed]]
+name = "Musings on Information Security - Luxembourg / A blog by Thierry Zoller."
+url = "http://feedpress.me/thierryzoller"
+site = "http://blog.zoller.lu/"
+
+[[feed]]
+name = "My aimful life"
+url = "http://blog.cr4.sh/feeds/posts/default?alt=rss"
+site = "http://blog.cr4.sh/"
+
+[[feed]]
+name = "My Hacker House"
+url = "https://www.myhackerhouse.com/feed/"
+site = "https://www.myhackerhouse.com"
+
+[[feed]]
+name = "My Quantum Thoughts"
+url = "http://orsattath.wordpress.com/feed/"
+site = "https://orsattath.wordpress.com"
+
+[[feed]]
+name = "MyCQstate"
+url = "http://mycqstate.wordpress.com/feed/"
+site = "https://mycqstate.wordpress.com"
+
+[[feed]]
+name = "Neg9 : Latest News"
+url = "https://neg9.org/feeds/news/"
+site = "http://neg9.org/"
+
+[[feed]]
+name = "Neil Dickson's Blog"
+url = "http://ndickson.wordpress.com/feed/"
+site = "https://ndickson.wordpress.com"
+
+[[feed]]
+name = "nmav's Blog"
+url = "http://nmav.gnutls.org/feeds/posts/default"
+site = "http://nmav.gnutls.org/"
+
+[[feed]]
+name = "noospheer"
+url = "http://noospheer.wordpress.com/feed/"
+site = "https://noospheer.wordpress.com"
+
+[[feed]]
+name = "Not A Number"
+url = "http://notanumber.net/feed"
+site = "http://notanumber.net"
+
+[[feed]]
+name = "Observations on Quantum Computing & Physics"
+url = "http://wavewatching.net/feed/"
+site = "http://wavewatching.net"
+
+[[feed]]
+name = "Observer"
+url = "http://kamranrmp.wordpress.com/feed/"
+site = "https://kamranrmp.wordpress.com"
+
+[[feed]]
+name = "Oddly Shaped Pegs"
+url = "http://adamdsmith.wordpress.com/feed/"
+site = "https://adamdsmith.wordpress.com"
+
+[[feed]]
+name = "Open Security Research"
+url = "http://blog.opensecurityresearch.com/feeds/posts/default?alt=rss"
+site = "http://blog.opensecurityresearch.com/"
+
+[[feed]]
+name = "Open Web Application Security Project"
+url = "http://owasp.blogspot.com/feeds/posts/default"
+site = "http://owasp.blogspot.com/"
+
+[[feed]]
+name = "Operational cryptology and virology lab"
+url = "http://cvo-lab.blogspot.com/feeds/posts/default"
+site = "http://cvo-lab.blogspot.com/"
+
+[[feed]]
+name = "Or so they say..."
+url = "http://dhruvatb.blogspot.com/feeds/posts/default"
+site = "http://dhruvatb.blogspot.com/"
+
+[[feed]]
+name = "Outsourced Bits"
+url = "http://senykam.github.io/index.xml"
+site = "http://senykam.github.io/"
+
+[[feed]]
+name = "Pascal Junod"
+url = "https://crypto.junod.info/feed/"
+site = "https://crypto.junod.info"
+
+[[feed]]
+name = "Peter Todd"
+url = "https://petertodd.org/feed.xml"
+site = "https://petertodd.org/"
+
+[[feed]]
+name = "Positive Technologies - learn and secure"
+url = "http://blog.ptsecurity.com/feeds/posts/default"
+site = "http://blog.ptsecurity.com/"
+
+[[feed]]
+name = "Quantized Thoughts"
+url = "http://blog.jfitzsimons.org/?feed=rss2"
+site = "http://blog.jfitzsimons.org"
+
+[[feed]]
+name = "QuantumBlah"
+url = "http://www.quantumblah.org/?feed=rss2"
+site = "http://www.quantumblah.org"
+
+[[feed]]
+name = "Qubit Factory"
+url = "http://qubitfactory.wordpress.com/feed/"
+site = "https://qubitfactory.wordpress.com"
+
+[[feed]]
+name = "Random bits"
+url = "https://jonkatz.wordpress.com/feed/"
+site = "https://jonkatz.wordpress.com"
+
+[[feed]]
+name = "rdist"
+url = "https://rdist.root.org/feed/"
+site = "https://rdist.root.org"
+
+[[feed]]
+name = "Red Hat Security Blog Blog Posts"
+url = "https://access.redhat.com/blogs/766093/feed"
+site = "https://access.redhat.com/blogs/766093/posts"
+
+[[feed]]
+name = "Rob McLarty Feed"
+url = "http://robmclarty.com/feed"
+site = "http://robmclarty.com"
+
+[[feed]]
+name = "Scott Helme"
+url = "https://scotthelme.co.uk/rss/"
+site = "https://scotthelme.ghost.io/"
+
+[[feed]]
+name = "security – Ars Technica"
+url = "http://feeds.arstechnica.com/arstechnica/security/"
+site = "https://arstechnica.com"
+
+[[feed]]
+name = "Security/malware blog"
+url = "http://artemonsecurity.blogspot.com/feeds/posts/default"
+site = "http://artemonsecurity.blogspot.com/"
+
+[[feed]]
+name = "Source Code Auditing, Reversing, Web Security"
+url = "https://hiddencodes.wordpress.com/feed/"
+site = "https://hiddencodes.wordpress.com"
+
+[[feed]]
+name = "Team Potato"
+url = "http://potatohatsecurity.tumblr.com/rss"
+site = "http://potatohatsecurity.tumblr.com/"
+
+[[feed]]
+name = "The Angry Statistician"
+url = "http://angrystatistician.blogspot.com/feeds/posts/default"
+site = "http://angrystatistician.blogspot.com/"
+
+[[feed]]
+name = "The Daily Photon"
+url = "http://dawes.wordpress.com/feed/"
+site = "https://dawes.wordpress.com"
+
+[[feed]]
+name = "The Gauge Connection"
+url = "http://marcofrasca.wordpress.com/feed/"
+site = "https://marcofrasca.wordpress.com"
+
+[[feed]]
+name = "The Hidden Wiki | .onion Site List | Deep Web"
+url = "http://www.thehiddenwiki.net/feed/"
+site = "http://www.thehiddenwiki.net"
+
+[[feed]]
+name = "The Invisible Things"
+url = "https://blog.invisiblethings.org/feed.xml"
+site = "https://blog.invisiblethings.org/"
+
+[[feed]]
+name = "The MPC Lounge"
+url = "https://mpclounge.wordpress.com/feed/"
+site = "https://mpclounge.wordpress.com"
+
+[[feed]]
+name = "The Official Radare Blog"
+url = "http://radare.today/index.xml"
+site = "http://radare.today/"
+
+[[feed]]
+name = "The Programming Languages Enthusiast"
+url = "http://www.pl-enthusiast.net/feed/"
+site = "http://www.pl-enthusiast.net"
+
+[[feed]]
+name = "The Sakurity Blog"
+url = "https://sakurity.com/blog/feed.xml"
+site = "https://sakurity.com/blog/"
+
+[[feed]]
+name = "The Type-Safe Jabberwolk"
+url = "http://tommd.github.io/feed.xml"
+site = "http://tommd.github.io"
+
+[[feed]]
+name = "These aren't the access_tokens you're looking for"
+url = "http://philippeharewood.com/feed/"
+site = "http://philippeharewood.com"
+
+[[feed]]
+name = "Titus Stahl"
+url = "http://www.titus-stahl.de/atom.xml"
+site = "http://www.titus-stahl.de/"
+
+[[feed]]
+name = "tobi.rocks"
+url = "https://tobi.rocks/feed/"
+site = "https://tobi.rocks"
+
+[[feed]]
+name = "TobTu News Feed"
+url = "https://www.tobtu.com/rssnews.php"
+site = "http://www.tobtu.com/"
+
+[[feed]]
+name = "top scoring links : netsec"
+url = "https://www.reddit.com/r/netsec/top/.rss"
+site = "https://www.reddit.com/r/netsec/top/"
+
+[[feed]]
+name = "Tower of Hanoi"
+url = "http://toh.necst.it/feed.xml"
+site = "http://toh.necst.it/"
+
+[[feed]]
+name = "Tox Development blog"
+url = "https://blog.tox.im/atom.xml"
+site = "https://blog.tox.im/"
+
+[[feed]]
+name = "Travis Goodspeed's Blog"
+url = "http://travisgoodspeed.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://travisgoodspeed.blogspot.com/"
+
+[[feed]]
+name = "tssci-security"
+url = "http://www.tssci-security.com/feed.atom"
+site = "http://www.tssci-security.com/"
+
+[[feed]]
+name = "Twisted Oak Studios Blog"
+url = "http://twistedoakstudios.com/blog/feed"
+site = "http://twistedoakstudios.com/blog"
+
+[[feed]]
+name = "Underhanded Crypto Contest"
+url = "https://underhandedcrypto.com/feed/"
+site = "https://underhandedcrypto.com"
+
+[[feed]]
+name = "Unhandled expression"
+url = "https://unhandledexpression.com/feed/"
+site = "https://unhandledexpression.com"
+
+[[feed]]
+name = "US Blog RSS Feed"
+url = "https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/us-blog-rss-feed/"
+site = "https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/"
+
+[[feed]]
+name = "v0id s3curity"
+url = "http://v0ids3curity.blogspot.com/feeds/posts/default?alt=rss"
+site = "http://v0ids3curity.blogspot.com/"
+
+[[feed]]
+name = "vexorian's blog"
+url = "http://vexorian.blogspot.com/feeds/posts/default"
+site = "http://www.vexorian.com/"
+
+[[feed]]
+name = "Vlad Tsyrklevich's blog"
+url = "https://tsyrklevich.net/feed.xml"
+site = "https://tsyrklevich.net"
+
+[[feed]]
+name = "Wavestone SecurityInsider"
+url = "http://www.securityinsider-solucom.fr/feeds/posts/default"
+site = "http://www.securityinsider-solucom.fr/"
+
+[[feed]]
+name = "Whiskey…Tango…Foxtrot?"
+url = "http://glenmartin.wordpress.com/feed/"
+site = "https://glenmartin.wordpress.com"
+
+[[feed]]
+name = "Whitepapers With Friends"
+url = "http://www.alexkyte.me/feeds/posts/default?alt=rss"
+site = "http://www.alexkyte.me/"
+
+[[feed]]
+name = "Windows On Theory"
+url = "https://windowsontheory.org/feed/"
+site = "https://windowsontheory.org"
+
+[[feed]]
+name = "XyliBox"
+url = "http://www.xylibox.com/feeds/posts/default"
+site = "http://www.xylibox.com/"
+
+[[feed]]
+name = "ZeroByte"
+url = "https://zerobyte.io/atom.xml"
+site = "https://zerobyte.io"
+
+[[feed]]
+name = "zerosum0x0"
+url = "https://zerosum0x0.blogspot.com/feeds/posts/default"
+site = "http://zerosum0x0.blogspot.com/"
+
+[[feed]]
+name = "Zeta-Two.com"
+url = "https://zeta-two.com/feed.xml"
+site = "https://zeta-two.com/"
+
+[[feed]]
+name = "» Feed (https://qualsec.ulb.ac.be/feed/)"
+url = "https://qualsec.ulb.ac.be/feed/"
+site = "https://qualsec.ulb.ac.be"
+
+[[feed]]
+name = "» Feed (https://research.kudelskisecurity.com/feed/)"
+url = "https://research.kudelskisecurity.com/feed/"
+site = "https://research.kudelskisecurity.com"
+
+[[feed]]
+name = "CAS Musings"
+url = "http://casmusings.wordpress.com/feed/"
+site = "https://casmusings.wordpress.com"
+
+[[feed]]
+name = "Combinatorics and more"
+url = "http://gilkalai.wordpress.com/feed/"
+site = "https://gilkalai.wordpress.com"
+
+[[feed]]
+name = "Curvaturas variantes.com"
+url = "http://curvaturasvariantes.com/feed/"
+site = "https://curvaturasvariantes.com"
+
+[[feed]]
+name = "Gödel’s Lost Letter and P=NP"
+url = "http://rjlipton.wordpress.com/feed/"
+site = "https://rjlipton.wordpress.com"
+
+[[feed]]
+name = "In the Dark"
+url = "http://telescoper.wordpress.com/feed/"
+site = "https://telescoper.wordpress.com"
+
+[[feed]]
+name = "Klein Project Blog"
+url = "http://blog.kleinproject.org/?feed=rss2"
+site = "http://blog.kleinproject.org"
+
+[[feed]]
+name = "Persiflage"
+url = "http://galoisrepresentations.wordpress.com/feed/"
+site = "https://galoisrepresentations.wordpress.com"
+
+[[feed]]
+name = "aGupieWare"
+url = "http://blog.agupieware.com/feeds/posts/default"
+site = "http://blog.agupieware.com/"
+
+[[feed]]
+name = "Roaming around at random"
+url = "https://roamingaroundatrandom.wordpress.com/feed/"
+site = "https://roamingaroundatrandom.wordpress.com"
+
+[[feed]]
+name = "Errata Security"
+url = "http://blog.erratasec.com/feeds/posts/default?alt=rss"
+site = "http://blog.erratasec.com/"
+
+[[feed]]
+name = "Google Research Blog"
+url = "http://googleresearch.blogspot.com/feeds/posts/default"
+site = "http://research.googleblog.com/"
+
+[[feed]]
+name = "IBM Blog Research"
+url = "http://ibmresearchnews.blogspot.com/feeds/posts/default"
+site = "https://www.ibm.com/blogs/research"
+
+[[feed]]
+name = "inevitable"
+url = "http://brokenpipes.blogspot.com/feeds/posts/default"
+site = "http://www.himawan.nu/"
+
+[[feed]]
+name = "Schneier on Security"
+url = "http://www.schneier.com/blog/atom.xml"
+site = "https://www.schneier.com/blog/"
+
+[[feed]]
+name = "SLaks.Blog"
+url = "http://blog.slaks.net/feeds/posts/default.xml"
+site = "http://blog.slaks.net/"
+
+[[feed]]
+name = "Outsourced Bits"
+url = "http://outsourcedbits.org/feed/"
+site = "https://outsourcedbits.org"
+
+[[feed]]
+name = "Conspicuous Chatter"
+url = "https://conspicuouschatter.wordpress.com/feed/"
+site = "https://conspicuouschatter.wordpress.com"
+
+[[feed]]
+name = "Financial Cryptography, Bitcoin, Crypto Currencies, Cryptanalysis"
+url = "http://blog.bettercrypto.com/?feed=rss2"
+site = "http://blog.bettercrypto.com"
+
+[[feed]]
+name = "Polkadot Forum"
+url = "https://forum.polkadot.network/latest.rss"
+
+[[feed]]
+name = "Parity blog"
+url = "https://www.parity.io/rss.xml"
+
+[[feed]]
+name = "Gray Paper news"
+url = "https://graypaper.com/news/rss.xml"
+
+[[feed]]
+name = "ethresear.ch"
+url = "https://ethresear.ch/latest.rss"
+
+[[feed]]
+name = "IACR ePrint"
+url = "https://eprint.iacr.org/rss/rss.xml"
+
+[[feed]]
+name = "zkSecurity blog"
+url = "https://blog.zksecurity.xyz/feed.xml"
+
+[[feed]]
+name = "a16z crypto"
+url = "https://a16zcrypto.com/feed.xml"

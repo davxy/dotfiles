@@ -1,0 +1,21 @@
+# Copy this file to ~/.config/ghfeed/config.toml. The file is optional: without it, ghfeed
+# uses the values below.
+# A path that starts with ~ starts at the home directory.
+# Other relative paths are relative to this file.
+
+# Items go to <data_dir>/items/<YYYY-MM-DD>/<owner>-<repo>-<number>--<title>--<HHMMSS>.md.
+# The day and the time are the UTC start of the run.
+data_dir = "~/.local/share/ghfeed"
+
+# The notification cursor, the threads and the events that ghfeed already wrote.
+state_dir = "~/.local/state/ghfeed"
+
+# The first run reads the notifications of the last N days. The first file of a thread has
+# the events of the last N days. A thread that fails for N days is given up.
+first_fetch_days = 7
+
+# Cut a longer body or comment at this number of characters.
+max_chars = 50000
+
+# The GitHub API. Change it only for tests.
+api_url = "https://api.github.com"
