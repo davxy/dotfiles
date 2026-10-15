@@ -67,6 +67,10 @@
 ~/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json
 # mxfeed
 ~/.config/mxfeed.toml | mxfeed.toml
+# ghfeed
+~/.config/ghfeed.toml | ghfeed.toml
+# mxfeed
+~/.config/rssfeed.toml | rssfeed.toml
 
 [behemoth]
 # wayvnc
