@@ -1,0 +1,37 @@
+# Copy this file to ~/.config/mxfeed.toml, and change the profiles.
+# A path that starts with ~ starts at the home directory.
+# Other relative paths are relative to this file.
+
+# Transcripts go to <output_dir>/<profile>/<room>.txt.
+output_dir = "~/.local/share/mxfeed"
+
+# Access tokens and encryption keys. Only the owner of the account must read this directory.
+# Keep it out of ~/.config if you copy ~/.config to other computers or to a repository.
+state_dir = "~/.local/state/mxfeed"
+
+[profiles.work]
+homeserver = "https://m.parity.io"
+user = "@davide:parity.io"
+login = "browser"
+rooms = ["*"]
+
+[profiles.personal]
+homeserver = "https://matrix-client.matrix.org"
+user = "@davxy:matrix.org"
+login = "browser"
+rooms = [
+  # Polkadot Daily Digest
+  "!vMpYyTkvjXcevxSdsQ:web3.foundation",
+  # Jam Conformance
+  "#jam-conformance:matrix.org",
+  # Graypaper
+  "#graypaper:polkadot.io",
+  # Let's Jam
+  "#jam:polkadot.io",
+  # Polkadot Technical Fellowship
+  "#fellowship-members:parity.io",
+  # Polkadot Technical Fellowship Open-Chan
+  "#fellowship-open-channel:parity.io",
+  # OpenDev Monthly Call
+  "!TezaejgtjwJNBcPHSi:matrix.org"
+]

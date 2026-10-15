@@ -65,6 +65,8 @@
 ~/.config/imv/ | imv/
 # protonmail bridge
 ~/.config/protonmail/bridge-v3/keychain.json | protonmail/keychain.json
+# mxfeed
+~/.config/mxfeed.toml | mxfeed.toml
 
 [behemoth]
 # wayvnc
