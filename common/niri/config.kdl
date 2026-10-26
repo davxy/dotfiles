@@ -288,9 +288,9 @@ cursor {
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
 // spawn-at-startup "xwayland-satellite"
-spawn-at-startup "noctalia"
 spawn-at-startup "alacritty"
-// spawn-sh-at-startup "wl-paste --watch cliphist store"
+spawn-at-startup "~/.config/niri/scripts/workspace" "watch"
+spawn-sh-at-startup "wl-paste --watch cliphist store"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -411,41 +411,35 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    // Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
-    Mod+D hotkey-overlay-title="Run app launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
-    // Mod+W hotkey-overlay-title="Running applications" { spawn-sh "noctalia msg window-switcher"; }
+    Mod+Return hotkey-overlay-title="Open a terminal" { spawn "alacritty"; }
+    Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
+    Mod+D hotkey-overlay-title="Run fuzzel" { spawn "~/.config/niri/scripts/app-menu"; }
+    Mod+W hotkey-overlay-title="Focus workspace by name" { spawn "~/.config/niri/scripts/workspace" "focus"; }
+    Mod+Shift+W hotkey-overlay-title="Set workspace name" { spawn "~/.config/niri/scripts/workspace" "set-name"; }
+    Mod+Shift+L hotkey-overlay-title="Toggle the lock of the focused window" { spawn "~/.config/niri/scripts/workspace" "toggle-lock"; }
     Mod+T hotkey-overlay-title="Run a terminal application" { spawn-sh "~/.config/niri/scripts/app-menu 1"; }
     Mod+B hotkey-overlay-title="Run firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Run rofimoji" { spawn "rofimoji"; }
     Mod+I hotkey-overlay-title="Run system-info" { spawn-sh "~/bin/system-info"; }
-    Mod+N hotkey-overlay-title="Clean notifications" { spawn-sh "noctalia msg notification-clear-active"; }
-    // Mod+N hotkey-overlay-title="Clean notifications" { spawn-sh "makoctl dismiss --all"; }
-    // Mod+M hotkey-overlay-title="Power menu" { spawn "~/.config/niri/scripts/power-menu"; }
+    Mod+N hotkey-overlay-title="Clean notifications" { spawn-sh "makoctl dismiss --all"; }
 
-    Mod+S hotkey-overlay-title="Session menu" { spawn-sh "noctalia msg panel-toggle session"; }
-
-    Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn-sh "noctalia msg session lock"; }
-    // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
 
     // Audio & Brightness
     // The allow-when-locked=true property makes them work even when the session is locked.
-    XF86AudioRaiseVolume { spawn "noctalia" "msg" "volume-up"; }
-    XF86AudioLowerVolume { spawn "noctalia" "msg" "volume-down"; }
-    XF86AudioMute { spawn "noctalia" "msg" "volume-mute"; }
-    XF86AudioMicMute allow-when-locked=true { spawn "noctalia" "msg" "mic-mute"; }
-    XF86MonBrightnessUp { spawn-sh "noctalia msg brightness-up"; }
-    XF86MonBrightnessDown { spawn-sh "noctalia msg brightness-down"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "down"; }
+    XF86AudioMute        allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "mute"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "mic-mute"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
     // or do a four-finger swipe up on a touchpad.
     Mod+O repeat=false { toggle-overview; }
 
-    Mod+Q repeat=false { spawn-sh "~/.config/niri/scripts/close-window"; }
-    Mod+P repeat=false hotkey-overlay-title="Toggle window close protection" { spawn-sh "~/.config/niri/scripts/protect-toggle"; }
-    Mod+Ctrl+P repeat=false hotkey-overlay-title="Show protected windows" { spawn-sh "~/.config/niri/scripts/protect-jump"; }
+    Mod+Q repeat=false { spawn "~/.config/niri/scripts/workspace" "close-window"; }
 
     // Focus
     Mod+H { focus-column-left; }
@@ -464,18 +458,18 @@ binds {
     // Move
     Mod+Left  { move-column-left; }
     Mod+Right { move-column-right; }
-    Mod+Up    { move-window-up-or-to-workspace-up; }
-    Mod+Down  { move-window-down-or-to-workspace-down; }
+    Mod+Up    { spawn "~/.config/niri/scripts/workspace" "move-window" "move-window-up-or-to-workspace-up"; }
+    Mod+Down  { spawn "~/.config/niri/scripts/workspace" "move-window" "move-window-down-or-to-workspace-down"; }
 
     Mod+Home { focus-column-first; }
     Mod+End  { focus-column-last; }
     Mod+Shift+Home { move-column-to-first; }
     Mod+Shift+End  { move-column-to-last; }
 
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-    Mod+Ctrl+U         { move-column-to-workspace-down; }
-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Ctrl+Page_Down { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-down"; }
+    Mod+Ctrl+Page_Up   { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-up"; }
+    Mod+Ctrl+U         { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-down"; }
+    Mod+Ctrl+I         { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-up"; }
 
     // You can bind mouse wheel scroll ticks using the following syntax.
     // These binds will change direction based on the natural-scroll setting.
@@ -485,8 +479,8 @@ binds {
     // You can set a cooldown on any bind, but it's most useful for the wheel.
     Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-down"; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace-up"; }
 
     Mod+WheelScrollRight      { focus-column-right; }
     Mod+WheelScrollLeft       { focus-column-left; }
@@ -526,15 +520,15 @@ binds {
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
-    Mod+Ctrl+6 { move-column-to-workspace 6; }
-    Mod+Ctrl+7 { move-column-to-workspace 7; }
-    Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    Mod+Ctrl+1 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "1"; }
+    Mod+Ctrl+2 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "2"; }
+    Mod+Ctrl+3 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "3"; }
+    Mod+Ctrl+4 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "4"; }
+    Mod+Ctrl+5 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "5"; }
+    Mod+Ctrl+6 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "6"; }
+    Mod+Ctrl+7 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "7"; }
+    Mod+Ctrl+8 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "8"; }
+    Mod+Ctrl+9 { spawn "~/.config/niri/scripts/workspace" "move-window" "move-column-to-workspace" "9"; }
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.
@@ -583,7 +577,7 @@ binds {
     Mod+V       { toggle-window-floating; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
-    Mod+Ctrl+V { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+    Mod+Ctrl+V { spawn-sh "id=$(cliphist list | fuzzel --dmenu --only-match --accept-nth 1) && cliphist decode $id | wl-copy"; }
 
     // Toggle tabbed column display mode.
     // Mod+W { toggle-column-tabbed-display; }
@@ -627,4 +621,5 @@ gestures {
 overview {
     zoom 0.5
 }
+
 

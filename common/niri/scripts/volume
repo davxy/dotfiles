@@ -1,0 +1,49 @@
+#!/bin/bash
+# Changes the volume of the default audio output, or mutes the default microphone,
+# and shows the new level in a notification. A volume change also plays the volume
+# change sound. Each call replaces the notification of the previous call, so a
+# held key shows one popup.
+
+set -u
+
+id_file=$XDG_RUNTIME_DIR/volume-notification-id
+sound=/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga
+device=@DEFAULT_AUDIO_SINK@
+label=Volume
+
+case ${1:-} in
+    up) change=(set-volume "$device" 0.1+ -l 1.0) ;;
+    down) change=(set-volume "$device" 0.1-) ;;
+    mute) change=(set-mute "$device" toggle) ;;
+    mic-mute)
+        device=@DEFAULT_AUDIO_SOURCE@
+        label=Microphone
+        change=(set-mute "$device" toggle)
+        ;;
+    *)
+        echo "usage: volume up|down|mute|mic-mute" >&2
+        exit 2
+        ;;
+esac
+
+wpctl "${change[@]}" || exit 1
+
+# wpctl prints the volume with two decimals, so its digits without the point are the percent.
+status=$(wpctl get-volume "$device")
+[[ $status =~ ^Volume:\ ([0-9]+)\.([0-9]{2}) ]] || exit 1
+percent=$((10#${BASH_REMATCH[1]}${BASH_REMATCH[2]}))
+summary="$label $percent%"
+[[ $status == *MUTED* ]] && summary+=" muted"
+
+replace=()
+id=$(cat "$id_file" 2>/dev/null)
+[[ $id =~ ^[0-9]+$ ]] && replace=(--replace-id "$id")
+
+# mako draws the bar only for a value from 0 to 100.
+notify-send --app-name volume --print-id "${replace[@]}" \
+    --hint "int:value:$((percent > 100 ? 100 : percent))" "$summary" > "$id_file"
+
+# The sound plays on the speaker, so it says nothing about the microphone.
+if [[ $device == @DEFAULT_AUDIO_SINK@ ]]; then
+    exec pw-play "$sound"
+fi

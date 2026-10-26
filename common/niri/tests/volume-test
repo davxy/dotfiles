@@ -1,0 +1,185 @@
+#!/bin/bash
+# Checks scripts/volume against stub `wpctl`, `notify-send` and `pw-play`, without
+# a running desktop. Each key press must show the new level in one notification
+# that replaces the one of the previous press, else a held key stacks popups.
+# mako draws the level bar only for a value from 0 to 100.
+
+set -u
+
+repo_dir=$(cd "$(dirname "$0")/.." && pwd)
+volume=${VOLUME:-$repo_dir/scripts/volume}
+
+work_dir=$(mktemp -d)
+trap 'rm -rf "$work_dir"' EXIT
+
+mkdir -p "$work_dir/bin" "$work_dir/runtime"
+export PATH=$work_dir/bin:$PATH
+export XDG_RUNTIME_DIR=$work_dir/runtime
+export STUB_WPCTL_LOG=$work_dir/wpctl.log
+export STUB_NOTIFY_LOG=$work_dir/notify.log
+export STUB_PLAY_LOG=$work_dir/play.log
+
+cat > "$work_dir/bin/wpctl" <<'STUB'
+#!/bin/bash
+if [[ $1 == get-volume ]]; then
+    case $2 in
+        @DEFAULT_AUDIO_SINK@) printf 'Volume: %s%s\n' "$STUB_VOLUME" "${STUB_MUTED:+ [MUTED]}" ;;
+        @DEFAULT_AUDIO_SOURCE@) printf 'Volume: %s%s\n' "$STUB_MIC_VOLUME" "${STUB_MIC_MUTED:+ [MUTED]}" ;;
+        *) echo "Translate ID error: '$2' is not a valid ID" ;;
+    esac
+    exit 0
+fi
+printf '%s\n' "$@" > "$STUB_WPCTL_LOG"
+if [[ -n ${STUB_NO_SINK:-} ]]; then
+    echo "Object '-1' not found"
+    exit 3
+fi
+STUB
+
+cat > "$work_dir/bin/notify-send" <<'STUB'
+#!/bin/bash
+printf '%s\n' "$@" > "$STUB_NOTIFY_LOG"
+echo "$STUB_NOTIFICATION_ID"
+STUB
+
+cat > "$work_dir/bin/pw-play" <<'STUB'
+#!/bin/bash
+printf '%s\n' "$@" > "$STUB_PLAY_LOG"
+STUB
+chmod +x "$work_dir/bin/"*
+
+reset_state() {
+    rm -f "$STUB_WPCTL_LOG" "$STUB_NOTIFY_LOG" "$STUB_PLAY_LOG" "$XDG_RUNTIME_DIR"/*
+    unset STUB_MUTED STUB_MIC_MUTED STUB_NO_SINK
+    export STUB_VOLUME=0.40 STUB_MIC_VOLUME=1.00 STUB_NOTIFICATION_ID=17
+}
+
+failures=0
+
+assert_eq() {
+    local name=$1 expected=$2 actual=$3
+    if [[ $expected == "$actual" ]]; then
+        echo "ok   $name"
+    else
+        echo "FAIL $name"
+        echo "  expected: $(printf '%q' "$expected")"
+        echo "  actual:   $(printf '%q' "$actual")"
+        failures=$((failures + 1))
+    fi
+}
+
+notification() {
+    cat "$STUB_NOTIFY_LOG" 2>/dev/null
+}
+
+# The limit keeps the volume at 100% or less: above it, PipeWire amplifies in
+# software and the sound distorts.
+reset_state
+"$volume" up
+assert_eq "up: wpctl command" "set-volume
+@DEFAULT_AUDIO_SINK@
+0.1+
+-l
+1.0" "$(cat "$STUB_WPCTL_LOG")"
+
+reset_state
+"$volume" down
+assert_eq "down: wpctl command" "set-volume
+@DEFAULT_AUDIO_SINK@
+0.1-" "$(cat "$STUB_WPCTL_LOG")"
+
+reset_state
+"$volume" mute
+assert_eq "mute: wpctl command" "set-mute
+@DEFAULT_AUDIO_SINK@
+toggle" "$(cat "$STUB_WPCTL_LOG")"
+
+# The microphone key acts on the default microphone, not on the output.
+reset_state
+"$volume" mic-mute
+assert_eq "mic-mute: wpctl command" "set-mute
+@DEFAULT_AUDIO_SOURCE@
+toggle" "$(cat "$STUB_WPCTL_LOG")"
+
+# The popup shows the microphone level and state, not the ones of the output.
+reset_state
+STUB_MIC_MUTED=1 STUB_MIC_VOLUME=0.80 "$volume" mic-mute
+status=$?
+assert_eq "mic-mute: notification" "int:value:80
+Microphone 80% muted" "$(notification | tail -2)"
+assert_eq "mic-mute: exit status" "0" "$status"
+
+# The sound plays on the speaker, so it says nothing about the microphone.
+assert_eq "mic-mute: no sound" "" "$(cat "$STUB_PLAY_LOG" 2>/dev/null)"
+
+# The first notification replaces nothing. It shows the level as text and as a
+# bar, and gives its id for the next press.
+reset_state
+"$volume" up
+assert_eq "first press: notification" "--app-name
+volume
+--print-id
+--hint
+int:value:40
+Volume 40%" "$(notification)"
+assert_eq "first press: id kept" "17" "$(cat "$XDG_RUNTIME_DIR/volume-notification-id")"
+
+# The next press replaces the popup of the previous press.
+STUB_NOTIFICATION_ID=17 STUB_VOLUME=0.50 "$volume" up
+assert_eq "next press: replaces the previous notification" "--app-name
+volume
+--print-id
+--replace-id
+17
+--hint
+int:value:50
+Volume 50%" "$(notification)"
+
+# A failed notify-send leaves an empty id. An empty id must not reach --replace-id.
+reset_state
+: > "$XDG_RUNTIME_DIR/volume-notification-id"
+"$volume" up
+assert_eq "empty id: no replace" "" "$(grep -x -- --replace-id "$STUB_NOTIFY_LOG")"
+
+# wpctl prints two decimals. A leading zero must not make the percent an octal number.
+reset_state
+STUB_VOLUME=0.08 "$volume" down
+assert_eq "0.08: percent" "int:value:8
+Volume 8%" "$(notification | tail -2)"
+
+reset_state
+STUB_MUTED=1 "$volume" mute
+assert_eq "muted: shown in the text" "Volume 40% muted" "$(notification | tail -1)"
+
+# Another client can set more than 100%. The text shows the real level, the bar stays full.
+reset_state
+STUB_VOLUME=1.50 "$volume" down
+assert_eq "150%: bar value capped" "int:value:100
+Volume 150%" "$(notification | tail -2)"
+
+reset_state
+"$volume" up
+assert_eq "sound played" "/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga" \
+    "$(cat "$STUB_PLAY_LOG")"
+
+# Without an output device there is no level to show.
+reset_state
+STUB_NO_SINK=1 "$volume" up > /dev/null
+status=$?
+assert_eq "no sink: exit status is not 0" "1" "$([[ $status -ne 0 ]] && echo 1 || echo 0)"
+assert_eq "no sink: no notification" "" "$(notification)"
+assert_eq "no sink: no sound" "" "$(cat "$STUB_PLAY_LOG" 2>/dev/null)"
+
+# An unknown action is a usage error. The volume does not change.
+reset_state
+"$volume" louder 2>/dev/null
+status=$?
+assert_eq "usage: exit status" "2" "$status"
+assert_eq "usage: wpctl not called" "" "$(cat "$STUB_WPCTL_LOG" 2>/dev/null)"
+assert_eq "usage: no notification" "" "$(notification)"
+
+if [[ $failures -gt 0 ]]; then
+    echo "$failures failure(s)"
+    exit 1
+fi
+echo "all tests passed"

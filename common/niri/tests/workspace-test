@@ -1,0 +1,712 @@
+#!/bin/bash
+# Checks scripts/workspace against stub `niri`, `fuzzel`, `pkill`, `notify-send` and
+# `socat`, without a running desktop. fuzzel prints the typed text when nothing
+# matches, so the focus mode must accept only a listed workspace. Niri reads a name made only of
+# digits as an index, so the set-name mode must refuse such a name. The watch mode
+# unnames a named workspace that has no windows, so that niri removes it.
+
+set -u
+
+repo_dir=$(cd "$(dirname "$0")/.." && pwd)
+workspace=${WORKSPACE:-$repo_dir/scripts/workspace}
+
+work_dir=$(mktemp -d)
+trap 'rm -rf "$work_dir"' EXIT
+
+mkdir -p "$work_dir/bin" "$work_dir/runtime"
+export PATH=$work_dir/bin:$PATH
+export XDG_RUNTIME_DIR=$work_dir/runtime
+export STUB_PICKER_SEEN=$work_dir/picker-seen
+export STUB_LOG=$work_dir/stub.log
+export STUB_NOTIFY_LOG=$work_dir/notify.log
+export STUB_NIRI_LOG=$work_dir/niri.log
+export STUB_NIRI_QUERY_LOG=$work_dir/niri-query.log
+export STUB_EVENTS=$work_dir/events.json
+export STUB_FUZZEL_ARGS=$work_dir/fuzzel-args
+export STUB_FUZZEL_INPUT=$work_dir/fuzzel-input
+export STUB_WORKSPACES=$work_dir/workspaces.json
+export STUB_SOCAT_LOG=$work_dir/socat.log
+export STUB_ORDER_LOG=$work_dir/order.log
+export STUB_FUZZEL_CONFIG=$work_dir/fuzzel-config
+export STUB_WINDOWS=$work_dir/windows.json
+lock_file=$XDG_RUNTIME_DIR/workspace-locks-niri.sock
+export XDG_CONFIG_HOME=$work_dir/config
+export NIRI_SOCKET=$work_dir/niri.sock
+
+cat > "$work_dir/bin/niri" <<'STUB'
+#!/bin/bash
+if [[ $1 == msg && $2 == -j && $3 == workspaces ]]; then
+    echo "query workspaces" >> "$STUB_NIRI_QUERY_LOG"
+    cat "$STUB_WORKSPACES"
+    exit 0
+fi
+if [[ $1 == msg && $2 == -j && $3 == event-stream ]]; then
+    cat "$STUB_EVENTS"
+    exit 0
+fi
+if [[ $1 == msg && $2 == -j && $3 == windows ]]; then
+    echo "query windows" >> "$STUB_NIRI_QUERY_LOG"
+    cat "$STUB_WINDOWS"
+    exit 0
+fi
+if [[ $1 == msg && $2 == -j && $3 == overview-state ]]; then
+    echo "{\"is_open\":${STUB_OVERVIEW_OPEN:-false}}"
+    exit 0
+fi
+printf '%s\n' "$@" >> "$STUB_NIRI_LOG"
+echo "niri $*" >> "$STUB_ORDER_LOG"
+STUB
+
+cat > "$work_dir/bin/fuzzel" <<'STUB'
+#!/bin/bash
+printf '%s\n' "$@" > "$STUB_FUZZEL_ARGS"
+for arg; do
+    [[ $arg == --config=* ]] && cat "${arg#--config=}" > "$STUB_FUZZEL_CONFIG"
+done
+kill -0 "$(cat "$XDG_RUNTIME_DIR/workspace-picker" 2>/dev/null)" 2>/dev/null && echo open > "$STUB_PICKER_SEEN"
+cat > "$STUB_FUZZEL_INPUT"
+if [[ -n ${STUB_SELECTION+set} ]]; then
+    printf '%s\n' "$STUB_SELECTION"
+    exit 0
+fi
+exit 1
+STUB
+
+cat > "$work_dir/bin/pkill" <<'STUB'
+#!/bin/bash
+echo "pkill $*" >> "$STUB_LOG"
+[[ ${STUB_FUZZEL_RUNNING:-0} == 1 ]]
+STUB
+
+cat > "$work_dir/bin/notify-send" <<'STUB'
+#!/bin/bash
+echo "notify-send $*" >> "$STUB_NOTIFY_LOG"
+STUB
+
+cat > "$work_dir/bin/socat" <<'STUB'
+#!/bin/bash
+request=$(cat)
+printf '%s\n' "$@" "$request" >> "$STUB_SOCAT_LOG"
+echo "socat $request" >> "$STUB_ORDER_LOG"
+echo '{"Ok":"Handled"}'
+STUB
+chmod +x "$work_dir/bin/"*
+
+write_workspaces() {
+    cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":1,"idx":2,"name":"work","output":"DP-2","is_focused":false},
+ {"id":2,"idx":1,"name":null,"output":"DP-2","is_focused":true},
+ {"id":3,"idx":3,"name":"chat","output":"DP-1","is_focused":false},
+ {"id":4,"idx":5,"name":"mail","output":"DP-2","is_focused":false}]
+DATA
+}
+
+reset_state() {
+    rm -f "$STUB_LOG" "$STUB_NOTIFY_LOG" "$STUB_NIRI_LOG" "$STUB_NIRI_QUERY_LOG" "$STUB_SOCAT_LOG" \
+        "$STUB_ORDER_LOG" "$STUB_FUZZEL_ARGS" "$STUB_FUZZEL_INPUT" "$STUB_EVENTS" "$STUB_PICKER_SEEN" \
+        "$STUB_FUZZEL_CONFIG" "$XDG_RUNTIME_DIR"/*
+    rm -rf "$XDG_CONFIG_HOME"
+    unset STUB_SELECTION STUB_FUZZEL_RUNNING STUB_OVERVIEW_OPEN
+    write_workspaces
+    cat > "$STUB_WINDOWS" <<'DATA'
+[{"id":10,"workspace_id":2},
+ {"id":11,"workspace_id":2},
+ {"id":12,"workspace_id":1}]
+DATA
+}
+
+failures=0
+
+assert_eq() {
+    local name=$1 expected=$2 actual=$3
+    if [[ $expected == "$actual" ]]; then
+        echo "ok   $name"
+    else
+        echo "FAIL $name"
+        echo "  expected: $(printf '%q' "$expected")"
+        echo "  actual:   $(printf '%q' "$actual")"
+        failures=$((failures + 1))
+    fi
+}
+
+assert_no_niri_action() {
+    assert_eq "$1: no niri action" "" "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+}
+
+assert_no_focus() {
+    assert_eq "$1: no workspace focused" "" "$(cat "$STUB_SOCAT_LOG" 2>/dev/null)"
+}
+
+assert_failed() {
+    assert_eq "$1: exit status is not 0" "1" "$([[ $2 -ne 0 ]] && echo 1 || echo 0)"
+}
+
+tab=$'\t'
+
+# The focus list holds every workspace, also an unnamed or empty one, sorted by
+# output and index, as "id<TAB>label". A named workspace shows its name and index,
+# an unnamed one only its index. Each output counts its indexes from 1, so with
+# more than one output the label also names the output.
+reset_state
+"$workspace" focus
+assert_eq "focus: fuzzel input, two outputs" \
+    "3${tab}chat  (3 on DP-1)
+2${tab}1  (on DP-2)
+1${tab}work  (2 on DP-2)
+4${tab}mail  (5 on DP-2)" \
+    "$(cat "$STUB_FUZZEL_INPUT")"
+assert_no_focus "focus: cancel"
+
+# The user reads the label and fuzzel prints the id.
+assert_eq "focus: fuzzel shows the label" "2" "$(grep -A1 -x -- --with-nth "$STUB_FUZZEL_ARGS" | tail -1)"
+assert_eq "focus: fuzzel prints the id" "1" "$(grep -A1 -x -- --accept-nth "$STUB_FUZZEL_ARGS" | tail -1)"
+
+# With one output, the output name tells nothing, so the label leaves it out.
+reset_state
+cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":7,"idx":2,"name":"work","output":"DP-2","is_focused":false},
+ {"id":5,"idx":1,"name":null,"output":"DP-2","is_focused":true}]
+DATA
+"$workspace" focus
+assert_eq "focus: fuzzel input, one output" \
+    "5${tab}1
+7${tab}work  (2)" \
+    "$(cat "$STUB_FUZZEL_INPUT")"
+
+# The selected workspace is focused by its id. An index counts only on the focused
+# output, and niri reads a name made only of digits as an index, so only the id
+# names one workspace for sure. `niri msg action` takes no id, so the request goes
+# to the niri socket.
+reset_state
+STUB_SELECTION="2" "$workspace" focus
+assert_eq "focus: selected workspace is focused by id" "-
+UNIX-CONNECT:$NIRI_SOCKET
+{\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}" "$(cat "$STUB_SOCAT_LOG")"
+
+# The overview shows all workspaces while the user picks one. The script focuses
+# the selected workspace first and closes the overview after, so the overview
+# zooms into the selected workspace.
+reset_state
+STUB_SELECTION="2" "$workspace" focus
+assert_eq "overview: open, focus, close" "niri msg action open-overview
+socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}
+niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+
+# A selection always ends in the selected workspace, so the overview closes also
+# when the user had opened it before the list.
+reset_state
+STUB_OVERVIEW_OPEN=true STUB_SELECTION="2" "$workspace" focus
+assert_eq "overview: selection closes an overview the user opened" \
+    "socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}
+niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+
+# A cancel returns to the view the user had before the list.
+reset_state
+"$workspace" focus
+assert_eq "overview: cancel closes the overview the list opened" "niri msg action open-overview
+niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+
+reset_state
+STUB_OVERVIEW_OPEN=true "$workspace" focus
+assert_eq "overview: cancel keeps an overview the user opened" "" "$(cat "$STUB_ORDER_LOG" 2>/dev/null)"
+
+# The list opens on the focused workspace, so the user sees where they are and
+# moves from there. fuzzel counts entries from 0 and, with --no-sort, keeps the
+# input order, so the index is the position of the focused workspace in the list.
+# Niri does not sort its workspaces, so the position is the one after the sort.
+reset_state
+cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":4,"idx":5,"name":"mail","output":"DP-2","is_focused":true},
+ {"id":1,"idx":2,"name":"work","output":"DP-2","is_focused":false},
+ {"id":2,"idx":1,"name":null,"output":"DP-2","is_focused":false},
+ {"id":3,"idx":3,"name":"chat","output":"DP-1","is_focused":false}]
+DATA
+"$workspace" focus
+assert_eq "focus: focused workspace is selected" "--select-index=3" \
+    "$(grep -- '^--select-index' "$STUB_FUZZEL_ARGS")"
+assert_eq "focus: input order is kept" "1" "$(grep -c -- '^--no-sort$' "$STUB_FUZZEL_ARGS")"
+
+# An unnamed focused workspace is in the list too, so the list opens on it.
+reset_state
+"$workspace" focus
+assert_eq "focus: unnamed focused workspace is selected" "--select-index=1" \
+    "$(grep -- '^--select-index' "$STUB_FUZZEL_ARGS")"
+
+# Typed text that matches no entry comes back from fuzzel. It is not a workspace,
+# so nothing is focused and the user is told.
+reset_state
+STUB_SELECTION="nope" "$workspace" focus
+status=$?
+assert_no_focus "focus: free text"
+assert_failed "focus: free text" "$status"
+assert_eq "focus: free text is reported" "notify-send Workspace No workspace \"nope\"" "$(cat "$STUB_NOTIFY_LOG")"
+assert_eq "focus: free text returns to the view before" "niri msg action open-overview
+niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+
+# Niri answers "Handled" also for an id that names no workspace, so a typed number
+# that is not a listed id must not reach niri.
+reset_state
+STUB_SELECTION="99" "$workspace" focus
+status=$?
+assert_no_focus "focus: unlisted id"
+assert_failed "focus: unlisted id" "$status"
+
+# set-name asks for free text. There are no entries to pick from.
+reset_state
+STUB_SELECTION="-my work" "$workspace" set-name
+assert_eq "set-name: fuzzel gets no entries" "" "$(cat "$STUB_FUZZEL_INPUT")"
+assert_eq "set-name: fuzzel shows only a prompt" "1" \
+    "$(grep -c -- '^--prompt-only' "$STUB_FUZZEL_ARGS")"
+assert_eq "set-name: the typed name is set as one argument" "msg
+action
+set-workspace-name
+--
+-my work" "$(cat "$STUB_NIRI_LOG")"
+
+# The prompt holds the current name of the focused workspace, so the user edits it
+# instead of typing it again. A name can hold spaces or start with "-", so it is one
+# argument, joined to the option.
+reset_state
+cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":1,"idx":1,"name":"chat","output":"DP-2","is_focused":false},
+ {"id":2,"idx":2,"name":"-my work","output":"DP-2","is_focused":true}]
+DATA
+"$workspace" set-name
+assert_eq "set-name: prompt holds the current name" "--search=-my work" \
+    "$(grep -- '^--search' "$STUB_FUZZEL_ARGS")"
+
+# An unnamed workspace has no name to edit. The prompt starts empty.
+reset_state
+"$workspace" set-name
+assert_eq "set-name: unnamed workspace, empty prompt" "0" \
+    "$(grep -c -- '^--search=.' "$STUB_FUZZEL_ARGS")"
+
+# fuzzel ignores Enter on an empty prompt when it has no entries, and the name
+# prompt has none. Its execute-input action prints the input also when it is
+# empty, so Enter must run that action in the name prompt. Return can have one
+# action only, so the default one is removed.
+reset_state
+"$workspace" set-name
+assert_eq "set-name: Enter prints the input, also an empty one" "execute=none
+execute-input=Return KP_Enter" "$(grep -E '^execute(-input)?=' "$STUB_FUZZEL_CONFIG" 2>/dev/null)"
+
+# The name prompt keeps the theme and font of the user's fuzzel config. fuzzel
+# refuses a config that includes a missing file, so the include needs the file.
+reset_state
+mkdir -p "$XDG_CONFIG_HOME/fuzzel"
+: > "$XDG_CONFIG_HOME/fuzzel/fuzzel.ini"
+"$workspace" set-name
+assert_eq "set-name: user config included" "include=$XDG_CONFIG_HOME/fuzzel/fuzzel.ini" \
+    "$(grep '^include=' "$STUB_FUZZEL_CONFIG" 2>/dev/null)"
+reset_state
+"$workspace" set-name
+assert_eq "set-name: no include without a user config" "0" "$(grep -c '^include=' "$STUB_FUZZEL_CONFIG" 2>/dev/null)"
+
+# Niri has no empty name, so Enter on an empty prompt removes the name of the
+# focused workspace. fuzzel prints an empty line and exits with 0.
+reset_state
+STUB_SELECTION="" "$workspace" set-name
+assert_eq "set-name: empty name removes the name" "msg
+action
+unset-workspace-name" "$(cat "$STUB_NIRI_LOG")"
+
+# Escape is a cancel: fuzzel prints nothing and exits with an error. The name
+# stays.
+reset_state
+"$workspace" set-name
+assert_no_niri_action "set-name: cancel"
+
+# Niri reads a reference made only of digits as an index. The watch mode unnames
+# a workspace by its name, so such a name would unname the workspace at that
+# index. It is refused.
+reset_state
+STUB_SELECTION="3" "$workspace" set-name
+status=$?
+assert_no_niri_action "set-name: digits"
+assert_failed "set-name: digits" "$status"
+assert_eq "set-name: digits are reported" \
+    "notify-send Workspace A name of digits only is read as an index. Name not set." \
+    "$(cat "$STUB_NOTIFY_LOG")"
+
+# A name marks a workspace for a task, so the windows on it when it gets the name
+# are locked to it, as "window workspace" lines. Windows of other workspaces are
+# not locked.
+reset_state
+STUB_SELECTION="mail" "$workspace" set-name
+assert_eq "lock: naming locks the windows of the focused workspace" "10 2
+11 2" "$(cat "$lock_file" 2>/dev/null)"
+
+# A new name locks the windows of that moment again. The locks of other
+# workspaces stay.
+reset_state
+printf '%s\n' "12 1" "10 2" "13 2" > "$lock_file"
+STUB_SELECTION="mail" "$workspace" set-name
+assert_eq "lock: renaming locks the current windows" "12 1
+10 2
+11 2" "$(cat "$lock_file")"
+
+# Without a name the workspace has no task, so its windows are free again.
+reset_state
+printf '%s\n' "12 1" "10 2" > "$lock_file"
+STUB_SELECTION="" "$workspace" set-name
+assert_eq "lock: removing the name unlocks the windows" "12 1" "$(cat "$lock_file")"
+
+# A refused name changes nothing, so the locks stay.
+reset_state
+printf '%s\n' "10 2" > "$lock_file"
+STUB_SELECTION="3" "$workspace" set-name 2>/dev/null
+assert_eq "lock: refused name keeps the locks" "10 2" "$(cat "$lock_file")"
+
+# A second key press while fuzzel is open closes it and does nothing else.
+reset_state
+STUB_FUZZEL_RUNNING=1 "$workspace" focus
+status=$?
+assert_eq "toggle: fuzzel killed, not opened" "pkill -x fuzzel" "$(cat "$STUB_LOG")"
+assert_eq "toggle: fuzzel not opened" "" "$(cat "$STUB_FUZZEL_ARGS" 2>/dev/null)"
+assert_eq "toggle: exit status" "0" "$status"
+assert_no_niri_action "toggle: the first call restores the overview"
+
+# Niri removes an empty workspace only when it has no name, and keeps the active
+# workspace of each output. The watch mode gives named workspaces the same rule: it
+# unnames a named workspace with no windows, unless it is active, because the user
+# names a workspace before opening windows in it. The name is one argument after
+# "--", because a name can hold spaces or start with "-".
+write_watch_workspaces() {
+    cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":1,"idx":1,"name":"-my work","output":"DP-2","is_active":false,"is_focused":false,"active_window_id":null},
+ {"id":2,"idx":2,"name":"chat","output":"DP-2","is_active":false,"is_focused":false,"active_window_id":7},
+ {"id":3,"idx":3,"name":"mail","output":"DP-2","is_active":true,"is_focused":true,"active_window_id":null},
+ {"id":4,"idx":4,"name":null,"output":"DP-2","is_active":false,"is_focused":false,"active_window_id":null}]
+DATA
+}
+reset_state
+write_watch_workspaces
+echo '{"WorkspacesChanged":{"workspaces":[]}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: only the empty, non-active, named workspace is unnamed" "msg
+action
+unset-workspace-name
+--
+-my work" "$(cat "$STUB_NIRI_LOG")"
+
+# A workspace can become empty, or stop being active, only on these events.
+for event in WorkspaceActivated WorkspaceActiveWindowChanged; do
+    reset_state
+    write_watch_workspaces
+    echo "{\"$event\":{}}" > "$STUB_EVENTS"
+    "$workspace" watch
+    assert_eq "watch: $event starts a check" "1" "$(grep -c '^unset-workspace-name$' "$STUB_NIRI_LOG")"
+done
+
+# A window title change is a WindowOpenedOrChanged event, and a terminal changes
+# its title often. Such events must not make the watcher query niri at all.
+reset_state
+write_watch_workspaces
+printf '%s\n' '{"WindowOpenedOrChanged":{"window":{"id":1}}}' \
+    '{"WindowFocusChanged":{"id":1}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: window events do not query niri" "" "$(cat "$STUB_NIRI_QUERY_LOG" 2>/dev/null)"
+assert_no_niri_action "watch: window events"
+
+# The watcher is not a picker. Without a workspace focus change it must not close
+# an open fuzzel.
+reset_state
+write_watch_workspaces
+: > "$STUB_EVENTS"
+STUB_FUZZEL_RUNNING=1 "$workspace" watch
+assert_eq "watch: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# The focus list opens on the workspace that has the focus. When the focus moves to
+# another workspace, the list is out of date, so the watcher closes it.
+reset_state
+write_watch_workspaces
+echo $$ > "$XDG_RUNTIME_DIR/workspace-picker"
+echo '{"WorkspaceActivated":{"id":2,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: focus change closes the open picker" "pkill -x fuzzel" "$(cat "$STUB_LOG" 2>/dev/null)"
+assert_eq "watch: focus change still starts a check" "1" "$(grep -c '^unset-workspace-name$' "$STUB_NIRI_LOG")"
+
+# The active workspace of an output without the focus can change. The focused
+# workspace stays the same, so the list is still correct.
+reset_state
+write_watch_workspaces
+echo $$ > "$XDG_RUNTIME_DIR/workspace-picker"
+echo '{"WorkspaceActivated":{"id":2,"focused":false}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: unfocused activation keeps the picker" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# The app menu, the power menu and the clipboard history also use fuzzel. A focus
+# change must not close them.
+reset_state
+write_watch_workspaces
+echo '{"WorkspaceActivated":{"id":2,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: no picker, other fuzzel menus stay open" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# A picker that was killed leaves its file behind. Its process is gone, so the
+# file must not make the watcher close another fuzzel menu.
+reset_state
+write_watch_workspaces
+true &
+dead_pid=$!
+wait "$dead_pid"
+echo "$dead_pid" > "$XDG_RUNTIME_DIR/workspace-picker"
+echo '{"WorkspaceActivated":{"id":2,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: stale picker file is ignored" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# A locked window that shows up on another workspace goes back to its own one,
+# and the user is told why. With "focus": true the focus comes back too when the
+# user moved the focused window, as if the move did not happen.
+reset_state
+write_watch_workspaces
+echo "50 2" > "$lock_file"
+echo '{"WindowOpenedOrChanged":{"window":{"id":50,"workspace_id":3}}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "lock: moved window goes back" \
+    "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":50,\"reference\":{\"Id\":2},\"focus\":true}}}" \
+    "$(tail -1 "$STUB_SOCAT_LOG" 2>/dev/null)"
+assert_eq "lock: the user is told" "notify-send Workspace Window locked to workspace \"chat\"" \
+    "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# The same event comes for every title change. A locked window on its own
+# workspace must not move, and must not make the watcher query niri.
+reset_state
+write_watch_workspaces
+echo "50 2" > "$lock_file"
+echo '{"WindowOpenedOrChanged":{"window":{"id":50,"workspace_id":2}}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_no_focus "lock: window on its own workspace"
+assert_eq "lock: no niri query for a title change" "" "$(cat "$STUB_NIRI_QUERY_LOG" 2>/dev/null)"
+
+# A window that is not locked moves freely.
+reset_state
+write_watch_workspaces
+echo "50 2" > "$lock_file"
+echo '{"WindowOpenedOrChanged":{"window":{"id":51,"workspace_id":3}}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_no_focus "lock: free window"
+
+# Niri can report a window without a workspace. There is no move to undo.
+reset_state
+write_watch_workspaces
+echo "50 2" > "$lock_file"
+echo '{"WindowOpenedOrChanged":{"window":{"id":50,"workspace_id":null}}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_no_focus "lock: window without a workspace"
+
+# When the focus follows a locked window that was alone on its workspace, the
+# workspace is empty, named and not active until the window comes back. The
+# cleanup must not unname it, or niri removes the workspace and the window has
+# no place to go back to.
+reset_state
+write_watch_workspaces
+echo "50 1" > "$lock_file"
+echo '{"WorkspacesChanged":{"workspaces":[]}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_no_niri_action "lock: workspace of a moved locked window keeps its name"
+
+# A closed window leaves its lock. Without it, its workspace would keep its name
+# when it is empty, and niri would never remove it.
+reset_state
+printf '%s\n' "50 1" "51 2" > "$lock_file"
+echo '{"WindowClosed":{"id":50}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "lock: closed window is unlocked" "51 2" "$(cat "$lock_file")"
+
+# The watcher knows that the picker is open only from its file. The file names
+# the picker process while fuzzel runs, and is gone after, also after a cancel,
+# so that a later focus change does not close another fuzzel menu.
+reset_state
+STUB_SELECTION="1" "$workspace" focus
+assert_eq "picker file: live while fuzzel runs" "open" "$(cat "$STUB_PICKER_SEEN" 2>/dev/null)"
+assert_eq "picker file: gone after a selection" "" "$(ls "$XDG_RUNTIME_DIR")"
+reset_state
+"$workspace" focus
+assert_eq "picker file: gone after a cancel" "" "$(ls "$XDG_RUNTIME_DIR")"
+
+# The move binds go through the move-window mode, so that a locked window does not leave
+# its workspace at all. A window that came back after the move would land in a new
+# column. Workspace 2 holds column 1 with tiles 10 (top) and 11 (bottom), column 2
+# with tile 12, and the floating window 13. Window 30 is on the unnamed workspace 4.
+# write_move_windows ACTIVE [overview]: ACTIVE is the active window of the focused
+# workspace. It has the focus, unless the overview is open: then no window has the
+# focus, and niri still acts on the active window.
+write_move_windows() {
+    local active=$1 overview=${2:-}
+    jq --argjson active "$active" --arg overview "$overview" \
+        'map(.is_focused = (.id == $active and $overview == ""))' > "$STUB_WINDOWS" <<'DATA'
+[{"id":10,"workspace_id":2,"layout":{"pos_in_scrolling_layout":[1,1]}},
+ {"id":11,"workspace_id":2,"layout":{"pos_in_scrolling_layout":[1,2]}},
+ {"id":12,"workspace_id":2,"layout":{"pos_in_scrolling_layout":[2,1]}},
+ {"id":13,"workspace_id":2,"layout":{"pos_in_scrolling_layout":null}},
+ {"id":20,"workspace_id":3,"layout":{"pos_in_scrolling_layout":[1,1]}},
+ {"id":30,"workspace_id":4,"layout":{"pos_in_scrolling_layout":[1,1]}}]
+DATA
+    jq --argjson active "$active" --slurpfile windows "$STUB_WINDOWS" '
+        ($windows[0][] | select(.id == $active) | .workspace_id) as $focused_workspace
+        | map(.is_focused = (.id == $focused_workspace) | .is_active = .is_focused
+              | .active_window_id = (if .is_focused then $active else null end))' \
+        > "$STUB_WORKSPACES" <<'DATA'
+[{"id":2,"idx":2,"name":"chat","output":"DP-2"},
+ {"id":3,"idx":3,"name":"mail","output":"DP-2"},
+ {"id":4,"idx":4,"name":null,"output":"DP-2"}]
+DATA
+}
+
+# move_case NAME FOCUSED LOCKED EXPECTED ACTION [WORKSPACE]: EXPECTED is "runs" or
+# "blocked".
+move_case() {
+    local name=$1 focused=$2 locked=$3 expected=$4
+    shift 4
+    reset_state
+    write_move_windows "$focused"
+    echo "$locked 2" > "$lock_file"
+    "$workspace" move-window "$@"
+    if [[ $expected == runs ]]; then
+        assert_eq "move: $name: action runs" "$(printf '%s\n' msg action "$@")" "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+        assert_eq "move: $name: no notification" "" "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+    else
+        assert_no_niri_action "move: $name: blocked"
+        assert_eq "move: $name: the user is told" "notify-send Workspace Window locked to workspace \"chat\"" \
+            "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+    fi
+}
+
+# A column move takes every window of the focused column.
+move_case "column with a locked window" 11 10 blocked move-column-to-workspace-down
+move_case "column without a locked window" 12 10 runs move-column-to-workspace-up
+move_case "column to a numbered workspace" 12 10 runs move-column-to-workspace 3
+move_case "locked column to a numbered workspace" 10 10 blocked move-column-to-workspace 3
+# With a floating window focused, a column move takes only that window.
+move_case "floating window by a column move" 13 13 blocked move-column-to-workspace-down
+move_case "column move, floating window focused" 13 10 runs move-column-to-workspace-down
+# A window moves up or down inside its column, and leaves the workspace only from
+# the top or the bottom tile.
+move_case "up from the top tile" 10 10 blocked move-window-up-or-to-workspace-up
+move_case "up inside the column" 11 11 runs move-window-up-or-to-workspace-up
+move_case "down from the bottom tile" 11 11 blocked move-window-down-or-to-workspace-down
+move_case "down inside the column" 10 10 runs move-window-down-or-to-workspace-down
+move_case "down from a single tile" 12 12 blocked move-window-down-or-to-workspace-down
+# Niri moves a floating window up or down inside its workspace.
+move_case "floating window up" 13 13 runs move-window-up-or-to-workspace-up
+
+# The move-window mode runs only the actions it knows. Another action could take a locked
+# window away without a check.
+reset_state
+"$workspace" move-window close-window 2>/dev/null
+status=$?
+assert_eq "move: unknown action: exit status" "2" "$status"
+assert_no_niri_action "move: unknown action"
+
+# The move-window mode is not a picker. It must not close an open fuzzel.
+reset_state
+write_move_windows 12
+STUB_FUZZEL_RUNNING=1 "$workspace" move-window move-column-to-workspace-up
+assert_eq "move: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# The toggle-lock mode frees a locked focused window, so the user can move it away
+# from its workspace. The locks of other windows stay.
+reset_state
+write_move_windows 11
+printf '%s\n' "10 2" "11 2" > "$lock_file"
+"$workspace" toggle-lock
+assert_eq "toggle-lock: locked window freed" "10 2" "$(cat "$lock_file")"
+assert_eq "toggle-lock: unlock is reported" "notify-send Workspace Window unlocked" "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+reset_state
+write_move_windows 11
+printf '%s\n' "11 2" > "$lock_file"
+"$workspace" toggle-lock
+"$workspace" move-window move-window-down-or-to-workspace-down
+assert_eq "toggle-lock: the freed window moves" "$(printf '%s\n' msg action move-window-down-or-to-workspace-down)" \
+    "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+
+# A free focused window gets locked to the workspace it is on, as a name would
+# lock it. The locks of other windows stay.
+reset_state
+write_move_windows 12
+printf '%s\n' "10 2" > "$lock_file"
+"$workspace" toggle-lock
+assert_eq "toggle-lock: free window locked" "10 2
+12 2" "$(cat "$lock_file")"
+assert_eq "toggle-lock: lock is reported" "notify-send Workspace Window locked to workspace \"chat\"" \
+    "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# Niri removes an unnamed workspace when it gets empty, so a locked window that is
+# dragged away could have no workspace to go back to. Locks need a name.
+reset_state
+write_move_windows 30
+"$workspace" toggle-lock
+assert_eq "toggle-lock: unnamed workspace, no lock" "" "$(cat "$lock_file" 2>/dev/null)"
+assert_eq "toggle-lock: the user is told to name it" "notify-send Workspace Name the workspace first" \
+    "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# The toggle-lock mode is not a picker. It must not close an open fuzzel.
+reset_state
+write_move_windows 11
+STUB_FUZZEL_RUNNING=1 "$workspace" toggle-lock
+assert_eq "toggle-lock: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# With the overview open no window has the focus, but niri still moves the active
+# window of the focused workspace, and Mod+U toggles it.
+reset_state
+write_move_windows 10 overview
+echo "10 2" > "$lock_file"
+"$workspace" move-window move-column-to-workspace-down
+assert_no_niri_action "move: overview: locked active column blocked"
+reset_state
+write_move_windows 12 overview
+"$workspace" toggle-lock
+assert_eq "toggle-lock: overview: active window locked" "12 2" "$(cat "$lock_file" 2>/dev/null)"
+
+# A locked window belongs to the task of its workspace, so Mod+Q does not close it.
+# The user is told how to free it.
+reset_state
+write_move_windows 10
+echo "10 2" > "$lock_file"
+"$workspace" close-window
+assert_no_niri_action "close: locked window"
+assert_eq "close: the user is told" \
+    "notify-send Workspace Window locked to workspace \"chat\". Unlock it with Mod+Shift+L to close it." \
+    "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# A free window closes. The id makes niri close the window that was checked, also
+# when the focus moves while the script runs.
+reset_state
+write_move_windows 12
+echo "10 2" > "$lock_file"
+"$workspace" close-window
+assert_eq "close: free window closed" "$(printf '%s\n' msg action close-window --id 12)" \
+    "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+
+# With the overview open no window has the focus, but Mod+Q acts on the active
+# window of the focused workspace.
+reset_state
+write_move_windows 10 overview
+echo "10 2" > "$lock_file"
+"$workspace" close-window
+assert_no_niri_action "close: overview: locked active window"
+reset_state
+write_move_windows 12 overview
+"$workspace" close-window
+assert_eq "close: overview: free active window closed" "$(printf '%s\n' msg action close-window --id 12)" \
+    "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+
+# The close-window mode is not a picker. It must not close an open fuzzel.
+reset_state
+write_move_windows 12
+STUB_FUZZEL_RUNNING=1 "$workspace" close-window
+assert_eq "close: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# An unknown mode is a usage error. Nothing opens.
+reset_state
+"$workspace" rename 2>/dev/null
+status=$?
+assert_eq "usage: exit status" "2" "$status"
+assert_eq "usage: fuzzel not opened" "" "$(cat "$STUB_FUZZEL_ARGS" 2>/dev/null)"
+
+if [[ $failures -gt 0 ]]; then
+    echo "$failures failure(s)"
+    exit 1
+fi
+echo "all tests passed"

@@ -1,0 +1,251 @@
+#!/bin/bash
+# Names the focused Niri workspace (an empty name removes the name), or focuses one
+# from a list of all workspaces shown over the overview, through fuzzel.
+# A second call while fuzzel is open closes it.
+# The watch mode unnames a named workspace with no windows, so niri removes it as
+# it removes an unnamed one. The active workspace of each output is kept, as niri keeps it.
+# It also closes the focus list when the focus moves to another workspace, because
+# the list opens on the workspace that had the focus.
+# A name locks the windows that are on the workspace at that moment. The move-window mode
+# runs a move bind only when it takes no locked window off its workspace. For moves
+# without a bind, such as a mouse drag, the watch mode moves a locked window back.
+# The toggle-lock mode locks or frees the focused window, and the close-window mode does not
+# close a locked window.
+
+set -u
+
+picker_file=$XDG_RUNTIME_DIR/workspace-picker
+# Window ids start again with each niri instance, so each instance has its own list.
+lock_file=$XDG_RUNTIME_DIR/workspace-locks-${NIRI_SOCKET##*/}
+
+report() {
+    notify-send Workspace "$1"
+}
+
+lock_windows() {
+    niri msg -j windows | jq -r --argjson workspace "$1" \
+        '.[] | select(.workspace_id == $workspace) | "\(.id) \(.workspace_id)"' >> "$lock_file"
+}
+
+unlock_workspace() {
+    [[ -e $lock_file ]] && sed -i "/ $1\$/d" "$lock_file"
+}
+
+unlock_window() {
+    [[ -e $lock_file ]] && sed -i "/^$1 /d" "$lock_file"
+}
+
+has_locked_window() {
+    [[ -e $lock_file ]] && grep -q " $1\$" "$lock_file"
+}
+
+lock_workspace_of() {
+    [[ -e $lock_file ]] &&
+        awk -v window="$1" '$1 == window { print $2; found = 1 } END { exit !found }' "$lock_file"
+}
+
+workspace_label() {
+    niri msg -j workspaces | jq -r --argjson id "$1" '.[] | select(.id == $id) | .name // .idx'
+}
+
+# fuzzel ignores Enter on an empty prompt without entries. execute-input prints the
+# input also when it is empty, so an empty name can remove the name.
+name_prompt_config() {
+    local user_config=${XDG_CONFIG_HOME:-$HOME/.config}/fuzzel/fuzzel.ini
+    [[ -r $user_config ]] && echo "include=$user_config"
+    printf '%s\n' '[key-bindings]' 'execute=none' 'execute-input=Return KP_Enter'
+}
+
+set_name() {
+    local current name workspace_id
+    current=$(niri msg -j workspaces | jq -r '.[] | select(.is_focused) | .name // empty')
+    name=$(fuzzel --config=<(name_prompt_config) --dmenu --prompt-only "Workspace name: " \
+        "--search=$current" < /dev/null) || exit 0
+    if [[ $name =~ ^[0-9]+$ ]]; then
+        report "A name of digits only is read as an index. Name not set."
+        exit 1
+    fi
+    workspace_id=$(niri msg -j workspaces | jq '.[] | select(.is_focused) | .id')
+    unlock_workspace "$workspace_id"
+    if [[ -z $name ]]; then
+        niri msg action unset-workspace-name
+        exit 0
+    fi
+    niri msg action set-workspace-name -- "$name"
+    lock_windows "$workspace_id"
+}
+
+focus() {
+    local workspaces sorted lines focused ids selection overview_was_open
+    workspaces=$(niri msg -j workspaces)
+    sorted='sort_by(.output, .idx)'
+    lines=$(jq -r '
+        (map(.output) | unique | length > 1) as $many_outputs
+        | '"$sorted"'[]
+        | [(if .name then "\(.idx)" else empty end), (if $many_outputs then "on \(.output)" else empty end)]
+            as $details
+        | "\(.id)\t\(.name // .idx)" + (if $details == [] then "" else "  (\($details | join(" ")))" end)
+        ' <<< "$workspaces")
+    focused=$(jq -r "$sorted"' | map(.is_focused) | index(true) // 0' <<< "$workspaces")
+    overview_was_open=$(niri msg -j overview-state | jq .is_open)
+    [[ $overview_was_open == true ]] || niri msg action open-overview
+    echo $$ > "$picker_file"
+    selection=$(fuzzel --dmenu --prompt "Workspace: " --no-sort "--select-index=$focused" \
+        --with-nth 2 --accept-nth 1 <<< "$lines")
+    rm -f "$picker_file"
+    if [[ -z $selection ]]; then
+        [[ $overview_was_open == true ]] || niri msg action close-overview
+        exit 0
+    fi
+    ids=$(cut -f1 <<< "$lines")
+    if ! grep -qxF -- "$selection" <<< "$ids"; then
+        [[ $overview_was_open == true ]] || niri msg action close-overview
+        report "No workspace \"$selection\""
+        exit 1
+    fi
+    printf '{"Action":{"FocusWorkspace":{"reference":{"Id":%s}}}}\n' "$selection" |
+        socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
+    niri msg action close-overview
+}
+
+# A workspace with a locked window elsewhere keeps its name: the window comes back,
+# and without the name niri removes the workspace first.
+unname_empty() {
+    niri msg -j workspaces | jq -r '
+        .[] | select(.name != null and .active_window_id == null and (.is_active | not))
+        | "\(.id)\t\(.name)"' |
+    while IFS=$'\t' read -r id name; do
+        has_locked_window "$id" && continue
+        niri msg action unset-workspace-name -- "$name"
+    done
+}
+
+keep_locked() {
+    local window=$1 workspace=$2 locked_window locked_workspace
+    [[ -e $lock_file && $workspace =~ ^[0-9]+$ ]] || return
+    while read -r locked_window locked_workspace; do
+        [[ $locked_window == "$window" && $locked_workspace != "$workspace" ]] || continue
+        printf '{"Action":{"MoveWindowToWorkspace":{"window_id":%s,"reference":{"Id":%s},"focus":true}}}\n' \
+            "$window" "$locked_workspace" | socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
+        report "Window locked to workspace \"$(workspace_label "$locked_workspace")\""
+    done < "$lock_file"
+}
+
+# Niri acts on the active window of the focused workspace. In the overview no
+# window has the focus, so the focus flag of a window cannot tell which one it is.
+active_window() {
+    niri msg -j workspaces | jq '.[] | select(.is_focused) | .active_window_id // empty'
+}
+
+# The windows that a move action takes off the focused workspace. A window moves
+# up or down inside its column and leaves only from the top or the bottom tile, and
+# niri moves a floating window inside its workspace. A column move takes the
+# active column, or only the active window when it is floating.
+leaving_windows='
+    (.[] | select(.id == $active)) as $window
+    | $window.layout.pos_in_scrolling_layout as $pos
+    | (if $pos == null then [$window]
+       else map(select(.workspace_id == $window.workspace_id
+                       and .layout.pos_in_scrolling_layout[0] == $pos[0])) end) as $column
+    | if $action == "move-window-up-or-to-workspace-up" then
+          [$window | select($pos != null and $pos[1] == 1)]
+      elif $action == "move-window-down-or-to-workspace-down" then
+          [$window | select($pos != null and $pos[1] == ($column | length))]
+      else $column end
+    | .[].id'
+
+move_window() {
+    local action=${1:-} active window locked_workspace
+    case $action in
+        move-window-up-or-to-workspace-up|move-window-down-or-to-workspace-down) ;;
+        move-column-to-workspace-up|move-column-to-workspace-down|move-column-to-workspace) ;;
+        *)
+            echo "workspace move-window: unknown action \"$action\"" >&2
+            exit 2
+            ;;
+    esac
+    active=$(active_window)
+    [[ -n $active ]] || { niri msg action "$@"; exit; }
+    for window in $(niri msg -j windows |
+        jq -r --arg action "$action" --argjson active "$active" "$leaving_windows"); do
+        if locked_workspace=$(lock_workspace_of "$window"); then
+            report "Window locked to workspace \"$(workspace_label "$locked_workspace")\""
+            exit 0
+        fi
+    done
+    niri msg action "$@"
+}
+
+close_window() {
+    local window locked_workspace
+    window=$(active_window)
+    [[ -n $window ]] || exit 0
+    if locked_workspace=$(lock_workspace_of "$window"); then
+        report "Window locked to workspace \"$(workspace_label "$locked_workspace")\". Unlock it with Mod+Shift+L to close it."
+        exit 0
+    fi
+    niri msg action close-window --id "$window"
+}
+
+# Locks need a named workspace: niri removes an unnamed one when it gets empty, so a
+# dragged locked window could have no workspace to go back to.
+toggle_lock() {
+    local window workspace name
+    window=$(active_window)
+    [[ -n $window ]] || exit 0
+    if lock_workspace_of "$window" > /dev/null; then
+        unlock_window "$window"
+        report "Window unlocked"
+        return
+    fi
+    IFS=$'\t' read -r workspace name <<< "$(niri msg -j workspaces |
+        jq -r '.[] | select(.is_focused) | "\(.id)\t\(.name // "")"')"
+    if [[ -z $name ]]; then
+        report "Name the workspace first"
+        return
+    fi
+    echo "$window $workspace" >> "$lock_file"
+    report "Window locked to workspace \"$name\""
+}
+
+close_picker() {
+    kill -0 "$(cat "$picker_file" 2>/dev/null)" 2>/dev/null && pkill -x fuzzel
+}
+
+watch() {
+    local event window workspace
+    niri msg -j event-stream |
+    jq --unbuffered -r '
+        if .WorkspaceActivated.focused then "WorkspaceFocused"
+        elif .WindowOpenedOrChanged then
+            .WindowOpenedOrChanged.window as $window
+            | "WindowOpenedOrChanged \($window.id) \($window.workspace_id)"
+        elif .WindowClosed then "WindowClosed \(.WindowClosed.id)"
+        else keys[0] end' |
+    while read -r event window workspace; do
+        case $event in
+            WorkspaceFocused) close_picker; unname_empty ;;
+            WorkspacesChanged|WorkspaceActivated|WorkspaceActiveWindowChanged) unname_empty ;;
+            WindowOpenedOrChanged) keep_locked "$window" "$workspace" ;;
+            WindowClosed) unlock_window "$window" ;;
+        esac
+    done
+}
+
+case ${1:-} in
+    set-name|focus) pkill -x fuzzel && exit 0 ;;
+    watch|move-window|toggle-lock|close-window) ;;
+    *)
+        echo "usage: workspace set-name|focus|watch|toggle-lock|close-window|move-window ACTION [WORKSPACE]" >&2
+        exit 2
+        ;;
+esac
+
+case $1 in
+    set-name) set_name ;;
+    focus) focus ;;
+    watch) watch ;;
+    move-window) move_window "${@:2}" ;;
+    toggle-lock) toggle_lock ;;
+    close-window) close_window ;;
+esac
