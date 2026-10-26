@@ -30,8 +30,6 @@
 ~/.config/zellij/ | zellij/
 # niri
 ~/.config/niri/ | niri/
-# noctalia
-~/.config/noctalia/ | noctalia/
 # fuzzel
 ~/.config/fuzzel/ | fuzzel/
 # mako
