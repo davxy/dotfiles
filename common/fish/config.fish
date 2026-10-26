@@ -120,7 +120,25 @@ function zexit
     end
 end
 
+# Restore the last visited folder
+function restore_last_dir
+    if set -q CWD_FILE
+        if test -f $CWD_FILE
+            set -l target_dir (cat $CWD_FILE)
+            # use builtin cd (been aliased to z)
+            if test -d "$target_dir"
+                builtin cd $target_dir
+            end
+        else
+            touch $CWD_FILE
+            chmod 600 $CWD_FILE
+        end
+    end
+end
+
 if not set -q ZELLIJ
+    # Zellij opens its first pane in the folder where it starts
+    restore_last_dir
     zellij
 end
 
@@ -207,18 +225,10 @@ alias oc=opencode
 # Misc
 #############################################
 
-# Restore the last visited folder when a new terminal is opened
-if set -q CWD_FILE
-    if test -f $CWD_FILE
-        set -l target_dir (cat $CWD_FILE)
-        # use builtin cd (been aliased to z)
-        if test -d "$target_dir"
-            builtin cd $target_dir
-        end
-    else
-        touch $CWD_FILE
-        chmod 600 $CWD_FILE
-    end
+# Restore the last visited folder after zexit.
+# Inside zellij, new panes keep the folder of the focused pane.
+if not set -q ZELLIJ
+    restore_last_dir
 end
 
 function my_pre_prompt --on-event fish_prompt
