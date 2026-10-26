@@ -3,5 +3,10 @@
 [mgr]
 append_keymap = [
   { on = [ "g", "e" ], run = "arrow bot", desc = "Move cursor to the bottom" },
-  { on = [ "c", "h" ], run = "shell --block 'xxh128sum %s | sed -E \"s/^([0-9a-f]{8})[0-9a-f]+/\\1/\"; printf \"\\nPress Enter to continue\"; read -r dummy'", desc = "Show xxHash (8 hex digits)" },
+  { on = [ "C", "h" ], run = "shell 'ya emit notify:push \"$(xxh128sum %s 2>&1 | sed -E \"s|^([0-9a-f]{8})[0-9a-f]* +(.*/)?|\\1  |\")\" xxHash --timeout=10'", desc = "Show xxHash (8 hex digits)" },
+  { on = [ "C", "z" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && zip -rq \"./$n.zip\" \"./$n\"); done'", desc = "Archive as zip" },
+  { on = [ "C", "t" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && tar -czf \"$n.tar.gz\" -- \"$n\"); done'", desc = "Archive as tar.gz" },
+  { on = [ "C", "7" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && 7z a -t7z -- \"$n.7z\" \"$n\"); done'", desc = "Archive as 7z" },
+  { on = [ "C", "e" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && if [ -d \"$n\" ]; then tar -cf - -- \"$n\" | gpg --batch -e -r 9484AE9C0DE026ADF6A15A538F550699515C84CB -o \"$n.tar.gpg\"; else gpg --batch -e -r 9484AE9C0DE026ADF6A15A538F550699515C84CB -o \"$n.gpg\" -- \"$n\"; fi); done'", desc = "Encrypt to my GPG key" },
+  { on = [ "C", "p" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && if [ -d \"$n\" ]; then tar -cf - -- \"$n\" | gpg --batch -c -o \"$n.tar.gpg\"; else gpg --batch -c -o \"$n.gpg\" -- \"$n\"; fi); done'", desc = "Encrypt with a passphrase (GPG)" },
 ]

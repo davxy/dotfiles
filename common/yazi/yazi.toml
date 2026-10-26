@@ -11,9 +11,32 @@ image = [
 firefox = [
 	{ run = "firefox %s", orphan = true, desc = "Open in firefox" }
 ]
+# gpg -o leaves the plaintext on disk also when it detects a manipulated file,
+# so the plaintext stays in a temporary file until gpg succeeds.
+decrypt = [
+	{ run = '''
+for file in %s; do (
+	cd -- "$(dirname -- "$file")" || exit
+	name=$(basename -- "$file")
+	case "$name" in
+		*.tar.gpg) target=${name%.tar.gpg} ;;
+		*) target=${name%.gpg} ;;
+	esac
+	if [ -e "$target" ]; then echo "$target already exists" >&2; exit 1; fi
+	plain=$(mktemp -p . .decrypt.XXXXXX) || exit
+	trap 'rm -f -- "$plain"' EXIT
+	gpg --batch --yes -o "$plain" -d -- "$name" || exit
+	case "$name" in
+		*.tar.gpg) tar -xkf "$plain" ;;
+		*) mv -n -- "$plain" "$target" ;;
+	esac
+); done
+''', desc = "Decrypt here", for = "unix" },
+]
 
 [open]
 prepend_rules = [
+	{ url = "*.gpg", use = [ "decrypt", "reveal" ] },
 	{ mime = "image/*", use = [ "image", "open", "reveal" ] },
 	{ mime = "video/*", use = [ "play", "open", "reveal" ] },
 	{ mime = "audio/*", use = [ "play", "open", "reveal" ] },
