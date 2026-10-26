@@ -1,36 +1,24 @@
-# Generic style
+# Gruvbox Material Dark, as alacritty, swaylock and the niri focus ring.
+
+font=monospace 10
 background-color=#282828
-border-color=#d4be98
-border-size=1
 text-color=#d4be98
-text-alignment=center
-format=<b>%s</b>\n%b
-default-timeout=5000
+border-color=#d4be98
+border-size=3
+border-radius=3
+padding=10
+margin=15
+progress-color=over #a9b6654d
+default-timeout=3000
 ignore-timeout=1
 
-[urgency=low]
-default-timeout=3000
+[app-name=system-info]
+default-timeout=5000
+width=400
+height=200
 
-#[urgency=normal]
-
-[urgency=high]
-border-color=#bf616a
-border-size=2
+# Last, because the last matching section wins: no app section can make a critical message expire.
+[urgency=critical]
+border-color=#ea6962
 default-timeout=0
-anchor=center
-format=<b>%a - %s</b>\n%b
-
-# Spotify notifications are quite distracting while working
-[app-name="Spotify"]
-invisible=1
-
-[app-name="system-info"]
-border-size=2
-default-timeout=0
-height=10000
-default-timeout=10000
-
-# Zen mode (hide all notifications)
-# Enable with `makoctl mode -a zen` disable with `makoctl mode -r zen`
-[mode=zen]
-invisible=1
+ignore-timeout=1
