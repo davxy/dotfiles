@@ -112,6 +112,10 @@ input {
     position x=1280 y=0
 }
 
+output "AU Optronics 0xD291 Unknown" {
+    scale 1.0
+}
+
 // Settings that influence how windows are positioned and sized.
 // Find more information on the wiki:
 // https://yalter.github.io/niri/Configuration:-Layout
