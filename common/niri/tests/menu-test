@@ -1,0 +1,469 @@
+#!/bin/bash
+# Checks scripts/menu against stub commands, without a running desktop.
+# Mod+M opens the settings menu. Mod+P opens the power menu (argument "power"),
+# so a settings change cannot end or stop the session. poweroff, reboot,
+# firmware-setup and logout end the session, so each one asks for a "yes" in a
+# second list. "no" comes first in that list, so a double Enter
+# does nothing. No idle daemon locks the screen on resume, so suspend locks first.
+# There is no bar, so a notification is the only sign of a new state. impala and
+# bluetui exit at once on a blocked device, and their terminal closes with them, so
+# the menu checks the block first.
+
+set -u
+
+repo_dir=$(cd "$(dirname "$0")/.." && pwd)
+menu=${MENU:-$repo_dir/scripts/menu}
+
+work_dir=$(mktemp -d)
+trap 'rm -rf "$work_dir"' EXIT
+
+mkdir -p "$work_dir/bin"
+export PATH=$work_dir/bin:$PATH
+export STUB_CALLS=$work_dir/calls.log
+export STUB_ANSWERS=$work_dir/answers
+export STUB_FUZZEL_INPUT=$work_dir/fuzzel-input
+export STUB_PROFILES=$work_dir/profiles
+export STUB_MAKO_MODES=$work_dir/mako-modes
+export STUB_RFKILL=$work_dir/rfkill
+
+for command in systemctl niri alacritty notify-send pkill; do
+    cat > "$work_dir/bin/$command" <<'STUB'
+#!/bin/bash
+echo "${0##*/}${*:+ $*}" >> "$STUB_CALLS"
+STUB
+done
+
+cat > "$work_dir/bin/swaylock" <<'STUB'
+#!/bin/bash
+echo "swaylock${*:+ $*}" >> "$STUB_CALLS"
+exit "${STUB_SWAYLOCK_STATUS:-0}"
+STUB
+
+# Like util-linux rfkill 2.42: the list prints one "SOFT HARD" line per device of the
+# type, and nothing when the type has no device.
+cat > "$work_dir/bin/rfkill" <<'STUB'
+#!/bin/bash
+if [[ $* == "-r -n -o SOFT,HARD list "* ]]; then
+    cat "$STUB_RFKILL-${!#}" 2>/dev/null
+    exit 0
+fi
+echo "rfkill $*" >> "$STUB_CALLS"
+exit "${STUB_UNBLOCK_STATUS:-0}"
+STUB
+
+cat > "$work_dir/bin/pgrep" <<'STUB'
+#!/bin/bash
+[[ ${STUB_FUZZEL_RUNNING:-0} == 1 ]]
+STUB
+
+cat > "$work_dir/bin/socat" <<'STUB'
+#!/bin/bash
+echo "socat $(cat)" >> "$STUB_CALLS"
+STUB
+
+# Call N of fuzzel answers line N of the answers file. An empty or missing line is Escape.
+# Like fuzzel, the stub prints the whole listed line (icon and name) that the answer
+# names, or the typed text when no line has that name.
+cat > "$work_dir/bin/fuzzel" <<'STUB'
+#!/bin/bash
+echo "fuzzel $*" >> "$STUB_CALLS"
+call=$(grep -c '^fuzzel ' "$STUB_CALLS")
+cat > "$STUB_FUZZEL_INPUT-$call"
+answer=$(sed -n "${call}p" "$STUB_ANSWERS")
+[[ -n $answer ]] || exit 2
+grep -m 1 -x -e "$answer" -e ".* $answer" "$STUB_FUZZEL_INPUT-$call" || echo "$answer"
+STUB
+
+cat > "$work_dir/bin/powerprofilesctl" <<'STUB'
+#!/bin/bash
+case $1 in
+    list) cat "$STUB_PROFILES" ;;
+    get) sed -n 's/^\* \(.*\):$/\1/p' "$STUB_PROFILES" ;;
+    *)
+        echo "powerprofilesctl $*" >> "$STUB_CALLS"
+        exit "${STUB_SET_STATUS:-0}"
+        ;;
+esac
+STUB
+
+# Like makoctl 1.11, a mode change prints the modes after the change.
+cat > "$work_dir/bin/makoctl" <<'STUB'
+#!/bin/bash
+echo "makoctl $*" >> "$STUB_CALLS"
+if [[ $1 == mode && ${2:-} == -t ]]; then
+    if grep -qx "$3" "$STUB_MAKO_MODES"; then
+        sed -i "/^$3\$/d" "$STUB_MAKO_MODES"
+    else
+        echo "$3" >> "$STUB_MAKO_MODES"
+    fi
+fi
+cat "$STUB_MAKO_MODES"
+STUB
+chmod +x "$work_dir/bin/"*
+
+# rfkill_state TYPE ["SOFT HARD" per device]...: no line means no device of that type.
+rfkill_state() {
+    local type=$1
+    shift
+    printf '%s\n' "$@" > "$STUB_RFKILL-$type"
+    [[ $# -gt 0 ]] || : > "$STUB_RFKILL-$type"
+}
+
+reset_state() {
+    rm -f "$STUB_CALLS" "$STUB_ANSWERS" "$STUB_FUZZEL_INPUT"-*
+    unset STUB_FUZZEL_RUNNING STUB_SWAYLOCK_STATUS STUB_SET_STATUS STUB_UNBLOCK_STATUS
+    echo default > "$STUB_MAKO_MODES"
+    rfkill_state wlan "unblocked unblocked"
+    rfkill_state bluetooth "unblocked unblocked"
+    # The output of powerprofilesctl 0.30 on this machine.
+    cat > "$STUB_PROFILES" <<'DATA'
+  performance:
+    CpuDriver:	amd_pstate
+    Degraded:   no
+
+* balanced:
+    CpuDriver:	amd_pstate
+    PlatformDriver:	placeholder
+
+  power-saver:
+    CpuDriver:	amd_pstate
+    PlatformDriver:	placeholder
+DATA
+}
+
+run_menu() {
+    printf '%s\n' "$@" > "$STUB_ANSWERS"
+    "$menu"
+}
+
+run_power_menu() {
+    printf '%s\n' "$@" > "$STUB_ANSWERS"
+    "$menu" power
+}
+
+# The calls that change something: not the menus.
+actions() {
+    grep -v -e '^fuzzel ' "$STUB_CALLS" 2>/dev/null
+}
+
+fuzzel_calls() {
+    grep '^fuzzel ' "$STUB_CALLS"
+}
+
+# alacritty runs in the background, so its call can come after the menu exits.
+wait_for_actions() {
+    local count=${1:-1} tries=20
+    while [[ $(actions | wc -l) -lt $count ]] && ((tries-- > 0)); do
+        sleep 0.05
+    done
+}
+
+failures=0
+
+assert_eq() {
+    local name=$1 expected=$2 actual=$3
+    if [[ $expected == "$actual" ]]; then
+        echo "ok   $name"
+    else
+        echo "FAIL $name"
+        echo "  expected: $(printf '%q' "$expected")"
+        echo "  actual:   $(printf '%q' "$actual")"
+        failures=$((failures + 1))
+    fi
+}
+
+# The list is the only way to reach an item. An icon of the Nerd Font (the monospace
+# font) shows the action of each item. The other tests show that the actions and the
+# confirmation prompt use the name without the icon.
+settings_items="󰂯 bluetooth
+󰖩 wifi
+󰕾 audio
+󰓅 power-profile
+󰂛 do-not-disturb
+󰃭 calendar
+󰄨 system-monitor
+󰣖 services"
+power_items="󰤄 suspend
+󰐥 poweroff
+󰜉 reboot
+󰌾 lock
+󰍃 logout
+󰘚 firmware-setup"
+
+reset_state
+run_menu ""
+assert_eq "settings menu: items" "$settings_items" "$(cat "$STUB_FUZZEL_INPUT-1")"
+
+# Escape does nothing. The user does not want the overview behind the menu.
+assert_eq "settings menu, Escape: no overview, no action" "fuzzel --dmenu" "$(cat "$STUB_CALLS")"
+
+reset_state
+run_power_menu ""
+assert_eq "power menu: items" "$power_items" "$(cat "$STUB_FUZZEL_INPUT-1")"
+assert_eq "power menu, Escape: no overview, no action" "fuzzel --dmenu" "$(cat "$STUB_CALLS")"
+
+# fuzzel prints the typed text when no item matches it.
+reset_state
+run_menu shutdown
+assert_eq "unknown text: no action" "" "$(actions)"
+
+# The typed name of an item of the other menu matches no line, so fuzzel prints it.
+# The menu must not act on it, or a typo in the settings menu can end the session.
+for item in poweroff reboot firmware-setup logout lock suspend; do
+    reset_state
+    run_menu "$item" yes
+    assert_eq "settings menu, typed $item: no action" "" "$(actions)"
+done
+for item in bluetooth wifi audio power-profile do-not-disturb calendar system-monitor services; do
+    reset_state
+    run_power_menu "$item" performance
+    wait_for_actions
+    assert_eq "power menu, typed $item: no action" "" "$(actions)"
+done
+
+# A wrong argument in a bind must not open a menu that the bind does not name.
+reset_state
+"$menu" settings 2> "$work_dir/stderr"
+status=$?
+assert_eq "unknown argument: exit status 2" "2" "$status"
+assert_eq "unknown argument: no menu" "" "$(cat "$STUB_CALLS" 2>/dev/null)"
+assert_eq "unknown argument: usage on stderr" "usage: menu [power]" "$(cat "$work_dir/stderr")"
+
+# A second press of Mod+M or Mod+P closes the open list, also a confirmation
+# list or the list of the other menu, and acts on nothing.
+for menu_argument in "" power; do
+    reset_state
+    STUB_FUZZEL_RUNNING=1 "$menu" ${menu_argument:+"$menu_argument"}
+    assert_eq "second press${menu_argument:+ ($menu_argument)}: closes the menu" "pkill -x fuzzel" \
+        "$(cat "$STUB_CALLS")"
+done
+
+for item in poweroff reboot firmware-setup logout; do
+    reset_state
+    run_power_menu "$item" ""
+    assert_eq "$item: Escape on the confirmation does nothing" "" "$(actions)"
+
+    reset_state
+    run_power_menu "$item" no
+    assert_eq "$item: no does nothing" "" "$(actions)"
+    # The prompt names the item, so the user knows what the "yes" does.
+    assert_eq "$item: confirmation prompt" "fuzzel --dmenu --prompt $item? " "$(fuzzel_calls | tail -1)"
+    assert_eq "$item: confirmation list starts with no" "no
+yes" "$(cat "$STUB_FUZZEL_INPUT-2")"
+done
+
+reset_state
+run_power_menu poweroff yes
+assert_eq "poweroff: yes" "systemctl poweroff" "$(actions)"
+
+reset_state
+run_power_menu reboot yes
+assert_eq "reboot: yes" "systemctl reboot" "$(actions)"
+
+reset_state
+run_power_menu firmware-setup yes
+assert_eq "firmware-setup: yes" "systemctl reboot --firmware-setup" "$(actions)"
+
+# The menu already asked, so niri must not ask a second time.
+reset_state
+run_power_menu logout yes
+assert_eq "logout: yes" "niri msg action quit --skip-confirmation" "$(actions)"
+
+# swaylock -f returns when the screen is locked, so the suspend comes after the lock.
+reset_state
+run_power_menu suspend
+assert_eq "suspend: lock, then suspend" "swaylock -f
+systemctl suspend" "$(actions)"
+
+# Without the lock the session is open after resume, so a failed lock stops the suspend.
+reset_state
+printf '%s\n' suspend > "$STUB_ANSWERS"
+STUB_SWAYLOCK_STATUS=1 "$menu" power
+assert_eq "suspend: failed lock, no suspend" "swaylock -f" "$(actions)"
+
+reset_state
+run_power_menu lock
+assert_eq "lock: swaylock" "swaylock" "$(actions)"
+
+# A window rule in config.kdl opens the app id floating-tui as a floating window,
+# so these settings terminals do not take a column of the workspace.
+reset_state
+run_menu wifi
+wait_for_actions
+assert_eq "wifi: impala in a floating terminal" "alacritty --class floating-tui -e impala" "$(actions)"
+
+reset_state
+run_menu bluetooth
+wait_for_actions
+assert_eq "bluetooth: bluetui in a floating terminal" "alacritty --class floating-tui -e bluetui" "$(actions)"
+
+# A block can be intentional (flight mode), so the menu asks before it unblocks. The
+# unblock needs no sudo: the seat gives the user access to /dev/rfkill.
+while read -r item type name tui; do
+    reset_state
+    rfkill_state "$type" "blocked unblocked"
+    run_menu "$item" yes
+    wait_for_actions 2
+    assert_eq "$item: soft block, yes: unblock, then $tui" "rfkill unblock $type
+alacritty --class floating-tui -e $tui" "$(actions)"
+    assert_eq "$item: soft block: prompt" "fuzzel --dmenu --prompt Unblock $name? " "$(fuzzel_calls | tail -1)"
+    assert_eq "$item: soft block: list starts with no" "no
+yes" "$(cat "$STUB_FUZZEL_INPUT-2")"
+
+    # Software cannot remove a hard block.
+    reset_state
+    rfkill_state "$type" "unblocked blocked"
+    run_menu "$item"
+    wait_for_actions 2
+    assert_eq "$item: hard block: notice, no $tui" \
+        "notify-send --app-name menu $name is hard blocked by a switch or the firmware" "$(actions)"
+done <<'LIST'
+wifi wlan Wi-Fi impala
+bluetooth bluetooth Bluetooth bluetui
+LIST
+
+reset_state
+rfkill_state bluetooth "blocked unblocked"
+run_menu bluetooth no
+wait_for_actions
+assert_eq "soft block, no: nothing" "" "$(actions)"
+
+reset_state
+rfkill_state bluetooth "blocked unblocked"
+run_menu bluetooth ""
+wait_for_actions
+assert_eq "soft block, Escape: nothing" "" "$(actions)"
+
+# On a device that is still blocked, the TUI would exit at once.
+reset_state
+rfkill_state bluetooth "blocked unblocked"
+printf '%s\n' bluetooth yes > "$STUB_ANSWERS"
+STUB_UNBLOCK_STATUS=1 "$menu"
+wait_for_actions 3
+assert_eq "failed unblock: notice, no bluetui" "rfkill unblock bluetooth
+notify-send --app-name menu Could not unblock Bluetooth" "$(actions)"
+
+# The question is useless when a hard block stays after the unblock.
+reset_state
+rfkill_state bluetooth "blocked blocked"
+run_menu bluetooth yes
+wait_for_actions 2
+assert_eq "soft and hard block: hard block notice" \
+    "notify-send --app-name menu Bluetooth is hard blocked by a switch or the firmware" "$(actions)"
+
+# One usable device is enough for the TUI.
+reset_state
+rfkill_state bluetooth "unblocked blocked" "unblocked unblocked"
+run_menu bluetooth
+wait_for_actions
+assert_eq "hard block on one of two devices: bluetui" "alacritty --class floating-tui -e bluetui" "$(actions)"
+
+# An unblock cannot help the device with the hard block, so the menu does not ask.
+reset_state
+rfkill_state bluetooth "blocked blocked" "unblocked unblocked"
+run_menu bluetooth yes
+wait_for_actions
+assert_eq "soft and hard block on one of two devices: bluetui, no question" \
+    "alacritty --class floating-tui -e bluetui" "$(actions)"
+
+reset_state
+rfkill_state bluetooth "unblocked blocked" "blocked unblocked"
+run_menu bluetooth yes
+wait_for_actions 2
+assert_eq "hard block on one, soft block on the other: unblock, then bluetui" "rfkill unblock bluetooth
+alacritty --class floating-tui -e bluetui" "$(actions)"
+
+# Without an rfkill device the menu does not know the state, so it opens the TUI as before.
+reset_state
+rfkill_state bluetooth
+run_menu bluetooth
+wait_for_actions
+assert_eq "no rfkill device: bluetui" "alacritty --class floating-tui -e bluetui" "$(actions)"
+
+# wiremix is a terminal program like impala and bluetui, so it opens in the same floating terminal.
+reset_state
+run_menu audio
+wait_for_actions
+assert_eq "audio: wiremix in a floating terminal" "alacritty --class floating-tui -e wiremix" "$(actions)"
+
+reset_state
+run_menu calendar
+wait_for_actions
+assert_eq "calendar: chroncal in a floating terminal" "alacritty --class floating-tui -e chroncal" "$(actions)"
+
+reset_state
+run_menu system-monitor
+wait_for_actions
+assert_eq "system-monitor: btm -b in a floating terminal" "alacritty --class floating-tui -e btm -b" "$(actions)"
+
+# systemctl-tui is a terminal program like btm, so it opens in the same floating terminal.
+reset_state
+run_menu services
+wait_for_actions
+assert_eq "services: systemctl-tui in a floating terminal" "alacritty --class floating-tui -e systemctl-tui" "$(actions)"
+
+# A confirmation is only for the items that end the session.
+for item in lock suspend; do
+    reset_state
+    run_power_menu "$item"
+    assert_eq "$item: no confirmation" "1" "$(fuzzel_calls | wc -l)"
+done
+for item in bluetooth wifi audio do-not-disturb calendar system-monitor services; do
+    reset_state
+    run_menu "$item"
+    wait_for_actions
+    assert_eq "$item: no confirmation" "1" "$(fuzzel_calls | wc -l)"
+done
+
+# The daemon offers only the profiles that the hardware supports, so the list comes
+# from the daemon. The current profile is selected first.
+reset_state
+run_menu power-profile ""
+assert_eq "power-profile: list from the daemon" "performance
+balanced
+power-saver" "$(cat "$STUB_FUZZEL_INPUT-2")"
+assert_eq "power-profile: current profile selected" "fuzzel --dmenu --select balanced" "$(fuzzel_calls | tail -1)"
+assert_eq "power-profile: Escape changes nothing" "" "$(actions)"
+
+reset_state
+cat > "$STUB_PROFILES" <<'DATA'
+  balanced:
+    CpuDriver:	intel_pstate
+
+* power-saver:
+    CpuDriver:	intel_pstate
+DATA
+run_menu power-profile ""
+assert_eq "power-profile: no performance on this hardware" "balanced
+power-saver" "$(cat "$STUB_FUZZEL_INPUT-2")"
+assert_eq "power-profile: other current profile" "fuzzel --dmenu --select power-saver" "$(fuzzel_calls | tail -1)"
+
+reset_state
+run_menu power-profile performance
+assert_eq "power-profile: set, then notice" "powerprofilesctl set performance
+notify-send --app-name menu Power profile: performance" "$(actions)"
+
+# The notice must not tell about a change that did not happen.
+reset_state
+printf '%s\n' power-profile turbo > "$STUB_ANSWERS"
+STUB_SET_STATUS=1 "$menu"
+assert_eq "power-profile: failed set, no notice" "powerprofilesctl set turbo" "$(actions)"
+
+# The notice has the app name "menu": the mako config shows the notices of
+# this app also in do-not-disturb mode, so the user sees that the mode is on.
+reset_state
+run_menu do-not-disturb
+assert_eq "do-not-disturb: on" "makoctl mode -t do-not-disturb
+notify-send --app-name menu Do not disturb: on" "$(actions)"
+
+rm -f "$STUB_CALLS"
+run_menu do-not-disturb
+assert_eq "do-not-disturb: off" "makoctl mode -t do-not-disturb
+notify-send --app-name menu Do not disturb: off" "$(actions)"
+assert_eq "do-not-disturb: other modes kept" "default" "$(cat "$STUB_MAKO_MODES")"
+
+if [[ $failures -gt 0 ]]; then
+    echo "$failures failure(s)"
+    exit 1
+fi
+echo "all tests passed"

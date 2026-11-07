@@ -29,7 +29,7 @@ export STUB_SOCAT_LOG=$work_dir/socat.log
 export STUB_ORDER_LOG=$work_dir/order.log
 export STUB_FUZZEL_CONFIG=$work_dir/fuzzel-config
 export STUB_WINDOWS=$work_dir/windows.json
-lock_file=$XDG_RUNTIME_DIR/workspace-locks-niri.sock
+lock_file=$XDG_RUNTIME_DIR/workspace-locks-niri
 export XDG_CONFIG_HOME=$work_dir/config
 export NIRI_SOCKET=$work_dir/niri.sock
 
@@ -183,28 +183,21 @@ assert_eq "focus: selected workspace is focused by id" "-
 UNIX-CONNECT:$NIRI_SOCKET
 {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}" "$(cat "$STUB_SOCAT_LOG")"
 
-# The overview shows all workspaces while the user picks one. The script focuses
-# the selected workspace first and closes the overview after, so the overview
-# zooms into the selected workspace.
+# The user does not want the overview behind the list, and an overview that the
+# user opened stays open, so the focus is the only request to niri.
 reset_state
 STUB_SELECTION="2" "$workspace" focus
-assert_eq "overview: open, focus, close" "niri msg action open-overview
-socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}
-niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+assert_eq "overview: selection opens no overview" \
+    "socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}" "$(cat "$STUB_ORDER_LOG")"
 
-# A selection always ends in the selected workspace, so the overview closes also
-# when the user had opened it before the list.
 reset_state
 STUB_OVERVIEW_OPEN=true STUB_SELECTION="2" "$workspace" focus
-assert_eq "overview: selection closes an overview the user opened" \
-    "socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}
-niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+assert_eq "overview: selection keeps an overview the user opened" \
+    "socat {\"Action\":{\"FocusWorkspace\":{\"reference\":{\"Id\":2}}}}" "$(cat "$STUB_ORDER_LOG")"
 
-# A cancel returns to the view the user had before the list.
 reset_state
 "$workspace" focus
-assert_eq "overview: cancel closes the overview the list opened" "niri msg action open-overview
-niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+assert_eq "overview: cancel opens no overview" "" "$(cat "$STUB_ORDER_LOG" 2>/dev/null)"
 
 reset_state
 STUB_OVERVIEW_OPEN=true "$workspace" focus
@@ -240,8 +233,7 @@ status=$?
 assert_no_focus "focus: free text"
 assert_failed "focus: free text" "$status"
 assert_eq "focus: free text is reported" "notify-send Workspace No workspace \"nope\"" "$(cat "$STUB_NOTIFY_LOG")"
-assert_eq "focus: free text returns to the view before" "niri msg action open-overview
-niri msg action close-overview" "$(cat "$STUB_ORDER_LOG")"
+assert_eq "focus: free text opens no overview" "" "$(cat "$STUB_ORDER_LOG" 2>/dev/null)"
 
 # Niri answers "Handled" also for an id that names no workspace, so a typed number
 # that is not a listed id must not reach niri.
@@ -364,7 +356,7 @@ status=$?
 assert_eq "toggle: fuzzel killed, not opened" "pkill -x fuzzel" "$(cat "$STUB_LOG")"
 assert_eq "toggle: fuzzel not opened" "" "$(cat "$STUB_FUZZEL_ARGS" 2>/dev/null)"
 assert_eq "toggle: exit status" "0" "$status"
-assert_no_niri_action "toggle: the first call restores the overview"
+assert_no_niri_action "toggle"
 
 # Niri removes an empty workspace only when it has no name, and keeps the active
 # workspace of each output. The watch mode gives named workspaces the same rule: it
@@ -667,7 +659,7 @@ echo "10 2" > "$lock_file"
 "$workspace" close-window
 assert_no_niri_action "close: locked window"
 assert_eq "close: the user is told" \
-    "notify-send Workspace Window locked to workspace \"chat\". Unlock it with Mod+Shift+L to close it." \
+    "notify-send Workspace Window locked to workspace \"chat\". Close it with Mod+Shift+Q, or unlock it with Mod+Shift+L." \
     "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
 
 # A free window closes. The id makes niri close the window that was checked, also
@@ -697,6 +689,243 @@ reset_state
 write_move_windows 12
 STUB_FUZZEL_RUNNING=1 "$workspace" close-window
 assert_eq "close: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# No mark shows that a window is locked, so the window-info mode tells it, with the
+# other data of the window. The lock line names the workspace of the lock, as the
+# other lock notices do.
+# write_info_windows ACTIVE [overview]: the windows of write_move_windows, with app id,
+# title and size.
+write_info_windows() {
+    write_move_windows "$@"
+    jq 'map(.app_id = "app-\(.id)" | .title = "Title \(.id)" | .layout.window_size = [800, 600])' \
+        "$STUB_WINDOWS" > "$STUB_WINDOWS.new" && mv "$STUB_WINDOWS.new" "$STUB_WINDOWS"
+}
+
+info_notice() {
+    printf 'notify-send -h string:x-canonical-private-synchronous:window-info -e -a window-info Window Info %s' \
+        "$1"
+}
+
+reset_state
+write_info_windows 11
+echo "11 2" > "$lock_file"
+"$workspace" window-info
+assert_eq "window-info: locked tiled window" "$(info_notice "󰣆 App: app-11
+󰗴 Title: Title 11
+󰕮 Workspace: chat (2) on DP-2
+󰌾 Locked to workspace \"chat\"
+󰕭 Column 1, row 2
+󰩨 Size: 800x600")" "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# In the overview no window has the focus, but the lock binds act on the active
+# window, so the info is about that window.
+reset_state
+write_info_windows 13 overview
+echo "11 2" > "$lock_file"
+"$workspace" window-info
+assert_eq "window-info: overview: free floating window" "$(info_notice "󰣆 App: app-13
+󰗴 Title: Title 13
+󰕮 Workspace: chat (2) on DP-2
+󰌿 Not locked
+󰖲 Floating
+󰩨 Size: 800x600")" "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+reset_state
+write_info_windows 30
+"$workspace" window-info
+assert_eq "window-info: unnamed workspace: index only" "󰕮 Workspace: 4 on DP-2" \
+    "$(grep -F 'Workspace:' "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# mako reads the body as Pango markup. Without the escape, a title with "&" or "<"
+# shows wrong text or no text.
+reset_state
+write_info_windows 12
+jq 'map(.title = "Q&A <b>")' "$STUB_WINDOWS" > "$STUB_WINDOWS.new" && mv "$STUB_WINDOWS.new" "$STUB_WINDOWS"
+"$workspace" window-info
+assert_eq "window-info: markup in the title escaped" "󰗴 Title: Q&amp;A &lt;b&gt;" \
+    "$(grep -F 'Title:' "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+reset_state
+"$workspace" window-info
+assert_eq "window-info: no window: the user is told" "notify-send Workspace No window on this workspace" \
+    "$(cat "$STUB_NOTIFY_LOG" 2>/dev/null)"
+
+# The window-info mode is not a picker. It must not close an open fuzzel.
+reset_state
+write_info_windows 12
+STUB_FUZZEL_RUNNING=1 "$workspace" window-info
+assert_eq "window-info: fuzzel not touched" "" "$(cat "$STUB_LOG" 2>/dev/null)"
+
+# A group is the text of a workspace name before the first ":". Groups act as
+# virtual monitors on one output, so only the workspaces of the focused output
+# count. Niri does not sort its workspaces. Workspace 1 is the empty workspace that
+# niri keeps above the first one.
+write_group_workspaces() {
+    cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":5,"idx":5,"name":"jam:fuzz","output":"DP-2","is_focused":false,"active_window_id":15},
+ {"id":1,"idx":1,"name":null,"output":"DP-2","is_focused":false,"active_window_id":null},
+ {"id":3,"idx":3,"name":"jam:node","output":"DP-2","is_focused":true,"active_window_id":13},
+ {"id":9,"idx":1,"name":"jam:far","output":"DP-1","is_focused":false,"active_window_id":19},
+ {"id":2,"idx":2,"name":"web:docs","output":"DP-2","is_focused":false,"active_window_id":12},
+ {"id":4,"idx":4,"name":"mail","output":"DP-2","is_focused":false,"active_window_id":14},
+ {"id":10,"idx":2,"name":"lab:x","output":"DP-1","is_focused":false,"active_window_id":20},
+ {"id":6,"idx":6,"name":"web:shop","output":"DP-2","is_focused":false,"active_window_id":16},
+ {"id":7,"idx":7,"name":":x","output":"DP-2","is_focused":false,"active_window_id":17},
+ {"id":8,"idx":8,"name":null,"output":"DP-2","is_focused":false,"active_window_id":null}]
+DATA
+    echo '[{"id":13,"workspace_id":3,"layout":{"pos_in_scrolling_layout":[1,1]}}]' > "$STUB_WINDOWS"
+}
+
+focus_stub_workspace() {
+    jq --argjson id "$1" 'map(.is_focused = (.id == $id))' "$STUB_WORKSPACES" > "$STUB_WORKSPACES.new" &&
+        mv "$STUB_WORKSPACES.new" "$STUB_WORKSPACES"
+}
+
+group_file=$XDG_RUNTIME_DIR/workspace-groups-niri
+
+# The list shows each group once, in the order of the output, as the overview
+# shows the workspaces.
+reset_state
+write_group_workspaces
+"$workspace" group
+assert_eq "group: groups of the focused output, in output order" "web
+jam" "$(cat "$STUB_FUZZEL_INPUT")"
+assert_eq "group: input order is kept" "1" "$(grep -c -- '^--no-sort$' "$STUB_FUZZEL_ARGS")"
+assert_no_niri_action "group: cancel"
+
+reset_state
+write_group_workspaces
+STUB_SELECTION="nope" "$workspace" group
+status=$?
+assert_no_niri_action "group: free text"
+assert_failed "group: free text" "$status"
+assert_eq "group: free text is reported" "notify-send Workspace No group \"nope\"" "$(cat "$STUB_NOTIFY_LOG")"
+
+reset_state
+STUB_FUZZEL_RUNNING=1 "$workspace" group
+assert_eq "group: a second press closes fuzzel" "pkill -x fuzzel" "$(cat "$STUB_LOG")"
+assert_eq "group: a second press opens no fuzzel" "" "$(cat "$STUB_FUZZEL_ARGS" 2>/dev/null)"
+
+# The selected group goes to the top of the output in its own order, so Mod+J/K
+# stay in the group and the overview shows it first. Each move names its
+# workspace, because each move changes the indexes. The empty workspace 1 stays on
+# top: a workspace moved to index 1 goes below a new empty one, and niri moves the
+# focus away. Without a record, the first workspace of the group gets the focus.
+reset_state
+write_group_workspaces
+STUB_SELECTION="jam" "$workspace" group
+assert_eq "group: selection moves the group to the top and focuses it" "$(printf '%s\n' \
+    msg action move-workspace-to-index --reference=jam:node 2 \
+    msg action move-workspace-to-index --reference=jam:fuzz 3 \
+    msg action focus-workspace -- jam:node)" "$(cat "$STUB_NIRI_LOG")"
+
+# A name can end with a space. A reference without that space names no workspace.
+reset_state
+cat > "$STUB_WORKSPACES" <<'DATA'
+[{"id":1,"idx":1,"name":null,"output":"DP-2","is_focused":true,"active_window_id":null},
+ {"id":2,"idx":2,"name":"jam:a ","output":"DP-2","is_focused":false,"active_window_id":12}]
+DATA
+STUB_SELECTION="jam" "$workspace" group
+assert_eq "group: a name with an end space is moved by its full name" \
+    "$(printf '%s\n' msg action move-workspace-to-index "--reference=jam:a " 2)" "$(head -5 "$STUB_NIRI_LOG")"
+
+# Without the empty workspace that niri adds, the group starts at index 1. That
+# workspace has no name and no window.
+for first in '"name":"mail","active_window_id":null' '"name":null,"active_window_id":11'; do
+    reset_state
+    cat > "$STUB_WORKSPACES" <<DATA
+[{"id":1,"idx":1,$first,"output":"DP-2","is_focused":true},
+ {"id":2,"idx":2,"name":"jam:a","output":"DP-2","is_focused":false,"active_window_id":12}]
+DATA
+    STUB_SELECTION="jam" "$workspace" group
+    assert_eq "group: first workspace {$first}: group starts at index 1" \
+        "$(printf '%s\n' msg action move-workspace-to-index --reference=jam:a 1)" "$(head -5 "$STUB_NIRI_LOG")"
+done
+
+# A group keeps its last focused workspace, as a monitor keeps its active one.
+reset_state
+write_group_workspaces
+echo '{"jam":5,"web":6}' > "$group_file"
+STUB_SELECTION="jam" "$workspace" group
+assert_eq "group: the last focused workspace gets the focus" \
+    "$(printf '%s\n' msg action focus-workspace -- jam:fuzz)" "$(tail -5 "$STUB_NIRI_LOG")"
+
+# A rename can take the recorded workspace out of the group.
+reset_state
+write_group_workspaces
+echo '{"jam":4}' > "$group_file"
+STUB_SELECTION="jam" "$workspace" group
+assert_eq "group: a stale record gives the first workspace" \
+    "$(printf '%s\n' msg action focus-workspace -- jam:node)" "$(tail -5 "$STUB_NIRI_LOG")"
+
+# The watcher records the focused workspace of its group. The records of other
+# groups stay.
+reset_state
+write_group_workspaces
+focus_stub_workspace 5
+echo '{"jam":3,"web":2}' > "$group_file"
+echo '{"WorkspaceActivated":{"id":5,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: a focus records the workspace of its group" '{"jam":5,"web":2}' \
+    "$(jq -S -c . "$group_file" 2>/dev/null)"
+
+reset_state
+write_group_workspaces
+focus_stub_workspace 5
+echo '{"WorkspaceActivated":{"id":5,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: the first record makes the file" '{"jam":5}' "$(jq -S -c . "$group_file" 2>/dev/null)"
+
+# A rename can put the focused workspace into a group without a focus change.
+# Niri tells a rename only with WorkspacesChanged.
+reset_state
+write_group_workspaces
+focus_stub_workspace 5
+echo '{"jam":3}' > "$group_file"
+echo '{"WorkspacesChanged":{"workspaces":[]}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: a rename records the focused workspace" '{"jam":5}' "$(jq -S -c . "$group_file" 2>/dev/null)"
+
+reset_state
+write_group_workspaces
+focus_stub_workspace 4
+echo '{"WorkspaceActivated":{"id":4,"focused":true}}' > "$STUB_EVENTS"
+"$workspace" watch
+assert_eq "watch: a workspace without a group records nothing" "" "$(cat "$group_file" 2>/dev/null)"
+
+# Mod+Ctrl+1..9 reach any workspace by its niri index, also from a group, as
+# Mod+1..9 do.
+reset_state
+write_group_workspaces
+"$workspace" move-window move-column-to-workspace 3
+assert_eq "move: group: the niri index is kept" \
+    "$(printf '%s\n' msg action move-column-to-workspace 3)" "$(cat "$STUB_NIRI_LOG" 2>/dev/null)"
+
+# A workspace that joins a group goes after the last workspace of the group on its
+# output, so the group stays together. Above that workspace, the target index is
+# the index of that workspace, because the move shifts it up.
+for case in "4 jam:mail 5" "7 jam:x 6"; do
+    read -r id name target <<< "$case"
+    reset_state
+    write_group_workspaces
+    focus_stub_workspace "$id"
+    STUB_SELECTION="$name" "$workspace" set-name
+    assert_eq "set-name: $name joins its group" "$(printf '%s\n' \
+        msg action set-workspace-name -- "$name" msg action move-workspace-to-index "$target")" \
+        "$(cat "$STUB_NIRI_LOG")"
+done
+
+# A rename inside a group keeps the order of the group. Group lab has no workspace
+# on this output.
+for case in "3 jam:core" "4 lab:mail"; do
+    read -r id name <<< "$case"
+    reset_state
+    write_group_workspaces
+    focus_stub_workspace "$id"
+    STUB_SELECTION="$name" "$workspace" set-name
+    assert_eq "set-name: $name does not move" "$(printf '%s\n' msg action set-workspace-name -- "$name")" \
+        "$(cat "$STUB_NIRI_LOG")"
+done
 
 # An unknown mode is a usage error. Nothing opens.
 reset_state

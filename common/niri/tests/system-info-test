@@ -1,0 +1,413 @@
+#!/bin/bash
+# Checks scripts/system-info against stub commands and a fake /sys, without a running
+# desktop. There is no bar, so the Mod+I popup is the only place that shows the state
+# of the system. Each line tells one state, and its Nerd Font icon (the monospace font)
+# changes with the state, so a look at the icons is enough. A source that is not there
+# (no battery, no Bluetooth controller, no audio server) gives no line: not a broken
+# line, and not a popup that comes late or never.
+
+set -u
+
+repo_dir=$(cd "$(dirname "$0")/.." && pwd)
+system_info=${SYSTEM_INFO:-$repo_dir/scripts/system-info}
+
+work_dir=$(mktemp -d)
+trap 'rm -rf "$work_dir"' EXIT
+
+mkdir -p "$work_dir/bin"
+export PATH=$work_dir/bin:$PATH
+export STUB_DATA=$work_dir/data
+export STUB_CALLS=$work_dir/calls.log
+export STUB_BODY=$work_dir/body
+fake_sys=$work_dir/sys
+
+# Each stub prints the data file named by its command line ("/" written as "%"), and
+# fails when the file is not there. An empty file is a command that prints nothing.
+for command in date uptime free ip iw sensors df upower wpctl makoctl busctl bluetoothctl; do
+    cat > "$work_dir/bin/$command" <<'STUB'
+#!/bin/bash
+# bluetoothctl waits forever when bluetoothd does not run.
+[[ ${0##*/} == bluetoothctl && -n ${STUB_BLUETOOTH_HANG:-} ]] && exec sleep 30
+[[ ${0##*/} == "${STUB_SLOW:-}" ]] && sleep 1
+key="${0##*/}${*:+ $*}"
+file=$STUB_DATA/${key//\//%}
+[[ -f $file ]] || exit 1
+cat "$file"
+STUB
+done
+
+cat > "$work_dir/bin/ping" <<'STUB'
+#!/bin/bash
+echo "ping $*" >> "$STUB_CALLS"
+sleep "${STUB_PING_DELAY:-0}"
+exit "${STUB_PING_STATUS:-0}"
+STUB
+
+cat > "$work_dir/bin/notify-send" <<'STUB'
+#!/bin/bash
+echo "notify-send ${*:1:$#-1}" >> "$STUB_CALLS"
+printf '%s' "${!#}" > "$STUB_BODY"
+STUB
+chmod +x "$work_dir/bin/"*
+
+# stub_output "COMMAND ARGS" TEXT: the output of that command line.
+stub_output() {
+    local key=$1
+    printf '%s\n' "$2" > "$STUB_DATA/${key//\//%}"
+}
+
+stub_empty() {
+    local key=$1
+    : > "$STUB_DATA/${key//\//%}"
+}
+
+stub_fails() {
+    local key=$1
+    rm -f "$STUB_DATA/${key//\//%}"
+}
+
+battery() {
+    mkdir -p "$fake_sys/power_supply/BAT0"
+    echo "$1" > "$fake_sys/power_supply/BAT0/capacity"
+    echo "$2" > "$fake_sys/power_supply/BAT0/status"
+}
+
+headset=/org/freedesktop/UPower/devices/headset_dev_80_99_E7_F0_A6_C8
+display_device=/org/freedesktop/UPower/devices/DisplayDevice
+power_profile="busctl get-property org.freedesktop.UPower.PowerProfiles"
+power_profile+=" /org/freedesktop/UPower/PowerProfiles org.freedesktop.UPower.PowerProfiles ActiveProfile"
+
+# The outputs of this machine, with a battery, a VPN and a microphone added.
+reset_state() {
+    rm -rf "$STUB_DATA" "$fake_sys" "$STUB_CALLS" "$STUB_BODY"
+    unset STUB_PING_STATUS STUB_PING_DELAY STUB_SLOW STUB_BLUETOOTH_HANG
+    mkdir -p "$STUB_DATA" "$fake_sys/power_supply" "$fake_sys/net/wlan0/wireless" "$fake_sys/net/eth0"
+    battery 81 Discharging
+
+    stub_output "date +%a %d %b %H:%M:%S" "Mon 26 Oct 17:26:14"
+    stub_output uptime " 17:26:14 up  9:05,  1 user,  load average: 1.18, 1.20, 1.10"
+    stub_output "uptime -p" "up 9 hours, 5 minutes"
+    stub_output "free -h" "               total        used        free      shared  buff/cache   available
+Mem:            62Gi       7.1Gi        50Gi       512Mi       5.0Gi        55Gi
+Swap:             0B          0B          0B"
+    stub_output sensors "iwlwifi_1-virtual-0
+Adapter: Virtual device
+temp1:        +46.0°C
+
+k10temp-pci-00c3
+Adapter: PCI adapter
+Tctl:         +44.0°C
+Tccd1:        +35.2°C
+
+nvme-pci-0100
+Adapter: PCI adapter
+Composite:    +35.9°C  (low  = -20.1°C, high = +89.8°C)
+                       (crit = +94.8°C)
+
+amdgpu-pci-2100
+Adapter: PCI adapter
+vddgfx:      981.00 mV
+fan1:        2032 RPM  (min = 1800 RPM, max = 6000 RPM)
+edge:         +61.0°C  (crit = +97.0°C, hyst = -273.1°C)
+PPT:          11.71 W  (cap =  25.00 W)"
+    stub_output "df -h --output=used,size,pcent /" " Used  Size Use%
+ 454G  932G  53%"
+
+    stub_output "ip route" "default via 10.212.54.1 dev wlan0 proto dhcp src 10.212.54.98 metric 1024
+10.212.54.0/24 dev wlan0 proto kernel scope link src 10.212.54.98 metric 1024"
+    stub_output "ip addr show wlan0" "3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:11:22:33:44:55 brd ff:ff:ff:ff:ff:ff
+    inet 10.212.54.98/24 metric 1024 brd 10.212.54.255 scope global dynamic wlan0
+       valid_lft 3000sec preferred_lft 3000sec
+    inet6 fe80::1/64 scope link
+       valid_lft forever preferred_lft forever"
+    stub_output "iw dev wlan0 link" "Connected to da:42:bf:95:42:44 (on wlan0)
+	SSID: LordOfThePings
+	freq: 5180.0
+	RX: 42661870 bytes (39434 packets)
+	TX: 3783862 bytes (11142 packets)
+	signal: -51 dBm
+	rx bitrate: 1200.9 MBit/s 80MHz HE-MCS 11 HE-NSS 2 HE-GI 0 HE-DCM 0"
+    stub_output "ip -br link show up type wireguard" "wg0              UNKNOWN        <POINTOPOINT,NOARP,UP,LOWER_UP> "
+
+    stub_output "bluetoothctl show" "Controller B0:A4:60:ED:B2:13 (public)
+	Manufacturer: 0x0002 (2)
+	Name: behemoth
+	Alias: behemoth
+	Powered: yes
+	PowerState: on
+	Discoverable: no"
+    stub_output "bluetoothctl devices Connected" "Device 80:99:E7:F0:A6:C8 WH-1000XM6"
+    stub_output "upower -e" "$headset
+$display_device"
+    stub_output "upower -i $headset" "  native-path:          /org/bluez/hci0/dev_80_99_E7_F0_A6_C8
+  model:                WH-1000XM6
+  serial:               80:99:E7:F0:A6:C8
+  power supply:         no
+  updated:              Mon 26 Oct 2026 05:18:07 PM CET (892 seconds ago)
+  has history:          yes
+  has statistics:       no
+  headset
+    warning-level:       none
+    percentage:          82%
+    icon-name:          'battery-missing-symbolic'"
+    stub_output "upower -i $display_device" "  power supply:         no
+  updated:              Mon 26 Oct 2026 08:24:41 AM CET (32898 seconds ago)
+  has history:          no
+  has statistics:       no
+  unknown
+    warning-level:       none
+    percentage:          0%
+    icon-name:          'battery-missing-symbolic'"
+
+    stub_output "wpctl get-volume @DEFAULT_AUDIO_SINK@" "Volume: 0.36"
+    stub_output "wpctl inspect @DEFAULT_AUDIO_SINK@" "id 75, type PipeWire:Interface:Node
+    audio.channels = \"2\"
+  * media.class = \"Audio/Sink\"
+  * node.description = \"WH-1000XM6\"
+  * node.name = \"bluez_output.80_99_E7_F0_A6_C8.1\""
+    stub_output "wpctl get-volume @DEFAULT_AUDIO_SOURCE@" "Volume: 0.50"
+    stub_output "wpctl inspect @DEFAULT_AUDIO_SOURCE@" "id 80, type PipeWire:Interface:Node
+  * media.class = \"Audio/Source\"
+  * node.description = \"USB Microphone\""
+    stub_output "$power_profile" 's "balanced"'
+    stub_output "makoctl mode" default
+}
+
+# The script reads the batteries and the wireless flag of an interface in /sys.
+# shellcheck disable=SC2016
+run_info() {
+    rm -f "$STUB_CALLS" "$STUB_BODY"
+    timeout 20 unshare -rm bash -c 'mount --bind "$1/power_supply" /sys/class/power_supply &&
+        mount --bind "$1/net" /sys/class/net && exec "$2"' _ "$fake_sys" "$system_info" > /dev/null
+}
+
+body() {
+    cat "$STUB_BODY" 2>/dev/null
+}
+
+# The body line with the label, the text before ": ".
+line() {
+    body | grep -F " $1: "
+}
+
+# Device batteries are the only lines that end with a bare percent after the label.
+device_battery_lines() {
+    body | grep -E '^[^ ]+ [^:]+: [0-9]+%$'
+}
+
+failures=0
+
+elapsed_ms() {
+    local start=$1
+    echo $(( (${EPOCHREALTIME/[.,]/} - ${start/[.,]/}) / 1000 ))
+}
+
+assert_eq() {
+    local name=$1 expected=$2 actual=$3
+    if [[ $expected == "$actual" ]]; then
+        echo "ok   $name"
+    else
+        echo "FAIL $name"
+        echo "  expected: $(printf '%q' "$expected")"
+        echo "  actual:   $(printf '%q' "$actual")"
+        failures=$((failures + 1))
+    fi
+}
+
+# The lines come in a fixed order, so the eye finds each one at the same place. Load,
+# temperature and power profile are together: the profile changes the other two.
+# DisplayDevice of upower is not a device: it is the sum of the system batteries.
+reset_state
+run_info
+assert_eq "all sources: body" "󰃰 Mon 26 Oct 17:26:14
+󰔛 Uptime: 9 hours, 5 minutes
+󰻠 Load: 1.18
+󰔏 Temperature: CPU 44°C, GPU 61°C
+󰓅 Power profile: balanced
+󰍛 Memory: 7.1Gi/62Gi
+󰋊 Disk: 454G/932G (53%)
+󰁹 Battery: 81% (Discharging)
+󰖟 Network: Connected
+󰖩 wlan0: 10.212.54.98 (LordOfThePings, -51 dBm)
+󰖂 VPN: wg0
+󰂱 Bluetooth: WH-1000XM6
+󰋋 WH-1000XM6: 82%
+󰕾 Audio: WH-1000XM6 36%
+󰍬 Microphone: USB Microphone 50%
+󰂚 Do not disturb: off" "$(body)"
+
+# The mako rules (timeout, size, shown in do-not-disturb mode) match the app name. The
+# hint replaces the previous popup, so a second Mod+I does not add a second popup.
+assert_eq "notification: app and replace hint" \
+    "notify-send -h string:x-canonical-private-synchronous:protect -e -a system-info System Info" \
+    "$(grep '^notify-send' "$STUB_CALLS")"
+
+# A network that drops the packets must not stop the popup for the 10 s default wait.
+assert_eq "network: ping waits 1 s at most" "ping -c 1 -W 1 8.8.8.8" "$(grep '^ping' "$STUB_CALLS")"
+
+reset_state
+STUB_PING_STATUS=1 run_info
+assert_eq "network: down" "󰪎 Network: Disconnected" "$(line Network)"
+
+# Mod+I must answer at once. The ping can take up to 1 s, so it must not add its time
+# to the time of the other sources: one after the other, the two take 2 s here.
+reset_state
+start=$EPOCHREALTIME
+STUB_PING_DELAY=1 STUB_SLOW=sensors run_info
+elapsed=$(elapsed_ms "$start")
+assert_eq "network: ping in parallel with the other sources" yes \
+    "$( ((elapsed < 1700)) && echo yes || echo "no ($elapsed ms)")"
+assert_eq "network: late ping, up" "󰖟 Network: Connected" "$(line Network)"
+
+reset_state
+STUB_PING_DELAY=1 STUB_PING_STATUS=1 run_info
+assert_eq "network: late ping, down" "󰪎 Network: Disconnected" "$(line Network)"
+
+# A wired interface has no SSID and no signal.
+reset_state
+stub_output "ip route" "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.5 metric 100"
+stub_output "ip addr show eth0" "    inet 192.168.1.5/24 brd 192.168.1.255 scope global dynamic eth0"
+run_info
+assert_eq "interface: wired" "󰈀 eth0: 192.168.1.5" "$(line eth0)"
+
+reset_state
+stub_empty "ip route"
+run_info
+assert_eq "interface: no default route, no line" "" "$(body | grep -e ' wlan0: ' -e ' eth0: ')"
+
+reset_state
+battery 81 Charging
+run_info
+assert_eq "battery: charging" "󰂄 Battery: 81% (Charging)" "$(line Battery)"
+
+reset_state
+rm -r "$fake_sys/power_supply/BAT0"
+run_info
+assert_eq "battery: none, no line" "" "$(line Battery)"
+
+# wpctl prints 0.08 for 8 %: the digits "008" are not an octal number.
+reset_state
+stub_output "wpctl get-volume @DEFAULT_AUDIO_SINK@" "Volume: 0.36 [MUTED]"
+stub_output "wpctl get-volume @DEFAULT_AUDIO_SOURCE@" "Volume: 0.08 [MUTED]"
+run_info
+assert_eq "audio: muted" "󰖁 Audio: WH-1000XM6 36% muted" "$(line Audio)"
+assert_eq "microphone: muted, 8 %" "󰍭 Microphone: USB Microphone 8% muted" "$(line Microphone)"
+
+reset_state
+stub_output "makoctl mode" "default
+do-not-disturb"
+run_info
+assert_eq "do-not-disturb: on" "󰂛 Do not disturb: on" "$(line "Do not disturb")"
+
+# makoctl can have no mode at all, and do not disturb is then off.
+reset_state
+stub_empty "makoctl mode"
+run_info
+assert_eq "do-not-disturb: no mode is off" "󰂚 Do not disturb: off" "$(line "Do not disturb")"
+
+# Powered is "no" also when rfkill blocks the controller.
+reset_state
+stub_output "bluetoothctl show" "Controller B0:A4:60:ED:B2:13 (public)
+	Powered: no
+	PowerState: off-blocked"
+run_info
+assert_eq "bluetooth: off" "󰂲 Bluetooth: off" "$(line Bluetooth)"
+
+reset_state
+stub_empty "bluetoothctl devices Connected"
+run_info
+assert_eq "bluetooth: on, no device" "󰂯 Bluetooth: on" "$(line Bluetooth)"
+
+reset_state
+stub_output "bluetoothctl devices Connected" "Device 80:99:E7:F0:A6:C8 WH-1000XM6
+Device D4:3A:2C:11:22:33 MX Master 3S"
+run_info
+assert_eq "bluetooth: two devices" "󰂱 Bluetooth: WH-1000XM6, MX Master 3S" "$(line Bluetooth)"
+
+reset_state
+start=$EPOCHREALTIME
+STUB_BLUETOOTH_HANG=1 run_info
+elapsed=$(elapsed_ms "$start")
+assert_eq "bluetooth: bluetoothd hangs, popup within 3 s" yes "$( ((elapsed < 3000)) && echo yes || echo "no ($elapsed ms)")"
+assert_eq "bluetooth: bluetoothd hangs, no line" "" "$(line Bluetooth)"
+assert_eq "bluetooth: bluetoothd hangs, later lines kept" "󰂚 Do not disturb: off" "$(line "Do not disturb")"
+
+# On a laptop, upower also lists the system battery and the charger: they are power
+# supplies, and the Battery line already shows the system battery. A device without a
+# model takes the name of its type.
+reset_state
+mouse=/org/freedesktop/UPower/devices/mouse_dev_D4_3A_2C_11_22_33
+keyboard=/org/freedesktop/UPower/devices/keyboard_dev_D4_3A_2C_44_55_66
+stub_output "upower -e" "/org/freedesktop/UPower/devices/line_power_AC
+/org/freedesktop/UPower/devices/battery_BAT0
+$mouse
+$keyboard
+$display_device"
+stub_output "upower -i /org/freedesktop/UPower/devices/line_power_AC" "  native-path:          AC
+  power supply:         yes
+  line-power
+    online:              yes"
+stub_output "upower -i /org/freedesktop/UPower/devices/battery_BAT0" "  native-path:          BAT0
+  model:                5B10W13930
+  power supply:         yes
+  battery
+    percentage:          81%"
+stub_output "upower -i $mouse" "  model:                MX Master 3S
+  power supply:         no
+  mouse
+    percentage:          40%"
+stub_output "upower -i $keyboard" "  power supply:         no
+  keyboard
+    percentage:          70%"
+run_info
+assert_eq "device batteries: only devices, icon of the type" "󰍽 MX Master 3S: 40%
+󰌌 keyboard: 70%" "$(device_battery_lines)"
+
+reset_state
+stub_output "ip -br link show up type wireguard" "wg0              UNKNOWN        <POINTOPOINT,NOARP,UP,LOWER_UP>
+wg1              UNKNOWN        <POINTOPOINT,NOARP,UP,LOWER_UP> "
+run_info
+assert_eq "vpn: two interfaces" "󰖂 VPN: wg0, wg1" "$(line VPN)"
+
+reset_state
+stub_empty "ip -br link show up type wireguard"
+run_info
+assert_eq "vpn: none, no line" "" "$(line VPN)"
+
+# An Intel CPU has "Package id 0" and not Tctl. Not all GPUs have a sensor.
+reset_state
+stub_output sensors "coretemp-isa-0000
+Adapter: ISA adapter
+Package id 0:  +55.0°C  (high = +100.0°C, crit = +100.0°C)
+Core 0:        +50.0°C  (high = +100.0°C, crit = +100.0°C)"
+run_info
+assert_eq "temperature: intel, no GPU" "󰔏 Temperature: CPU 55°C" "$(line Temperature)"
+
+reset_state
+stub_output sensors "nvme-pci-0100
+Adapter: PCI adapter
+Composite:    +35.9°C  (low  = -20.1°C, high = +89.8°C)"
+run_info
+assert_eq "temperature: no CPU and no GPU, no line" "" "$(line Temperature)"
+
+# No source of the new lines answers: the popup keeps the lines that do not need them.
+reset_state
+for key in sensors "df -h --output=used,size,pcent /" "uptime -p" "ip -br link show up type wireguard" \
+    "bluetoothctl show" "upower -e" "wpctl get-volume @DEFAULT_AUDIO_SINK@" \
+    "wpctl get-volume @DEFAULT_AUDIO_SOURCE@" "$power_profile" "makoctl mode"; do
+    stub_fails "$key"
+done
+run_info
+assert_eq "all new sources fail: only the other lines" "󰃰 Mon 26 Oct 17:26:14
+󰻠 Load: 1.18
+󰍛 Memory: 7.1Gi/62Gi
+󰁹 Battery: 81% (Discharging)
+󰖟 Network: Connected
+󰖩 wlan0: 10.212.54.98 (LordOfThePings, -51 dBm)" "$(body)"
+
+if [[ $failures -gt 0 ]]; then
+    echo "$failures failure(s)"
+    exit 1
+fi
+echo "all tests passed"

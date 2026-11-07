@@ -1,0 +1,110 @@
+#!/bin/bash
+
+if pgrep -x "fuzzel" > /dev/null; then
+    pkill -x "fuzzel"
+    exit 0
+fi
+
+# Icons of the Nerd Font, the monospace font.
+case "${1:-}" in
+    "")
+        commands="󰂯 bluetooth
+󰖩 wifi
+󰕾 audio
+󰓅 power-profile
+󰂛 do-not-disturb
+󰃭 calendar
+󰄨 system-monitor
+󰣖 services"
+        ;;
+    power)
+        commands="󰤄 suspend
+󰐥 poweroff
+󰜉 reboot
+󰌾 lock
+󰍃 logout
+󰘚 firmware-setup"
+        ;;
+    *)
+        echo "usage: menu [power]" >&2
+        exit 2
+        ;;
+esac
+
+chosen=$(printf '%s\n' "$commands" | fuzzel --dmenu)
+
+# fuzzel prints typed text that matches no line, also the name of an item of the other menu.
+grep -qxF -- "$chosen" <<< "$commands" || exit 0
+chosen=${chosen#* }
+
+# "no" comes first, so a double Enter does not end the session.
+confirm() {
+    [ "$(printf 'no\nyes\n' | fuzzel --dmenu --prompt "$1")" = yes ]
+}
+
+# impala and bluetui exit at once on a blocked device, and their terminal closes with them.
+# rfkill prints one "SOFT HARD" line per device.
+open_radio_tui() {
+    local type=$1 name=$2 tui=$3 state
+    state=$(rfkill -r -n -o SOFT,HARD list "$type")
+    if [ -n "$state" ] && ! grep -q ' unblocked$' <<< "$state"; then
+        notify-send --app-name menu "$name is hard blocked by a switch or the firmware"
+        return
+    fi
+    if grep -qx 'blocked unblocked' <<< "$state"; then
+        confirm "Unblock $name? " || return
+        if ! rfkill unblock "$type"; then
+            notify-send --app-name menu "Could not unblock $name"
+            return
+        fi
+    fi
+    alacritty --class floating-tui -e "$tui" &
+}
+
+case "$chosen" in
+    bluetooth)
+        open_radio_tui bluetooth Bluetooth bluetui
+        ;;
+    wifi)
+        open_radio_tui wlan Wi-Fi impala
+        ;;
+    audio)
+        alacritty --class floating-tui -e wiremix &
+        ;;
+    calendar)
+        alacritty --class floating-tui -e chroncal &
+        ;;
+    system-monitor)
+        alacritty --class floating-tui -e btm -b &
+        ;;
+    services)
+        alacritty --class floating-tui -e systemctl-tui &
+        ;;
+    lock)
+        swaylock
+        ;;
+    suspend)
+        # No idle daemon locks the screen on resume.
+        swaylock -f && systemctl suspend
+        ;;
+    poweroff|reboot)
+        confirm "$chosen? " && systemctl "$chosen"
+        ;;
+    firmware-setup)
+        confirm "$chosen? " && systemctl reboot --firmware-setup
+        ;;
+    logout)
+        confirm "$chosen? " && niri msg action quit --skip-confirmation
+        ;;
+    power-profile)
+        profile=$(powerprofilesctl list | sed -n 's/^[* ] \([a-z-]*\):$/\1/p' |
+            fuzzel --dmenu --select "$(powerprofilesctl get)")
+        [ -n "$profile" ] && powerprofilesctl set "$profile" &&
+            notify-send --app-name menu "Power profile: $profile"
+        ;;
+    do-not-disturb)
+        state=off
+        makoctl mode -t do-not-disturb | grep -qx do-not-disturb && state=on
+        notify-send --app-name menu "Do not disturb: $state"
+        ;;
+esac

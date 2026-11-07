@@ -1,6 +1,6 @@
 #!/bin/bash
 # Names the focused Niri workspace (an empty name removes the name), or focuses one
-# from a list of all workspaces shown over the overview, through fuzzel.
+# from a list of all workspaces, through fuzzel.
 # A second call while fuzzel is open closes it.
 # The watch mode unnames a named workspace with no windows, so niri removes it as
 # it removes an unnamed one. The active workspace of each output is kept, as niri keeps it.
@@ -10,13 +10,26 @@
 # runs a move bind only when it takes no locked window off its workspace. For moves
 # without a bind, such as a mouse drag, the watch mode moves a locked window back.
 # The toggle-lock mode locks or frees the focused window, and the close-window mode does not
-# close a locked window.
+# close a locked window. No mark shows a lock, so the window-info mode tells it, with the
+# workspace and the layout of the window.
+# A group is the text of a name before the first ":". Groups act as virtual monitors on
+# one output: the group mode moves a group to the top and focuses its last focused
+# workspace.
 
 set -u
 
 picker_file=$XDG_RUNTIME_DIR/workspace-picker
 # Window ids start again with each niri instance, so each instance has its own list.
-lock_file=$XDG_RUNTIME_DIR/workspace-locks-${NIRI_SOCKET##*/}
+niri_instance=${NIRI_SOCKET##*/}
+lock_file=$XDG_RUNTIME_DIR/workspace-locks-${niri_instance%.sock}
+group_file=$XDG_RUNTIME_DIR/workspace-groups-${niri_instance%.sock}
+
+# shellcheck disable=SC2016
+group_jq='
+    def group: capture("^(?<group>[^:]+):").group;
+    def focused_output: map(select(.is_focused))[0].output;
+    def members($group_name): focused_output as $output
+        | map(select(.output == $output and (.name // "" | group) == $group_name)) | sort_by(.idx);'
 
 report() {
     notify-send Workspace "$1"
@@ -73,10 +86,60 @@ set_name() {
     fi
     niri msg action set-workspace-name -- "$name"
     lock_windows "$workspace_id"
+    join_group "$current" "$name"
+}
+
+# A workspace moved down to the index of another one goes below it.
+join_group() {
+    local target
+    target=$(niri msg -j workspaces | jq -r -e --arg old "$1" --arg new "$2" "$group_jq"'
+        map(select(.is_focused))[0] as $workspace
+        | [$new | group] as $group
+        | select($group != [] and $group != [$old | group])
+        | members($group[0]) | map(select(.id != $workspace.id)) | last
+        | select(. != null)
+        | if $workspace.idx < .idx then .idx else .idx + 1 end') || return 0
+    niri msg action move-workspace-to-index "$target"
+}
+
+# With empty-workspace-above-first, a workspace moved to index 1 goes below a new empty
+# one, and niri moves the focus away. So the group starts below the empty workspace.
+select_group() {
+    local workspaces groups selection last base position=0 name target
+    workspaces=$(niri msg -j workspaces)
+    groups=$(jq -r "$group_jq"'focused_output as $output
+        | map(select(.output == $output)) | sort_by(.idx)[] | .name // "" | group' <<< "$workspaces" |
+        awk '!seen[$0]++')
+    selection=$(fuzzel --dmenu --prompt "Group: " --no-sort <<< "$groups")
+    [[ -n $selection ]] || exit 0
+    if ! grep -qxF -- "$selection" <<< "$groups"; then
+        report "No group \"$selection\""
+        exit 1
+    fi
+    base=$(jq "$group_jq"'focused_output as $output | map(select(.output == $output)) | min_by(.idx)
+        | if .name == null and .active_window_id == null then 2 else 1 end' <<< "$workspaces")
+    while IFS= read -r name; do
+        niri msg action move-workspace-to-index "--reference=$name" $((base + position))
+        position=$((position + 1))
+    done < <(jq -r --arg group "$selection" "$group_jq"'members($group)[].name' <<< "$workspaces")
+    last=$(jq --arg group "$selection" '.[$group]' "$group_file" 2>/dev/null) || last=null
+    target=$(jq -r --arg group "$selection" --argjson last "$last" "$group_jq"'
+        members($group) | (map(select(.id == $last)) + .)[0].name' <<< "$workspaces")
+    niri msg action focus-workspace -- "$target"
+}
+
+remember_group_focus() {
+    local id group
+    IFS=$'\t' read -r id group <<< "$(niri msg -j workspaces |
+        jq -r "$group_jq"'.[] | select(.is_focused) | "\(.id)\t\(.name // "" | group)"')"
+    [[ -n $group ]] || return
+    { cat "$group_file" 2>/dev/null || echo '{}'; } |
+        jq -c --arg group "$group" --argjson id "$id" '.[$group] = $id' > "$group_file.new" &&
+        mv "$group_file.new" "$group_file"
 }
 
 focus() {
-    local workspaces sorted lines focused ids selection overview_was_open
+    local workspaces sorted lines focused ids selection
     workspaces=$(niri msg -j workspaces)
     sorted='sort_by(.output, .idx)'
     lines=$(jq -r '
@@ -87,25 +150,18 @@ focus() {
         | "\(.id)\t\(.name // .idx)" + (if $details == [] then "" else "  (\($details | join(" ")))" end)
         ' <<< "$workspaces")
     focused=$(jq -r "$sorted"' | map(.is_focused) | index(true) // 0' <<< "$workspaces")
-    overview_was_open=$(niri msg -j overview-state | jq .is_open)
-    [[ $overview_was_open == true ]] || niri msg action open-overview
     echo $$ > "$picker_file"
     selection=$(fuzzel --dmenu --prompt "Workspace: " --no-sort "--select-index=$focused" \
         --with-nth 2 --accept-nth 1 <<< "$lines")
     rm -f "$picker_file"
-    if [[ -z $selection ]]; then
-        [[ $overview_was_open == true ]] || niri msg action close-overview
-        exit 0
-    fi
+    [[ -n $selection ]] || exit 0
     ids=$(cut -f1 <<< "$lines")
     if ! grep -qxF -- "$selection" <<< "$ids"; then
-        [[ $overview_was_open == true ]] || niri msg action close-overview
         report "No workspace \"$selection\""
         exit 1
     fi
     printf '{"Action":{"FocusWorkspace":{"reference":{"Id":%s}}}}\n' "$selection" |
         socat - UNIX-CONNECT:"$NIRI_SOCKET" > /dev/null
-    niri msg action close-overview
 }
 
 # A workspace with a locked window elsewhere keeps its name: the window comes back,
@@ -181,7 +237,7 @@ close_window() {
     window=$(active_window)
     [[ -n $window ]] || exit 0
     if locked_workspace=$(lock_workspace_of "$window"); then
-        report "Window locked to workspace \"$(workspace_label "$locked_workspace")\". Unlock it with Mod+Shift+L to close it."
+        report "Window locked to workspace \"$(workspace_label "$locked_workspace")\". Close it with Mod+Shift+Q, or unlock it with Mod+Shift+L."
         exit 0
     fi
     niri msg action close-window --id "$window"
@@ -208,6 +264,32 @@ toggle_lock() {
     report "Window locked to workspace \"$name\""
 }
 
+# mako reads the body as Pango markup, so @html escapes the names and the title.
+window_info() {
+    local window locked_workspace message
+    window=$(active_window)
+    if [[ -z $window ]]; then
+        report "No window on this workspace"
+        return
+    fi
+    locked_workspace=$(lock_workspace_of "$window") || locked_workspace=null
+    message=$(jq -n -r --argjson id "$window" --argjson lock "$locked_workspace" \
+        --slurpfile windows <(niri msg -j windows) --slurpfile workspaces <(niri msg -j workspaces) '
+        ($workspaces[0] | INDEX(.id)) as $workspace_by_id
+        | $windows[0][] | select(.id == $id)
+        | $workspace_by_id["\(.workspace_id)"] as $workspace
+        | .layout.pos_in_scrolling_layout as $pos
+        | @html "󰣆 App: \(.app_id // "unknown")",
+          @html "󰗴 Title: \(.title // "")",
+          if $workspace.name then @html "󰕮 Workspace: \($workspace.name) (\($workspace.idx)) on \($workspace.output)"
+          else @html "󰕮 Workspace: \($workspace.idx) on \($workspace.output)" end,
+          if $lock == null then "󰌿 Not locked"
+          else @html "󰌾 Locked to workspace \"\($workspace_by_id["\($lock)"] | .name // .idx)\"" end,
+          if $pos == null then "󰖲 Floating" else "󰕭 Column \($pos[0]), row \($pos[1])" end,
+          "󰩨 Size: \(.layout.window_size[0])x\(.layout.window_size[1])"')
+    notify-send -h string:x-canonical-private-synchronous:window-info -e -a window-info "Window Info" "$message"
+}
+
 close_picker() {
     kill -0 "$(cat "$picker_file" 2>/dev/null)" 2>/dev/null && pkill -x fuzzel
 }
@@ -224,8 +306,9 @@ watch() {
         else keys[0] end' |
     while read -r event window workspace; do
         case $event in
-            WorkspaceFocused) close_picker; unname_empty ;;
-            WorkspacesChanged|WorkspaceActivated|WorkspaceActiveWindowChanged) unname_empty ;;
+            WorkspaceFocused) close_picker; unname_empty; remember_group_focus ;;
+            WorkspacesChanged) unname_empty; remember_group_focus ;;
+            WorkspaceActivated|WorkspaceActiveWindowChanged) unname_empty ;;
             WindowOpenedOrChanged) keep_locked "$window" "$workspace" ;;
             WindowClosed) unlock_window "$window" ;;
         esac
@@ -233,10 +316,10 @@ watch() {
 }
 
 case ${1:-} in
-    set-name|focus) pkill -x fuzzel && exit 0 ;;
-    watch|move-window|toggle-lock|close-window) ;;
+    set-name|focus|group) pkill -x fuzzel && exit 0 ;;
+    watch|move-window|toggle-lock|close-window|window-info) ;;
     *)
-        echo "usage: workspace set-name|focus|watch|toggle-lock|close-window|move-window ACTION [WORKSPACE]" >&2
+        echo "usage: workspace set-name|focus|group|watch|toggle-lock|close-window|window-info|move-window ACTION [WORKSPACE]" >&2
         exit 2
         ;;
 esac
@@ -244,8 +327,10 @@ esac
 case $1 in
     set-name) set_name ;;
     focus) focus ;;
+    group) select_group ;;
     watch) watch ;;
     move-window) move_window "${@:2}" ;;
     toggle-lock) toggle_lock ;;
     close-window) close_window ;;
+    window-info) window_info ;;
 esac
