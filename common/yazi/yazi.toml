@@ -43,3 +43,13 @@ prepend_rules = [
 	{ mime = "text/*", use = [ "edit", "firefox", "reveal" ] },
 	{ mime = "inode/{empty,x-empty}", use = [ "edit", "reveal" ] },
 ]
+
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"

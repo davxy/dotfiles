@@ -1,6 +1,10 @@
 # https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/keymap-default.toml
 
 [mgr]
+prepend_keymap = [
+  { on = "p", run = "plugin safe-paste", desc = "Paste yanked files (safe on rclone mounts)" },
+  { on = "M", run = "plugin mount", desc = "Mount, unmount or eject partitions" },
+]
 append_keymap = [
   { on = [ "g", "e" ], run = "arrow bot", desc = "Move cursor to the bottom" },
   { on = [ "C", "h" ], run = "shell 'ya emit notify:push \"$(xxh128sum %s 2>&1 | sed -E \"s|^([0-9a-f]{8})[0-9a-f]* +(.*/)?|\\1  |\")\" xxHash --timeout=10'", desc = "Show xxHash (8 hex digits)" },
@@ -9,4 +13,5 @@ append_keymap = [
   { on = [ "C", "7" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && 7z a -t7z -- \"$n.7z\" \"$n\"); done'", desc = "Archive as 7z" },
   { on = [ "C", "e" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && if [ -d \"$n\" ]; then tar -cf - -- \"$n\" | gpg --batch -e -r 9484AE9C0DE026ADF6A15A538F550699515C84CB -o \"$n.tar.gpg\"; else gpg --batch -e -r 9484AE9C0DE026ADF6A15A538F550699515C84CB -o \"$n.gpg\" -- \"$n\"; fi); done'", desc = "Encrypt to my GPG key" },
   { on = [ "C", "p" ], run = "shell 'for f in %s; do (cd -- \"$(dirname -- \"$f\")\" && n=$(basename -- \"$f\") && if [ -d \"$n\" ]; then tar -cf - -- \"$n\" | gpg --batch -c -o \"$n.tar.gpg\"; else gpg --batch -c -o \"$n.gpg\" -- \"$n\"; fi); done'", desc = "Encrypt with a passphrase (GPG)" },
+  { on = [ "C", "g" ], run = "shell 'if [ \"$(git rev-parse --is-inside-work-tree 2>/dev/null)\" = true ]; then gitui; else ya emit notify:push \"Not a git repository\" gitui --timeout=5 --level=warn; fi' --block", desc = "Open gitui" },
 ]
