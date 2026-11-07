@@ -90,6 +90,8 @@
 ~/.config/gtk-4.0/settings.ini | gtk/gtk-4.0/settings.ini
 # cargo
 ~/.cargo/config.toml | cargo/config.toml
+# greetd
+/etc/greetd/config.toml | greetd/config.toml
 
 [behemoth]
 # wayvnc
@@ -98,8 +100,6 @@
 /etc/samba/smb.conf | samba/smb.conf
 # evremap
 /etc/evremap.toml | evremap/evremap.toml
-# greetd
-/etc/greetd/config.toml | greetd/config.toml
 # pam
 /etc/pam.d/greetd | pam/greetd
 /etc/pam.d/login | pam/login
