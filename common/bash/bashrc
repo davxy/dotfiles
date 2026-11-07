@@ -12,6 +12,9 @@
 # - bat
 # - yazi
 
+# Before the interactive check, so that niri-session also gets the variables
+source "$HOME/.config/dev.env"
+
 # If not running interactively (e.g. scp), don't do anything
 if [[ $- != *i* ]]; then
     return
