@@ -83,13 +83,6 @@ set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
 set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
-# PERSONAL DEV STUFF
-set -x JAM_VERSION "0.7.2"
-set -x JAM_CONFORMANCE_DIR /mnt/ssd/develop/jam/jam-conformance
-set -x JAM_REPORTS_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/reports"
-set -x JAM_TRACES_DIR "$JAM_CONFORMANCE_DIR/fuzz-reports/$JAM_VERSION/traces"
-set -x JAM_SOCK "/tmp/jam_target.sock"
-
 #############################################
 # Start zellij
 #############################################
@@ -286,14 +279,6 @@ function opencode --wraps opencode
     end
     set -lx PARITY_LLM_PROXY_KEY $key
     command opencode $argv
-end
-
-function corral --wrap corral
-    set -l key (pass show api/github 2>/dev/null | head -1)
-    if test -z "$key"
-        echo "corral: cannot read api/github from pass; gh tool will not work" >&2
-    end
-    command corral -e GH_TOKEN=$key $argv
 end
 
 #############################################
