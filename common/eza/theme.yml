@@ -1,0 +1,13 @@
+filekinds:
+  mount_point:
+    is_underline: false
+perms:
+  user_execute_file:
+    is_underline: false
+file_type:
+  build:
+    is_underline: false
+header:
+  is_underline: false
+broken_path_overlay:
+  is_underline: false

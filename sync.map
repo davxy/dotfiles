@@ -73,6 +73,12 @@
 ~/.config/rssfeed.toml | rssfeed.toml
 # corral
 ~/.config/corral/ | corral/
+# bat
+~/.config/bat/ | bat/
+# eza
+~/.config/eza/ | eza/
+# chroncal
+~/.config/chroncal/ | chroncal/
 
 [behemoth]
 # wayvnc
