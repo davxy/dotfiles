@@ -79,6 +79,10 @@
 ~/.config/eza/ | eza/
 # chroncal
 ~/.config/chroncal/ | chroncal/
+# virt-viewer
+~/.config/virt-viewer/ | virt-viewer/
+# XDG user directories
+~/.config/user-dirs.dirs | misc/user-dirs.dirs
 
 [behemoth]
 # wayvnc

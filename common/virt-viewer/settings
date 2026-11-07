@@ -1,0 +1,6 @@
+[virt-viewer]
+share-clipboard=true
+ask-quit=true
+#arch-vr
+[a3a864e8-56dc-41a7-9924-72e086a7558b]
+monitor-mapping=1:1;
