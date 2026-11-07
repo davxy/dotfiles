@@ -15,11 +15,12 @@
 ~/.config/fish/config.fish | fish/config.fish
 ~/.config/fish/conf.d/ | fish/conf.d/
 # development environment (sourced by bash and fish)
-~/.config/dev.env | dev.env
+~/.config/dev.env | misc/dev.env
 # systemd
 ~/.config/systemd/ | systemd/
 # rclone
 ~/.config/rclone/mount-mega.env | rclone/mount-mega.env
+~/.config/rclone/rclone.conf.gpg | rclone/rclone.conf.gpg
 # gnupg
 ~/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf
 # fonts configuration
