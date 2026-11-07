@@ -1,14 +1,14 @@
-# Fuzzel Colors
+# Gruvbox Material Dark, as mako, alacritty and the niri focus ring.
 
 [colors]
-background=282828CC
-text=fbf1c7ff
-prompt=fabd2fff
-placeholder=83a598ff
-input=b8bb26ff
-match=83a598ff
-selection=b8bb2680
-selection-text=fbf1c7ff
-selection-match=282828ff
-counter=fabd2fff
-border=b8bb26ff
+background=282828ff
+text=d4be98ff
+prompt=d8a657ff
+placeholder=928374ff
+input=d4be98ff
+match=7daea3ff
+selection=45403dff
+selection-text=d4be98ff
+selection-match=d8a657ff
+counter=928374ff
+border=d4be98ff
