@@ -105,16 +105,6 @@
 /etc/samba/smb.conf | samba/smb.conf
 # evremap
 /etc/evremap.toml | evremap/evremap.toml
-# hosts
-/etc/hosts | misc/hosts
-# ufw
-/etc/default/ufw | ufw/default/ufw
-/etc/ufw/ufw.conf | ufw/ufw.conf
-/etc/ufw/sysctl.conf | ufw/sysctl.conf
-/etc/ufw/user.rules | ufw/user.rules
-/etc/ufw/user6.rules | ufw/user6.rules
-# sshd
-/etc/ssh/sshd_config | ssh/sshd_config
 
 [workmule]
 # evremap
