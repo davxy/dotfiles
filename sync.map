@@ -92,6 +92,9 @@
 ~/.cargo/config.toml | cargo/config.toml
 # greetd
 /etc/greetd/config.toml | greetd/config.toml
+# pam
+/etc/pam.d/greetd | pam/greetd
+/etc/pam.d/login | pam/login
 
 [behemoth]
 # wayvnc
@@ -100,9 +103,6 @@
 /etc/samba/smb.conf | samba/smb.conf
 # evremap
 /etc/evremap.toml | evremap/evremap.toml
-# pam
-/etc/pam.d/greetd | pam/greetd
-/etc/pam.d/login | pam/login
 # udev
 /etc/udev/rules.d/20-ledger.rules | udev/20-ledger.rules
 /etc/udev/rules.d/30-amdgpu-pm.rules | udev/30-amdgpu-pm.rules
