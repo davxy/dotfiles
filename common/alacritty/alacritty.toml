@@ -9,17 +9,18 @@ cyan = "0x89b482"
 green = "0xa9b665"
 magenta = "0xd3869b"
 red = "0xea6962"
-yellow = "0xe3a84e"
+white = "0xd4be98"
+yellow = "0xd8a657"
 
 [colors.normal]
-black = "0x665c54"
+black = "0x5a524c"
 blue = "0x7daea3"
 cyan = "0x89b482"
 green = "0xa9b665"
 magenta = "0xd3869b"
 red = "0xea6962"
-white = "0xdfbf8e"
-yellow = "0xe78a4e"
+white = "0xd4be98"
+yellow = "0xd8a657"
 
 [colors.primary]
 background = "0x282828"
@@ -44,3 +45,8 @@ style = "Regular"
 # Looks like not works
 [window]
 dynamic_title = true
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"
