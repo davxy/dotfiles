@@ -23,6 +23,7 @@
 ~/.config/rclone/rclone.conf.gpg | rclone/rclone.conf.gpg
 # gnupg
 ~/.gnupg/gpg-agent.conf | gnupg/gpg-agent.conf
+~/.gnupg/sshcontrol | gnupg/sshcontrol
 # fonts configuration
 ~/.config/fontconfig/ | fontconfig/
 # git
@@ -84,6 +85,11 @@
 ~/.config/virt-viewer/ | virt-viewer/
 # XDG user directories
 ~/.config/user-dirs.dirs | misc/user-dirs.dirs
+# gtk
+~/.config/gtk-3.0/settings.ini | gtk/gtk-3.0/settings.ini
+~/.config/gtk-4.0/settings.ini | gtk/gtk-4.0/settings.ini
+# cargo
+~/.cargo/config.toml | cargo/config.toml
 
 [behemoth]
 # wayvnc
@@ -92,6 +98,25 @@
 /etc/samba/smb.conf | samba/smb.conf
 # evremap
 /etc/evremap.toml | evremap/evremap.toml
+# greetd
+/etc/greetd/config.toml | greetd/config.toml
+# pam
+/etc/pam.d/greetd | pam/greetd
+/etc/pam.d/login | pam/login
+# udev
+/etc/udev/rules.d/20-ledger.rules | udev/20-ledger.rules
+/etc/udev/rules.d/30-amdgpu-pm.rules | udev/30-amdgpu-pm.rules
+/etc/udev/rules.d/99-uinput.rules | udev/99-uinput.rules
+# hosts
+/etc/hosts | misc/hosts
+# ufw
+/etc/default/ufw | ufw/default/ufw
+/etc/ufw/ufw.conf | ufw/ufw.conf
+/etc/ufw/sysctl.conf | ufw/sysctl.conf
+/etc/ufw/user.rules | ufw/user.rules
+/etc/ufw/user6.rules | ufw/user6.rules
+# sshd
+/etc/ssh/sshd_config | ssh/sshd_config
 
 [workmule]
 # evremap
