@@ -1,3 +1,4 @@
 {
-  "Helper": "secret-service-dbus"
+  "Helper": "secret-service-dbus",
+  "DisableTest": false
 }
