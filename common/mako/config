@@ -13,12 +13,35 @@ default-timeout=3000
 ignore-timeout=1
 
 [app-name=system-info]
-default-timeout=5000
-width=400
-height=200
+anchor=top-left
+default-timeout=10000
+width=450
+height=400
 
-# Last, because the last matching section wins: no app section can make a critical message expire.
+[app-name=window-info]
+anchor=top-left
+default-timeout=10000
+width=450
+height=400
+
+# Do not disturb (power menu) hides the messages, but not the notice that tells the mode is on,
+# and not the system and window info that the user asks for with Mod+I and Mod+Shift+I.
+[mode=do-not-disturb]
+invisible=1
+
+[mode=do-not-disturb app-name=menu]
+invisible=0
+
+[mode=do-not-disturb app-name=system-info]
+invisible=0
+
+[mode=do-not-disturb app-name=window-info]
+invisible=0
+
+# Last, because the last matching section wins: no app section can make a critical message expire,
+# and do not disturb cannot hide it.
 [urgency=critical]
 border-color=#ea6962
 default-timeout=0
 ignore-timeout=1
+invisible=0
