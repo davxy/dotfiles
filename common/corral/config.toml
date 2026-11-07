@@ -1,0 +1,14 @@
+homes = "/home/davxy/.local/share/corral/homes"
+default_user = "corral"
+network = "private"
+hide = [ "/mnt" ]
+shell = "/usr/bin/bash"
+
+[users.corral]
+env = [ "GH_TOKEN=$(pass api/github)" ]
+mounts = [ "~/develop/agents:~/agents:ro" ]
+
+[users.torrent]
+vpn = "~/.wireguard/torrent.conf"
+mounts = [ "~/data/torrents/:~/torrents/:rw" ]
+wayland = true
