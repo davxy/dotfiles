@@ -14,6 +14,8 @@
 # fish
 ~/.config/fish/config.fish | fish/config.fish
 ~/.config/fish/conf.d/ | fish/conf.d/
+# development environment (sourced by bash and fish)
+~/.config/dev.env | dev.env
 # systemd
 ~/.config/systemd/ | systemd/
 # rclone
@@ -69,6 +71,8 @@
 ~/.config/ghfeed.toml | ghfeed.toml
 # mxfeed
 ~/.config/rssfeed.toml | rssfeed.toml
+# corral
+~/.config/corral/ | corral/
 
 [behemoth]
 # wayvnc
