@@ -112,8 +112,14 @@ input {
     position x=1280 y=0
 }
 
+// workmule
 output "AU Optronics 0xD291 Unknown" {
     scale 1.0
+}
+
+// behemoth
+output "Lenovo Group Limited LEN T27h-20 VNA61WLH" {
+    scale 0.95
 }
 
 // Settings that influence how windows are positioned and sized.
