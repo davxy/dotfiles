@@ -4,29 +4,21 @@
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed
 // Options:
-//   - detach (Default)
-//   - quit
-//
+// - detach (Default)
+// - quit
 on_force_close "quit"
 
-//  Send a request for a simplified ui (without arrow fonts) to plugins
-//  Options:
-//    - true
-//    - false (Default)
-//
+// Send a request for a simplified ui (without arrow fonts) to plugins
+// Default: false
 simplified_ui true
 
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
-//
 // default_shell "fish"
 
 // Toggle between having pane frames around the panes
-// Options:
-//   - true (default)
-//   - false
-//
-pane_frames false
+// Default: true
+pane_frames true
 
 // The name of the default layout to load on startup
 // Default: "default"
@@ -41,10 +33,7 @@ pane_frames false
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
 // potentially interfere with copying text.
-// Options:
-//   - true (default)
-//   - false
-//
+// Default: true
 mouse_mode true
 
 // Configure the scroll back buffer size
@@ -111,7 +100,21 @@ show_release_notes false
 // Default: true
 show_startup_tips false
 
-stacked_resize true
+// Attempt to stack panes with their neighbors when resizing non-directionally (by default Alt+/-).
+// Default: true
+// stacked_resize true
+
+// Whether scrolling a pane implicitly enters and exits scroll mode.
+// When false, scrolling a pane (eg. with the mouse wheel) leaves the current
+// mode alone, and scroll mode is only entered through an explicit keybinding.
+// Default: true
+scroll_mode_sync false
+
+// Whether to briefly show the name of the new swap layout when it is changed.
+// Default: true
+swap_layout_notification false
+
+bars_hidden_on_start "all"
 
 keybinds clear-defaults=true {
     normal {
@@ -243,7 +246,9 @@ keybinds clear-defaults=true {
     session {
         bind "Ctrl s" "Enter" "Space" { SwitchToMode "Normal"; }
         bind "d" { Detach; }
-        bind "w" {
+        bind "b" { ToggleBars; SwitchToMode "Normal"; }
+        // bind "i" { ToggleSessionCard; SwitchToMode "Normal"; }
+        bind "i" {
             LaunchOrFocusPlugin "zellij:session-manager" {
                 floating true
                 move_to_focused_tab true
