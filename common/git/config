@@ -52,7 +52,7 @@ f = fetch
 r = remote -v
 m = merge
 w = worktree
-ws = "!git worktree list | fzf | awk '{print $1}'"
+wt = "!git worktree list | fzf | awk '{print $1}'"
 
 [delta]
 line-numbers = true
