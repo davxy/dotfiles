@@ -11,6 +11,7 @@ case "${1:-}" in
         commands="󰂯 bluetooth
 󰖩 wifi
 󰕾 audio
+󰋊 disks
 󰓅 power-profile
 󰂛 do-not-disturb
 󰃭 calendar
@@ -70,6 +71,9 @@ case "$chosen" in
         ;;
     audio)
         alacritty --class floating-tui -e wiremix &
+        ;;
+    disks)
+        alacritty --class floating-tui -e mmtui &
         ;;
     calendar)
         alacritty --class floating-tui -e chroncal &

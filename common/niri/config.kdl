@@ -366,7 +366,7 @@ window-rule {
     open-floating true
 }
 
-// The terminals of the power menu (impala, bluetui, wiremix, chroncal, btm, systemctl-tui) and of Mod+Shift+Return.
+// The terminals of the power menu (impala, bluetui, wiremix, mmtui, chroncal, btm, systemctl-tui) and of Mod+Shift+Return.
 window-rule {
     match app-id="^floating-tui$"
     open-floating true

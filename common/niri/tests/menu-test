@@ -178,6 +178,7 @@ assert_eq() {
 settings_items="󰂯 bluetooth
 󰖩 wifi
 󰕾 audio
+󰋊 disks
 󰓅 power-profile
 󰂛 do-not-disturb
 󰃭 calendar
@@ -214,7 +215,7 @@ for item in poweroff reboot firmware-setup logout lock suspend; do
     run_menu "$item" yes
     assert_eq "settings menu, typed $item: no action" "" "$(actions)"
 done
-for item in bluetooth wifi audio power-profile do-not-disturb calendar system-monitor services; do
+for item in bluetooth wifi audio disks power-profile do-not-disturb calendar system-monitor services; do
     reset_state
     run_power_menu "$item" performance
     wait_for_actions
@@ -386,6 +387,12 @@ run_menu audio
 wait_for_actions
 assert_eq "audio: wiremix in a floating terminal" "alacritty --class floating-tui -e wiremix" "$(actions)"
 
+# udiskie does not mount automatically, so the user mounts a disk with mmtui.
+reset_state
+run_menu disks
+wait_for_actions
+assert_eq "disks: mmtui in a floating terminal" "alacritty --class floating-tui -e mmtui" "$(actions)"
+
 reset_state
 run_menu calendar
 wait_for_actions
@@ -408,7 +415,7 @@ for item in lock suspend; do
     run_power_menu "$item"
     assert_eq "$item: no confirmation" "1" "$(fuzzel_calls | wc -l)"
 done
-for item in bluetooth wifi audio do-not-disturb calendar system-monitor services; do
+for item in bluetooth wifi audio disks do-not-disturb calendar system-monitor services; do
     reset_state
     run_menu "$item"
     wait_for_actions
