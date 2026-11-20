@@ -40,7 +40,7 @@ export CWD_FILE="/tmp/${USER}_cwd_file"
 export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 # Default terminal
-export TERMINAL=cosmic-term
+export TERMINAL=alacritty
  
 # Cosmic terminal is based on alacritty
 export TERM="alacritty"

@@ -19,9 +19,6 @@ alias lla='eza -alg'
 alias tree='eza -T'
 # zoxide
 alias cd=z
-alias ze="fzf --bind 'enter:execute(rifle {})'"
-# ranger
-alias ra=ranger
 # python
 alias py=python
 # gitui
