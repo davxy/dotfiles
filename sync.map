@@ -99,8 +99,6 @@
 /etc/udev/rules.d/99-uinput.rules | udev/99-uinput.rules
 
 [behemoth]
-# wayvnc
-~/.config/wayvnc/ | wayvnc/
 # samba
 /etc/samba/smb.conf | samba/smb.conf
 # evremap
