@@ -184,7 +184,6 @@ alias lla='eza -alg'
 alias tree='eza -T'
 # zoxide
 alias cd=z
-alias ze="fzf --bind 'enter:execute(rifle {})'"
 # python
 alias py=python
 alias ipy=ipython
@@ -210,7 +209,6 @@ alias unix='date +%s'
 # wifi
 alias wifi=impala
 # ai
-alias aic=aichat
 alias vp=vibepen
 alias oc=opencode
 
