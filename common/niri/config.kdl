@@ -119,7 +119,7 @@ output "AU Optronics 0xD291 Unknown" {
 
 // behemoth
 output "Lenovo Group Limited LEN T27h-20 VNA61WLH" {
-    scale 0.95
+    scale 1.0
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -366,7 +366,8 @@ window-rule {
     open-floating true
 }
 
-// The terminals of the power menu (impala, bluetui, wiremix, mmtui, chroncal, btm, systemctl-tui) and of Mod+Shift+Return.
+// The terminals of the power menu (impala, bluetui, wiremix, mmtui, chroncal, btm, systemctl-tui), of Mod+Shift+Return
+// and of the file chooser portal (~/.config/xdg-desktop-portal-termfilechooser/config).
 window-rule {
     match app-id="^floating-tui$"
     open-floating true
