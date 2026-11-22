@@ -211,6 +211,8 @@ alias wifi=impala
 # ai
 alias vp=vibepen
 alias oc=opencode
+# default hash
+alias hash=xxhsum
 
 #############################################
 # Misc
