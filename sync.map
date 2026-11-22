@@ -90,6 +90,9 @@
 ~/.config/gtk-4.0/settings.ini | gtk/gtk-4.0/settings.ini
 # cargo
 ~/.cargo/config.toml | cargo/config.toml
+# xdg-desktop-portal
+~/.config/xdg-desktop-portal/niri-portals.conf | xdg-desktop-portal/niri-portals.conf
+~/.config/xdg-desktop-portal-termfilechooser/config | xdg-desktop-portal-termfilechooser/config
 # greetd
 /etc/greetd/config.toml | greetd/config.toml
 # pam

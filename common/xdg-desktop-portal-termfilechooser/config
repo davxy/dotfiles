@@ -1,0 +1,4 @@
+# Read by /usr/lib/xdg-desktop-portal-termfilechooser, from the AUR package xdg-desktop-portal-termfilechooser.
+[filechooser]
+cmd=yazi-wrapper.sh
+env=TERMCMD=alacritty --class floating-tui -e env -u NIRI_SOCKET
