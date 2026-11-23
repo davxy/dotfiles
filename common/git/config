@@ -44,7 +44,7 @@ prune-gone = "!git branch -vv | grep ': gone' | awk '{print $1}' | xargs -r git 
 # Terse aliasas
 g = graph
 s = status -s
-b = branch -vv
+b = branch --color=always --format='%(if)%(HEAD)%(then)%(color:red)+%(color:reset)%(else)%(if)%(worktreepath)%(then)%(color:white)+%(color:reset)%(else) %(end)%(end) %(color:green)%(refname:short)%(color:reset) %(color:yellow)%(objectname:short)%(color:reset) %(if)%(HEAD)%(then)%(else)%(if)%(worktreepath)%(then)(%(worktreepath)) %(end)%(end)%(if)%(upstream)%(then)[%(color:blue)%(upstream:short)%(color:reset)%(if)%(upstream:track)%(then): %(upstream:track)%(end)]%(end)'
 a = add
 c = commit
 p = pull
